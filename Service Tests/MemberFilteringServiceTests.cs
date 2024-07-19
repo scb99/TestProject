@@ -16,23 +16,25 @@ public class MemberFilteringServiceTests
     private readonly Mock<IIDFilteringStrategy> _mockIDFilteringStrategy = new();
     private readonly Mock<ILastNameFilterStrategy> _mockLastNameFilterStrategy = new();
     private readonly Mock<ILifetimeMembersFilterStrategy> _mockLifetimeMembersFilterStrategy = new();
+    private readonly Mock<IRemoveBadMemberDataRecordsFilterStrategy> _mockRemoveBadMemberDataRecordsFilterStrategy = new();
     private readonly Mock<ISuperUserRoleFilterStrategy> _mockSuperUserRoleFilterStrategy = new();
     private readonly Mock<ITestAccountFilterStrategy> _mockTestAccountFilterStrategy = new ();
     
     private MemberFilteringService CreateService()
     {
         return new MemberFilteringService(
+            _mockAllMembersInDBService.Object,
             _mockAdminRoleFilteringStrategy.Object,
             _mockAdministratorAccountsStrategy.Object,
-            _mockAllMembersInDBService.Object,
             _mockBoardMemberRoleFilterStrategy.Object,
             _mockDeceasedMembersFilterStrategy.Object,
-            _mockLifetimeMembersFilterStrategy.Object,
-            _mockSuperUserRoleFilterStrategy.Object,
-            _mockTestAccountFilterStrategy.Object,
             _mockFirstNameFilterStrategy.Object,
             _mockIDFilteringStrategy.Object,
-            _mockLastNameFilterStrategy.Object
+            _mockLastNameFilterStrategy.Object,
+            _mockLifetimeMembersFilterStrategy.Object,
+            _mockRemoveBadMemberDataRecordsFilterStrategy.Object,
+            _mockSuperUserRoleFilterStrategy.Object,
+            _mockTestAccountFilterStrategy.Object
         );
     }
 
