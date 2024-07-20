@@ -8,52 +8,26 @@ namespace Service;
 
 public class MemberSelectionServiceTests
 {
-    private readonly Mock<IAllMembersInDBService> _allMembersInDBServiceMock = new();
-    private readonly Mock<IDataManager> _dataManagerMock = new();
-    private readonly Mock<ILoggerService> _loggerServiceMock = new();
-    private readonly Mock<IMemberDetailsService> _memberDetailsServiceMock = new();
-    private readonly Mock<IUpdateMemberService> _updateMemberServiceMock = new();
-    private readonly MemberSelectionService _memberSelectionService;
-
-    public MemberSelectionServiceTests()
-    {
-        _memberSelectionService = new MemberSelectionService(_allMembersInDBServiceMock.Object, _dataManagerMock.Object, _loggerServiceMock.Object, _memberDetailsServiceMock.Object, _updateMemberServiceMock.Object);
-    }
-
     [Fact]
-    public async Task ProcessSelectedMemberAsync_ProcessesMemberSuccessfully()
+    public async Task ProcessSelectedMemberAsync_CallsDependenciesCorrectly()
     {
         // Arrange
-        int selectedMemberID = 1;
-        var memberEntities = new List<MemberEntity> { new() { ID = selectedMemberID } };
-        var memberDetailEntities = new List<MemberDetailEntity> { new() { /* Initialize properties as needed */ } };
+        var mockDataManager = new Mock<IDataManager>();
+        var mockMemberDetailsService = new Mock<IMemberDetailsService>();
+        var mockUpdateMemberService = new Mock<IUpdateMemberService>();
+        var memberSelectionService = new MemberSelectionService(mockDataManager.Object, mockMemberDetailsService.Object, mockUpdateMemberService.Object);
 
-        _dataManagerMock.Setup(dm => dm.GetMemberDetailsSPAsync(selectedMemberID)).ReturnsAsync(memberDetailEntities);
-        _allMembersInDBServiceMock.Setup(am => am.MemberNameDictionary).Returns(new Dictionary<int, string> { { selectedMemberID, "Test Member" } });
-
-        // Act
-        await _memberSelectionService.ProcessSelectedMemberAsync(selectedMemberID, memberEntities);
-
-        // Assert
-        _memberDetailsServiceMock.VerifySet(mds => mds.MemberDetailEntities = It.IsAny<List<MemberDetailEntity>>(), Times.Once);
-        _loggerServiceMock.Verify(ls => ls.LogResultAsync(It.IsAny<string>()), Times.Once);
-        _updateMemberServiceMock.Verify(ums => ums.UpdateMemberServices(selectedMemberID, memberEntities), Times.Once);
-    }
-
-    [Fact]
-    public async Task ProcessSelectedMemberAsync_LogsException_OnFailure()
-    {
-        // Arrange
-        int selectedMemberID = 1;
+        int testMemberID = 1;
         var memberEntities = new List<MemberEntity>();
-        var exception = new Exception("Test exception");
-
-        _dataManagerMock.Setup(dm => dm.GetMemberDetailsSPAsync(selectedMemberID)).ThrowsAsync(exception);
+        var memberDetailEntities = new List<MemberDetailEntity>();
+        mockDataManager.Setup(dm => dm.GetMemberDetailsSPAsync(testMemberID)).ReturnsAsync(memberDetailEntities);
 
         // Act
-        await _memberSelectionService.ProcessSelectedMemberAsync(selectedMemberID, memberEntities);
+        await memberSelectionService.ProcessSelectedMemberAsync(testMemberID, memberEntities);
 
         // Assert
-        _loggerServiceMock.Verify(ls => ls.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
+        mockDataManager.Verify(dm => dm.GetMemberDetailsSPAsync(testMemberID), Times.Once);
+        mockMemberDetailsService.VerifySet(mds => mds.MemberDetailEntities = memberDetailEntities, Times.Once);
+        mockUpdateMemberService.Verify(ums => ums.UpdateMemberServices(testMemberID, memberEntities), Times.Once);
     }
 }
