@@ -2,78 +2,66 @@
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
+using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
 
-namespace MenuItemComponents;
+namespace Service;
 
 public class PaymentActionHandlerTests
 {
-    private readonly Mock<ILoggerService> _mockLoggerService = new();
-    private readonly Mock<IPaymentEntityEditOperationService> _mockEditOperationService = new();
-    private readonly Mock<IPaymentEntitySaveOperationService> _mockSaveOperationService = new();
-    private readonly PaymentActionHandler _paymentActionHandler;
-
-    public PaymentActionHandlerTests()
-    {
-        _paymentActionHandler = new PaymentActionHandler(
-            _mockLoggerService.Object,
-            _mockEditOperationService.Object,
-            _mockSaveOperationService.Object);
-    }
-
     [Fact]
-    public async Task HandleActionAsync_BeginEdit_CallsEditOperationService()
+    public async Task HandleActionAsync_Calls_PrepareForEditOperation_OnBeginEdit()
     {
         // Arrange
-        var actionArgs = new ActionEventArgs<PaymentEntity>
-        {
-            RequestType = Syncfusion.Blazor.Grids.Action.BeginEdit
-        };
-        var grid = new Mock<SfGrid<PaymentEntity>>().Object;
+        var editServiceMock = new Mock<IPaymentEntityEditOperationService>();
+        var saveServiceMock = new Mock<IPaymentEntitySaveOperationService>();
+        var handler = new PaymentActionHandler(editServiceMock.Object, saveServiceMock.Object);
+        var args = new Syncfusion.Blazor.Grids.ActionEventArgs<PaymentEntity> { RequestType = Syncfusion.Blazor.Grids.Action.BeginEdit };
+        var grid = new SfGrid<PaymentEntity>();
         string amount = "100";
 
         // Act
-        await _paymentActionHandler.HandleActionAsync(actionArgs, grid, amount);
+        await handler.HandleActionAsync(args, grid, amount);
 
         // Assert
-        _mockEditOperationService.Verify(s => s.PrepareForEditOperation(It.IsAny<ActionEventArgs<PaymentEntity>>(), ref It.Ref<PaymentEntity>.IsAny, ref It.Ref<PaymentEntity>.IsAny), Times.Once);
+        editServiceMock.Verify(e => e.PrepareForEditOperation(args, ref It.Ref<PaymentEntity>.IsAny, ref It.Ref<PaymentEntity>.IsAny), Times.Once);
     }
 
     [Fact]
-    public async Task HandleActionAsync_Save_CallsSaveOperationService()
+    public async Task HandleActionAsync_Calls_HandleSaveOperation_OnSave()
     {
         // Arrange
-        var actionArgs = new ActionEventArgs<PaymentEntity>
-        {
-            RequestType = Syncfusion.Blazor.Grids.Action.Save
-        };
-        var grid = new Mock<SfGrid<PaymentEntity>>().Object;
+        var editServiceMock = new Mock<IPaymentEntityEditOperationService>();
+        var saveServiceMock = new Mock<IPaymentEntitySaveOperationService>();
+        var handler = new PaymentActionHandler(editServiceMock.Object, saveServiceMock.Object);
+        var args = new ActionEventArgs<PaymentEntity> { RequestType = Syncfusion.Blazor.Grids.Action.Save };
+        var grid = new SfGrid<PaymentEntity>();
         string amount = "100";
 
         // Act
-        await _paymentActionHandler.HandleActionAsync(actionArgs, grid, amount);
+        await handler.HandleActionAsync(args, grid, amount);
 
         // Assert
-        _mockSaveOperationService.Verify(s => s.HandleSaveOperation(It.IsAny<ActionEventArgs<PaymentEntity>>(), ref It.Ref<PaymentEntity>.IsAny, ref It.Ref<PaymentEntity>.IsAny, It.IsAny<SfGrid<PaymentEntity>>(), It.IsAny<string>()), Times.Once);
+        saveServiceMock.Verify(s => s.HandleSaveOperation(args, ref It.Ref<PaymentEntity>.IsAny, ref It.Ref<PaymentEntity>.IsAny, grid, amount), Times.Once);
     }
 
     [Fact]
-    public async Task HandleActionAsync_ThrowsException_LogsException()
+    public void OnValueChange_Updates_Amount_Correctly()
     {
         // Arrange
-        var actionArgs = new ActionEventArgs<PaymentEntity>
+        var editServiceMock = new Mock<IPaymentEntityEditOperationService>();
+        var saveServiceMock = new Mock<IPaymentEntitySaveOperationService>();
+        var handler = new PaymentActionHandler(editServiceMock.Object, saveServiceMock.Object)
         {
-            RequestType = Syncfusion.Blazor.Grids.Action.BeginEdit
+            originalData = new PaymentEntity { Amount = "100" }
         };
-        var grid = new Mock<SfGrid<PaymentEntity>>().Object;
+        var args = new ChangeEventArgs<string, DropDownItems> { ItemData = new DropDownItems { Text = "200" } };
         string amount = "100";
-        _mockEditOperationService.Setup(s => s.PrepareForEditOperation(It.IsAny<ActionEventArgs<PaymentEntity>>(), ref It.Ref<PaymentEntity>.IsAny, ref It.Ref<PaymentEntity>.IsAny))
-            .Throws(new Exception("Test exception"));
 
         // Act
-        await _paymentActionHandler.HandleActionAsync(actionArgs, grid, amount);
+        handler.OnValueChange(args, ref amount);
 
         // Assert
-        _mockLoggerService.Verify(s => s.LogExceptionAsync(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
+        Assert.Equal("200", amount);
     }
 }

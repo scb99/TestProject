@@ -1,53 +1,45 @@
-﻿using DataAccess.Models;
+﻿namespace Service;
+
+using DataAccess.Models;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
-
-namespace Service;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Xunit;
 
 public class MembersLoadServiceTests
 {
-    private readonly Mock<IAllMembersInDBService> _allMembersInDBServiceMock = new();
-    private readonly Mock<ILoadingPanelService> _loadingPanelServiceMock = new();
-    private readonly Mock<ILoggerService> _loggerServiceMock = new();
-    private readonly MembersLoadService _membersLoadService;
-
-    public MembersLoadServiceTests()
+    [Fact]
+    public async Task LoadMembersAsync_CallsShowLoadingPanelAsync()
     {
-        _membersLoadService = new MembersLoadService(_allMembersInDBServiceMock.Object, _loadingPanelServiceMock.Object, _loggerServiceMock.Object);
+        // Arrange
+        var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
+        var mockLoadingPanelService = new Mock<ILoadingPanelService>();
+        var service = new MembersLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
+
+        // Act
+        await service.LoadMembersAsync();
+
+        // Assert
+        mockLoadingPanelService.Verify(lps => lps.ShowLoadingPanelAsync(), Times.Once);
     }
 
     [Fact]
-    public async Task LoadMembersAsync_ReturnsMembers_OnSuccess()
+    public async Task LoadMembersAsync_ReturnsAllMembers()
     {
         // Arrange
-        var expectedMembers = new List<MemberEntity>
-        {
-            new() { /* Initialize properties as needed */ },
-            new() { /* Initialize properties as needed */ }
-        };
-        _allMembersInDBServiceMock.Setup(service => service.GetAllMembersInDBAsync()).ReturnsAsync(expectedMembers);
+        var expectedMembers = new List<MemberEntity> { new() { /* Initialize properties as needed */ } };
+        var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
+        mockAllMembersInDBService.Setup(s => s.GetAllMembersInDBAsync()).ReturnsAsync(expectedMembers);
+        var mockLoadingPanelService = new Mock<ILoadingPanelService>();
+        var service = new MembersLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
 
         // Act
-        var result = await _membersLoadService.LoadMembersAsync();
+        var result = await service.LoadMembersAsync();
 
         // Assert
-        Assert.Equal(expectedMembers.Count, result.Count);
-        _loadingPanelServiceMock.Verify(lp => lp.ShowLoadingPanelAsync(), Times.Once);
-    }
-
-    [Fact]
-    public async Task LoadMembersAsync_ReturnsEmptyList_OnException()
-    {
-        // Arrange
-        _allMembersInDBServiceMock.Setup(service => service.GetAllMembersInDBAsync()).ThrowsAsync(new Exception("Test exception"));
-
-        // Act
-        var result = await _membersLoadService.LoadMembersAsync();
-
-        // Assert
-        Assert.Empty(result);
-        _loggerServiceMock.Verify(l => l.LogExceptionAsync(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
-        _loadingPanelServiceMock.Verify(lp => lp.ShowLoadingPanelAsync(), Times.Once);
+        Assert.Equal(expectedMembers, result);
+        mockAllMembersInDBService.Verify(s => s.GetAllMembersInDBAsync(), Times.Once);
     }
 }
