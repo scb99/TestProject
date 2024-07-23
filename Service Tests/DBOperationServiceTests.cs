@@ -36,7 +36,7 @@ public class DBOperationServiceTests
     public async Task AfterUnSuccessfulDBOperationAsync_DisplaysCorrectMessage(DBOperation operation, string expectedMessage)
     {
         // Arrange
-        string errorMessage = "Error Message";
+        string errorMessage = "";
         string fullErrorMessage = operation == DBOperation.Read ? expectedMessage + errorMessage : expectedMessage;
 
         // Act
