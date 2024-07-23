@@ -7,53 +7,42 @@ namespace Service;
 
 public class ClipboardHandlerServiceTests
 {
-    private readonly Mock<IClipboardService> _mockClipboardService;
-    private readonly Mock<IAlertService> _mockAlertService;
-    private readonly ClipboardHandlerService _clipboardHandlerService;
+    private readonly Mock<IClipboardService> mockClipboardService = new();
+    private readonly ClipboardHandlerService clipboardHandlerService;
 
     public ClipboardHandlerServiceTests()
     {
-        _mockClipboardService = new Mock<IClipboardService>();
-        _mockAlertService = new Mock<IAlertService>();
-        _clipboardHandlerService = new ClipboardHandlerService(_mockClipboardService.Object, _mockAlertService.Object);
+        clipboardHandlerService = new ClipboardHandlerService(mockClipboardService.Object);
     }
 
     [Fact]
-    public async Task CopyPaymentDetailsToClipboardAsync_ShouldCopyPaymentDetailsToClipboard()
+    public async Task CopyPaymentDetailsToClipboardAsync_CopiesFirstPaymentDetailToClipboard()
     {
         // Arrange
         var paymentEntities = new List<PaymentEntity>
         {
-            new() { ID = 1, Description = "Payment 1", FirstName = "John", LastName = "Doe", Amount = "100" },
-            new() { ID = 2, Description = "Payment 2", FirstName = "Jane", LastName = "Smith", Amount = "200" }
+            new() { Description = "First Payment Detail" },
+            new() { Description = "Second Payment Detail" }
         };
+        var expectedDetails = paymentEntities.First().Description;
 
         // Act
-        await _clipboardHandlerService.CopyPaymentDetailsToClipboardAsync(paymentEntities);
+        await clipboardHandlerService.CopyPaymentDetailsToClipboardAsync(paymentEntities);
 
         // Assert
-        _mockClipboardService.Verify(cs => cs.CopyToClipboardAsync(It.IsAny<string>()), Times.Once);
-        _mockAlertService.Verify(als => als.AlertUsingFallingMessageBoxAsync("Added payments to Clipboard!"), Times.Once);
+        mockClipboardService.Verify(c => c.CopyToClipboardAsync(expectedDetails), Times.Once);
     }
 
     [Fact]
-    public async Task CopyPaymentDetailsToClipboardAsync_ShouldFormatPaymentDetailsCorrectly()
+    public async Task CopyPaymentDetailsToClipboardAsync_WithEmptyCollection_DoesNotCopyToClipboard()
     {
         // Arrange
-        var paymentEntities = new List<PaymentEntity>
-        {
-            new() { ID = 1, Description = "Payment 1", FirstName = "John", LastName = "Doe", Amount = "100" },
-            new() { ID = 2, Description = "Payment 2", FirstName = "Jane", LastName = "Smith", Amount = "200" }
-        };
-
-        var expectedClipboardText = "1 Payment 1 Doe, John 100" + System.Environment.NewLine +
-                                    "2 Payment 2 Smith, Jane 200" + System.Environment.NewLine +
-                                    "John Doe, Jane Smith renewal";
+        var paymentEntities = new List<PaymentEntity>();
 
         // Act
-        await _clipboardHandlerService.CopyPaymentDetailsToClipboardAsync(paymentEntities);
+        await clipboardHandlerService.CopyPaymentDetailsToClipboardAsync(paymentEntities);
 
         // Assert
-        _mockClipboardService.Verify(cs => cs.CopyToClipboardAsync(expectedClipboardText), Times.Once);
+        mockClipboardService.Verify(c => c.CopyToClipboardAsync(It.IsAny<string>()), Times.Never);
     }
 }

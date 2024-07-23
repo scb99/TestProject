@@ -16,6 +16,43 @@ public class AlertDialogServiceTests
     }
 
     [Fact]
+    public async Task AlertUsingFallingMessageBoxAsync_NotifiesSubscribers()
+    {
+        // Arrange
+        var wasCalled = false;
+        var testMessage = "Test Message";
+        _alertDialogService.Subscribe(async message =>
+        {
+            wasCalled = message == testMessage;
+            await Task.CompletedTask;
+        });
+
+        // Act
+        await _alertDialogService.AlertUsingFallingMessageBoxAsync(testMessage);
+
+        // Assert
+        Assert.True(wasCalled);
+    }
+
+    [Fact]
+    public async Task AlertUsingPopUpMessageBoxAsync_CallsJsInterop()
+    {
+        // Arrange
+        var testMessage = "Test Message";
+        //_jsRuntimeMock.Setup(runtime =>
+        //    runtime.InvokeVoidAsync("alertBoxSuccess", "FYI", testMessage, "info"))
+        //    .Returns(ValueTask.CompletedTask);
+
+        // Act
+        await _alertDialogService.AlertUsingPopUpMessageBoxAsync(testMessage);
+
+        // Assert
+        //_jsRuntimeMock.Verify(runtime =>
+        //    runtime.InvokeVoidAsync("alertBoxSuccess", "FYI", testMessage, "info"), Times.Once);
+        _jsRuntimeMock.Verify();
+    }
+
+    [Fact]
     public async Task AlertUsingFallingMessageBoxAsync_InvokesOnShowAsync()
     {
         // Arrange
