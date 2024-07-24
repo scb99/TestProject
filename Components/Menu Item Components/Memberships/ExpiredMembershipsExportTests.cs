@@ -6,15 +6,15 @@ using Syncfusion.Blazor.Grids;
 
 namespace MenuItemComponents;
 
-public class ExportExpiredMembershipsTests
+public class ExpiredMembershipsExportTests
 {
     [Fact]
     public async Task ExportDataAsync_CallsPrepareDataForExportAsync_WithCorrectParameters()
     {
         // Arrange
-        var mockPrepareDataService = new Mock<IExpiredMembershipPrepareDataService>();
+        var mockPrepareDataService = new Mock<IExpiredMembershipsPrepareDataService>();
         var mockExportService = new Mock<IExportExcelFileService>();
-        var service = new ExportExpiredMemberships(mockPrepareDataService.Object, mockExportService.Object);
+        var service = new ExpiredMembershipsExportService(mockPrepareDataService.Object, mockExportService.Object);
 
         var fileName = "test.xlsx";
         var startDate = DateTime.Now.AddDays(-30);
@@ -36,9 +36,9 @@ public class ExportExpiredMembershipsTests
     public async Task ExportDataAsync_CallsDownloadSpreadsheetDocumentToUsersMachineAsync_WithCorrectParameters()
     {
         // Arrange
-        var mockPrepareDataService = new Mock<IExpiredMembershipPrepareDataService>();
+        var mockPrepareDataService = new Mock<IExpiredMembershipsPrepareDataService>();
         var mockExportService = new Mock<IExportExcelFileService>();
-        var service = new ExportExpiredMemberships(mockPrepareDataService.Object, mockExportService.Object);
+        var service = new ExpiredMembershipsExportService(mockPrepareDataService.Object, mockExportService.Object);
 
         var fileName = "test.xlsx";
         var startDate = DateTime.Now.AddDays(-30);

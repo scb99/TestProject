@@ -5,12 +5,12 @@ using Moq;
 
 namespace MenuItemComponents;
 
-public class ExpiredMembershipPrepareDataServiceTests
+public class ExpiredMembershipsPrepareDataServiceTests
 {
     private readonly Mock<IDataManager> _mockDataManager = new();
     private readonly ExpiredMembershipPrepareDataService _service;
 
-    public ExpiredMembershipPrepareDataServiceTests()
+    public ExpiredMembershipsPrepareDataServiceTests()
     {
         _service = new ExpiredMembershipPrepareDataService(_mockDataManager.Object);
     }
