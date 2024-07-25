@@ -6,7 +6,7 @@ using Moq;
 
 namespace Service;
 
-public class MemberSelectionServiceTests
+public class MembersListSelectionServiceTests
 {
     [Fact]
     public async Task ProcessSelectedMemberAsync_CallsDependenciesCorrectly()
@@ -15,7 +15,7 @@ public class MemberSelectionServiceTests
         var mockDataManager = new Mock<IDataManager>();
         var mockMemberDetailsService = new Mock<IMemberDetailsService>();
         var mockUpdateMemberService = new Mock<IUpdateMemberService>();
-        var memberSelectionService = new MemberSelectionService(mockDataManager.Object, mockMemberDetailsService.Object, mockUpdateMemberService.Object);
+        var memberSelectionService = new MembersListSelectionService(mockDataManager.Object, mockMemberDetailsService.Object, mockUpdateMemberService.Object);
 
         int testMemberID = 1;
         var memberEntities = new List<MemberEntity>();

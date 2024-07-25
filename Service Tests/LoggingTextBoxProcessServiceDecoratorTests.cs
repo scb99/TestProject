@@ -12,7 +12,7 @@ public class LoggingTextBoxProcessServiceDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ILoggerService>();
-        var mockDecoratedService = new Mock<ITextBoxProcessService>();
+        var mockDecoratedService = new Mock<IMembersListTextBoxProcessingService>();
         var decorator = new LoggingTextBoxProcessServiceDecorator(mockLogger.Object, mockDecoratedService.Object);
         var testValue = "test";
         var testFilterCriteria = "criteria";
@@ -34,7 +34,7 @@ public class LoggingTextBoxProcessServiceDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ILoggerService>();
-        var mockDecoratedService = new Mock<ITextBoxProcessService>();
+        var mockDecoratedService = new Mock<IMembersListTextBoxProcessingService>();
         var decorator = new LoggingTextBoxProcessServiceDecorator(mockLogger.Object, mockDecoratedService.Object);
         var testValue = "test";
         var testFilterCriteria = "criteria";

@@ -1,14 +1,11 @@
-﻿namespace Service;
-
-using DataAccess.Models;
+﻿using DataAccess.Models;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
 
-public class MembersLoadServiceTests
+namespace Service;
+
+public class MembersListLoadServiceTests
 {
     [Fact]
     public async Task LoadMembersAsync_CallsShowLoadingPanelAsync()
@@ -16,7 +13,7 @@ public class MembersLoadServiceTests
         // Arrange
         var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
         var mockLoadingPanelService = new Mock<ILoadingPanelService>();
-        var service = new MembersLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
+        var service = new MembersListLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
 
         // Act
         await service.LoadMembersAsync();
@@ -33,7 +30,7 @@ public class MembersLoadServiceTests
         var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
         mockAllMembersInDBService.Setup(s => s.GetAllMembersInDBAsync()).ReturnsAsync(expectedMembers);
         var mockLoadingPanelService = new Mock<ILoadingPanelService>();
-        var service = new MembersLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
+        var service = new MembersListLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
 
         // Act
         var result = await service.LoadMembersAsync();

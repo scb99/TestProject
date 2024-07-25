@@ -5,7 +5,7 @@ using Moq;
 
 namespace Service;
 
-public class TextBoxProcessServiceTests
+public class MembersListTextBoxProcessingServiceTests
 {
     [Fact]
     public async Task ProcessTextBoxInputChangeAsync_ReturnsFilteredMembers()
@@ -23,7 +23,7 @@ public class TextBoxProcessServiceTests
         mockMemberFilteringService.Setup(service => service.FilterMembersAsync(testValue, testFilterCriteria))
             .ReturnsAsync(expectedMembers);
 
-        var textBoxProcessService = new TextBoxProcessService(mockMemberFilteringService.Object);
+        var textBoxProcessService = new MembersListTextBoxProcessingService(mockMemberFilteringService.Object);
 
         // Act
         var result = await textBoxProcessService.ProcessTextBoxInputChangeAsync(testValue, testFilterCriteria);

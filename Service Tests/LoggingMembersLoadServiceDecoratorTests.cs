@@ -12,7 +12,7 @@ public class LoggingMembersLoadServiceDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ILoggerService>();
-        var mockInnerService = new Mock<IMembersLoadService>();
+        var mockInnerService = new Mock<IMembersListLoadService>();
         var expectedMembers = new List<MemberEntity> { new() };
         mockInnerService.Setup(s => s.LoadMembersAsync()).ReturnsAsync(expectedMembers);
         var decorator = new LoggingMembersLoadServiceDecorator(mockLogger.Object, mockInnerService.Object);
@@ -30,7 +30,7 @@ public class LoggingMembersLoadServiceDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ILoggerService>();
-        var mockInnerService = new Mock<IMembersLoadService>();
+        var mockInnerService = new Mock<IMembersListLoadService>();
         var exception = new Exception("Test exception");
         mockInnerService.Setup(s => s.LoadMembersAsync()).ThrowsAsync(exception);
         var decorator = new LoggingMembersLoadServiceDecorator(mockLogger.Object, mockInnerService.Object);

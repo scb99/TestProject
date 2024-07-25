@@ -5,14 +5,14 @@ using Moq;
 
 namespace Service;
 
-public class MemberProcessingServiceTests
+public class MembersListProcessingServiceTests
 {
     [Fact]
     public async Task ProcessComboBoxChangeAsync_CallsFilterMembersAsync_WithCorrectParameters()
     {
         // Arrange
         var mockFilteringService = new Mock<IMemberFilteringService>();
-        var service = new MemberProcessingService(mockFilteringService.Object);
+        var service = new MembersListProcessingService(mockFilteringService.Object);
         string comboBoxValue = "TestValue";
         var expectedMembers = new List<MemberEntity>
         {

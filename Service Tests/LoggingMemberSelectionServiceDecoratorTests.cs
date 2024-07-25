@@ -12,7 +12,7 @@ public class LoggingMemberSelectionServiceDecoratorTests
     {
         // Arrange
         var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
-        var mockDecoratedService = new Mock<IMemberSelectionService>();
+        var mockDecoratedService = new Mock<IMembersListSelectionService>();
         var mockLogger = new Mock<ILoggerService>();
         var service = new LoggingMemberSelectionServiceDecorator(mockAllMembersInDBService.Object, mockDecoratedService.Object, mockLogger.Object);
 
@@ -35,7 +35,7 @@ public class LoggingMemberSelectionServiceDecoratorTests
         // Arrange
         var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
         var dict = mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test Member" } });
-        var mockDecoratedService = new Mock<IMemberSelectionService>();
+        var mockDecoratedService = new Mock<IMembersListSelectionService>();
         var mockLogger = new Mock<ILoggerService>();
         var service = new LoggingMemberSelectionServiceDecorator(mockAllMembersInDBService.Object, mockDecoratedService.Object, mockLogger.Object);
 

@@ -8,11 +8,11 @@ namespace MenuItemComponents;
 public class ExpiredMembershipsPrepareDataServiceTests
 {
     private readonly Mock<IDataManager> _mockDataManager = new();
-    private readonly ExpiredMembershipPrepareDataService _service;
+    private readonly ExpiredMembershipsPrepareDataService _service;
 
     public ExpiredMembershipsPrepareDataServiceTests()
     {
-        _service = new ExpiredMembershipPrepareDataService(_mockDataManager.Object);
+        _service = new ExpiredMembershipsPrepareDataService(_mockDataManager.Object);
     }
 
     [Fact]

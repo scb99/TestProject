@@ -35,7 +35,7 @@ public class ExpiredMembershipsComponentTests
         component = new ExpiredMembershipsComponent
         {
             ExpiredMembershipsLoadDataService = mockLoadDataService.Object,
-            ExpiredMembershipsExport = mockExportService.Object,
+            ExpiredMembershipsExportService = mockExportService.Object,
             LoadingStateService = mockLoadingStateService.Object,
             Logger = mockLoggerService.Object,
             ExpiredMembershipGetTitleService = mockGetTitleService.Object,
