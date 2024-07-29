@@ -6,14 +6,14 @@ namespace Service;
 
 public class AlertAndLogServiceTests
 {
-    private readonly Mock<IAlertService> _alertServiceMock;
-    private readonly Mock<ILoggerService> _loggerServiceMock;
+    private readonly Mock<ICrossCuttingAlertService> _alertServiceMock;
+    private readonly Mock<ICrossCuttingLoggerService> _loggerServiceMock;
     private readonly AlertAndLogService _alertAndLogService;
 
     public AlertAndLogServiceTests()
     {
-        _alertServiceMock = new Mock<IAlertService>();
-        _loggerServiceMock = new Mock<ILoggerService>();
+        _alertServiceMock = new Mock<ICrossCuttingAlertService>();
+        _loggerServiceMock = new Mock<ICrossCuttingLoggerService>();
         _alertAndLogService = new AlertAndLogService(_alertServiceMock.Object, _loggerServiceMock.Object);
     }
 

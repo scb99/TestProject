@@ -12,10 +12,10 @@ public class ExpiredMembershipsComponentTests
 {
     private readonly Mock<IExpiredMembershipsLoadDataService> mockLoadDataService = new();
     private readonly Mock<IExpiredMembershipsExportService> mockExportService = new();
-    private readonly Mock<ILoadingStateService> mockLoadingStateService = new();
-    private readonly Mock<ILoggerService> mockLoggerService = new();
+    private readonly Mock<ICrossCuttingLoadingStateService> mockLoadingStateService = new();
+    private readonly Mock<ICrossCuttingLoggerService> mockLoggerService = new();
     private readonly Mock<IExpiredMembershipsGetTitleService> mockGetTitleService = new();
-    private readonly Mock<IAlertService> mockAlertService = new();
+    private readonly Mock<ICrossCuttingAlertService> mockAlertService = new();
 
     private readonly ExpiredMembershipsComponent component;
 

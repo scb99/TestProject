@@ -11,7 +11,7 @@ public class LoggingMembersLoadServiceDecoratorTests
     public async Task LoadMembersAsync_ReturnsMembersOnSuccess()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockInnerService = new Mock<IMembersListLoadService>();
         var expectedMembers = new List<MemberEntity> { new() };
         mockInnerService.Setup(s => s.LoadMembersAsync()).ReturnsAsync(expectedMembers);
@@ -29,7 +29,7 @@ public class LoggingMembersLoadServiceDecoratorTests
     public async Task LoadMembersAsync_LogsExceptionAndReturnsEmptyListOnFailure()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockInnerService = new Mock<IMembersListLoadService>();
         var exception = new Exception("Test exception");
         mockInnerService.Setup(s => s.LoadMembersAsync()).ThrowsAsync(exception);

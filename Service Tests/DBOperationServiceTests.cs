@@ -6,12 +6,12 @@ namespace Service;
 
 public class DBOperationServiceTests
 {
-    private readonly Mock<IAlertService> _alertServiceMock;
+    private readonly Mock<ICrossCuttingAlertService> _alertServiceMock;
     private readonly DBOperationService _dbOperationService;
 
     public DBOperationServiceTests()
     {
-        _alertServiceMock = new Mock<IAlertService>();
+        _alertServiceMock = new Mock<ICrossCuttingAlertService>();
         _dbOperationService = new DBOperationService();
     }
 

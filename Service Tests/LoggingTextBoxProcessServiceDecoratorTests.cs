@@ -11,7 +11,7 @@ public class LoggingTextBoxProcessServiceDecoratorTests
     public async Task ProcessTextBoxInputChangeAsync_CallsDecoratedService()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockDecoratedService = new Mock<IMembersListTextBoxProcessingService>();
         var decorator = new LoggingTextBoxProcessServiceDecorator(mockLogger.Object, mockDecoratedService.Object);
         var testValue = "test";
@@ -33,7 +33,7 @@ public class LoggingTextBoxProcessServiceDecoratorTests
     public async Task ProcessTextBoxInputChangeAsync_LogsExceptionOnFailure()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockDecoratedService = new Mock<IMembersListTextBoxProcessingService>();
         var decorator = new LoggingTextBoxProcessServiceDecorator(mockLogger.Object, mockDecoratedService.Object);
         var testValue = "test";

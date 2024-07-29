@@ -2,17 +2,17 @@
 using Microsoft.JSInterop;
 using Moq;
 
-namespace Service;
+namespace CrossCuttingConcerns;
 
-public class AlertDialogServiceTests
+public class AlertServiceTests
 {
     private readonly Mock<IJSRuntime> _jsRuntimeMock;
-    private readonly AlertDialogService _alertDialogService;
+    private readonly AlertService _alertDialogService;
 
-    public AlertDialogServiceTests()
+    public AlertServiceTests()
     {
         _jsRuntimeMock = new Mock<IJSRuntime>();
-        _alertDialogService = new AlertDialogService(_jsRuntimeMock.Object);
+        _alertDialogService = new AlertService(_jsRuntimeMock.Object);
     }
 
     [Fact]

@@ -6,18 +6,18 @@ using Syncfusion.Blazor.Grids;
 
 namespace Service;
 
-public class MemberExportServiceTests
+public class FindNewMembersExportServiceTests
 {
     private readonly Mock<IExportExcelFileService> _mockExportExcelFileService = new();
     private readonly Mock<IFileNameValidationService> _mockFileNameValidationService = new();
     private readonly Mock<IIsValidFileNameService> _mockIsValidFileNameService = new();
-    private readonly Mock<ILoggerService> _mockLogger = new();
+    private readonly Mock<ICrossCuttingLoggerService> _mockLogger = new();
     private readonly Mock<IMemberDataPreparationService> _mockMemberDataPreparationService = new();
-    private readonly MemberExportService _service;
+    private readonly FindNewMembersExportService _service;
 
-    public MemberExportServiceTests()
+    public FindNewMembersExportServiceTests()
     {
-        _service = new MemberExportService(_mockExportExcelFileService.Object, _mockFileNameValidationService.Object,
+        _service = new FindNewMembersExportService(_mockExportExcelFileService.Object, _mockFileNameValidationService.Object,
                                            _mockIsValidFileNameService.Object, _mockLogger.Object, _mockMemberDataPreparationService.Object);
     }
 

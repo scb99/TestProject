@@ -1,6 +1,6 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Interfaces;
-using DBExplorerBlazor.Services;
+using DBExplorerBlazor3.Services.ExpiredMemberships;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -8,10 +8,10 @@ namespace MenuItemComponents;
 
 public class ExpiredMembershipsDataExportTests
 {
-    private readonly Mock<IAlertService> mockAlertService = new();
+    private readonly Mock<ICrossCuttingAlertService> mockAlertService = new();
     private readonly Mock<IExpiredMembershipsExportService> mockExpiredMembershipsExport = new();
     private readonly Mock<IIsValidFileNameService> mockIsValidFileNameService = new();
-    private readonly Mock<ILoggerService> mockLogger = new();
+    private readonly Mock<ICrossCuttingLoggerService> mockLogger = new();
     private readonly ExpiredMembershipsDataExportService service;
 
     public ExpiredMembershipsDataExportTests()

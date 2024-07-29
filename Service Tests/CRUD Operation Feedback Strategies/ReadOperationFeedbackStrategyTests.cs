@@ -2,7 +2,7 @@
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace CRUDOperationFeedbackStrategy;
 
 public class ReadOperationFeedbackStrategyTests
 {
@@ -10,7 +10,7 @@ public class ReadOperationFeedbackStrategyTests
     public async Task ExecuteFailureAsync_CallsAlertServiceWithCorrectErrorMessage()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
         var strategy = new ReadOperationFeedbackStrategy();
         var errorMessage = "Error accessing database";
         var expectedMessage = $"Tried to read record and got message:{errorMessage}";

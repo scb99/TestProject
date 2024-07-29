@@ -11,20 +11,20 @@ public class FindNewMembersComponentTests
 {
     private readonly Mock<IDataManager> _dataManagerMock;
     private readonly Mock<IFileNameValidationService> _fileNameValidationService;
-    private readonly Mock<ILoadingStateService> _loadingStateServiceMock;
+    private readonly Mock<ICrossCuttingLoadingStateService> _loadingStateServiceMock;
     private readonly Mock<ILoadingPanelService> _loadingPanelServiceMock;
-    private readonly Mock<ILoggerService> _loggerMock;
-    private readonly Mock<IMemberExportService> _memberExportServiceMock;
+    private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
+    private readonly Mock<IFindNewMembersExportService> _memberExportServiceMock;
     private readonly FindNewMembersComponent _component;
 
     public FindNewMembersComponentTests()
     {
         _dataManagerMock = new Mock<IDataManager>();
         _fileNameValidationService = new Mock<IFileNameValidationService>();
-        _loadingStateServiceMock = new Mock<ILoadingStateService>();
+        _loadingStateServiceMock = new Mock<ICrossCuttingLoadingStateService>();
         _loadingPanelServiceMock = new Mock<ILoadingPanelService>();
-        _loggerMock = new Mock<ILoggerService>();
-        _memberExportServiceMock = new Mock<IMemberExportService>();
+        _loggerMock = new Mock<ICrossCuttingLoggerService>();
+        _memberExportServiceMock = new Mock<IFindNewMembersExportService>();
         _component = new FindNewMembersComponent
         {
             DataManager = _dataManagerMock.Object,
@@ -32,7 +32,7 @@ public class FindNewMembersComponentTests
             LoadingStateService = _loadingStateServiceMock.Object,
             LoadingPanelService = _loadingPanelServiceMock.Object,
             Logger = _loggerMock.Object,
-            MemberExportService = _memberExportServiceMock.Object,
+            FindNewMembersExportService = _memberExportServiceMock.Object,
             StartDate = new DateTime(2023, 1, 1),
             EndDate = new DateTime(2023, 12, 31),
             Now = DateTime.Now,

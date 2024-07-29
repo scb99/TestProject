@@ -11,9 +11,9 @@ public class LoggingMemberSelectionServiceDecoratorTests
     public async Task ProcessSelectedMemberAsync_LogsAndCallsDecoratedService()
     {
         // Arrange
-        var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
+        var mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         var mockDecoratedService = new Mock<IMembersListSelectionService>();
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var service = new LoggingMemberSelectionServiceDecorator(mockAllMembersInDBService.Object, mockDecoratedService.Object, mockLogger.Object);
 
         int testMemberID = 1;
@@ -33,10 +33,10 @@ public class LoggingMemberSelectionServiceDecoratorTests
     public async Task ProcessSelectedMemberAsync_LogsExceptionWhenThrown()
     {
         // Arrange
-        var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
+        var mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         var dict = mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test Member" } });
         var mockDecoratedService = new Mock<IMembersListSelectionService>();
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var service = new LoggingMemberSelectionServiceDecorator(mockAllMembersInDBService.Object, mockDecoratedService.Object, mockLogger.Object);
 
         int testMemberID = 1;

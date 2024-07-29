@@ -10,7 +10,7 @@ public class FileNameValidationServiceTests
     public async Task ValidateAndAlertAsync_ReturnsTrue_WhenFileNameIsValid()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
         var mockIsValidFileNameService = new Mock<IIsValidFileNameService>();
         mockIsValidFileNameService.Setup(service => service.FileNameValid(It.IsAny<string>())).Returns(true);
 
@@ -29,7 +29,7 @@ public class FileNameValidationServiceTests
     public async Task ValidateAndAlertAsync_ReturnsFalse_WhenFileNameIsInvalid()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
         var mockIsValidFileNameService = new Mock<IIsValidFileNameService>();
         mockIsValidFileNameService.Setup(service => service.FileNameValid(It.IsAny<string>())).Returns(false);
 

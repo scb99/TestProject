@@ -9,7 +9,7 @@ namespace Service;
 public class MemberCleanupServiceTests
 {
     private readonly Mock<IDataManager> _mockDataManager = new();
-    private readonly Mock<ILoggerService> _mockLoggerService = new();
+    private readonly Mock<ICrossCuttingLoggerService> _mockLoggerService = new();
     private readonly MemberCleanupService _memberCleanupService;
 
     public MemberCleanupServiceTests()

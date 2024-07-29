@@ -4,7 +4,7 @@ using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace MembersListFilterStrategy;
 
 public class DeceasedMembersFilterStrategyTests
 {

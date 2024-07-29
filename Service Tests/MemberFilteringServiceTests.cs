@@ -1,15 +1,15 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Interfaces;
-using DBExplorerBlazor.Services;
+using DBExplorerBlazor3.Services.MembersList;
 using Moq;
 
 namespace Service;
 
 public class MemberFilteringServiceTests
 {
-    private readonly Mock<IAllMembersInDBService> _mockAllMembersInDBService = new();
-    private readonly Mock<IAdminRoleFilteringStrategy> _mockAdminRoleFilteringStrategy = new ();
+    private readonly Mock<ICrossCuttingAllMembersInDBService> _mockAllMembersInDBService = new();
     private readonly Mock<IAdministratorAccountsStrategy> _mockAdministratorAccountsStrategy = new();
+    private readonly Mock<IAdminRoleFilteringStrategy> _mockAdminRoleFilteringStrategy = new ();
     private readonly Mock<IBoardMemberRoleFilterStrategy> _mockBoardMemberRoleFilterStrategy = new();
     private readonly Mock<IDeceasedMembersFilterStrategy> _mockDeceasedMembersFilterStrategy = new();
     private readonly Mock<IFirstNameFilterStrategy> _mockFirstNameFilterStrategy = new ();
@@ -20,12 +20,12 @@ public class MemberFilteringServiceTests
     private readonly Mock<ISuperUserRoleFilterStrategy> _mockSuperUserRoleFilterStrategy = new();
     private readonly Mock<ITestAccountFilterStrategy> _mockTestAccountFilterStrategy = new ();
     
-    private MemberFilteringService CreateService()
+    private MembersListFilteringService CreateService()
     {
-        return new MemberFilteringService(
+        return new MembersListFilteringService(
             _mockAllMembersInDBService.Object,
-            _mockAdminRoleFilteringStrategy.Object,
             _mockAdministratorAccountsStrategy.Object,
+            _mockAdminRoleFilteringStrategy.Object,
             _mockBoardMemberRoleFilterStrategy.Object,
             _mockDeceasedMembersFilterStrategy.Object,
             _mockFirstNameFilterStrategy.Object,

@@ -13,7 +13,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     public async Task HandleActionAsync_Calls_InnerHandler()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockInnerHandler = new Mock<IPaymentActionHandler>();
         var decorator = new LoggingPaymentActionHandlerDecorator(mockLogger.Object, mockInnerHandler.Object);
         var args = new ActionEventArgs<PaymentEntity>();
@@ -31,7 +31,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     public async Task HandleActionAsync_Logs_Exceptions()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockInnerHandler = new Mock<IPaymentActionHandler>();
         mockInnerHandler.Setup(i => i.HandleActionAsync(It.IsAny<ActionEventArgs<PaymentEntity>>(), It.IsAny<SfGrid<PaymentEntity>>(), It.IsAny<string>()))
                         .ThrowsAsync(new Exception("Test exception"));
@@ -51,7 +51,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     public void OnValueChange_Calls_InnerHandler()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockInnerHandler = new Mock<IPaymentActionHandler>();
         var decorator = new LoggingPaymentActionHandlerDecorator(mockLogger.Object, mockInnerHandler.Object);
         var args = new ChangeEventArgs<string, DropDownItems>();
@@ -68,7 +68,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     public void OnValueChange_Logs_Exceptions()
     {
         // Arrange
-        var mockLogger = new Mock<ILoggerService>();
+        var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockInnerHandler = new Mock<IPaymentActionHandler>();
         mockInnerHandler.Setup(i => i.OnValueChange(It.IsAny<ChangeEventArgs<string, DropDownItems>>(), ref It.Ref<string>.IsAny))
                         .Throws(new Exception("Test exception"));

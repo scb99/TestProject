@@ -7,7 +7,7 @@ namespace Service;
 
 public class LoggerServiceTests
 {
-    private readonly Mock<IAlertService> _mockAlertService = new();
+    private readonly Mock<ICrossCuttingAlertService> _mockAlertService = new();
     private readonly Mock<ILoggedInMemberService> _mockLoggedInMemberService = new();
     private readonly Mock<ILogToDB> _mockLogToDB = new();
     private readonly LoggerService _loggerService;

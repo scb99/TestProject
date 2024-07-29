@@ -9,14 +9,14 @@ public class MemberPaymentServiceTests
 {
     private readonly Mock<IPaymentsService> _paymentsServiceMock;
     private readonly Mock<IMemberNameService> _memberNameServiceMock;
-    private readonly Mock<ILoggerService> _loggerMock;
+    private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
     private readonly MemberPaymentService _memberPaymentService;
 
     public MemberPaymentServiceTests()
     {
         _paymentsServiceMock = new Mock<IPaymentsService>();
         _memberNameServiceMock = new Mock<IMemberNameService>();
-        _loggerMock = new Mock<ILoggerService>();
+        _loggerMock = new Mock<ICrossCuttingLoggerService>();
 
         _memberPaymentService = new MemberPaymentService(
             _paymentsServiceMock.Object,

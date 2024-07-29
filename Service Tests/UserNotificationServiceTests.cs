@@ -10,8 +10,8 @@ public class UserNotificationServiceTests
     public async Task AlertAsync_CallsAlertServiceWithCorrectMessage()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
-        var mockLoggerService = new Mock<ILoggerService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
+        var mockLoggerService = new Mock<ICrossCuttingLoggerService>();
         var userNotificationService = new UserNotificationService(mockAlertService.Object, mockLoggerService.Object);
         string testMessage = "Test Alert Message";
 
@@ -26,8 +26,8 @@ public class UserNotificationServiceTests
     public async Task LogAsync_CallsLoggerServiceWithCorrectMessage()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
-        var mockLoggerService = new Mock<ILoggerService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
+        var mockLoggerService = new Mock<ICrossCuttingLoggerService>();
         var userNotificationService = new UserNotificationService(mockAlertService.Object, mockLoggerService.Object);
         string testMessage = "Test Log Message";
 

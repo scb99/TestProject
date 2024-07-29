@@ -2,7 +2,7 @@
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace MembersListFilterStrategy;
 
 public class RemoveBadMemberDataRecordsServiceAsyncTests
 {

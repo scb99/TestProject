@@ -8,7 +8,7 @@ namespace MenuItemComponents;
 
 public class PaymentEntitySaveOperationServiceTests
 {
-    private readonly Mock<IAlertService> _mockAlertService = new();
+    private readonly Mock<ICrossCuttingAlertService> _mockAlertService = new();
     private readonly Mock<IPaymentsService> _mockPaymentsService = new();
     private readonly PaymentEntitySaveOperationService _service;
 
@@ -49,7 +49,7 @@ public class PaymentEntitySaveOperationServiceTests
     public void HandleSaveOperation_WhenDataIsDirty_UpdatesPaymentServiceAndCallsOnTitleChanged()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
         var mockPaymentsService = new Mock<IPaymentsService>();
         var paymentEntities = new System.Collections.ObjectModel.ObservableCollection<PaymentEntity>
         {

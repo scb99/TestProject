@@ -1,6 +1,6 @@
 ﻿using DBExplorerBlazor.Services;
 
-namespace Service;
+namespace CrossCuttingConcerns;
 
 public class LoadingStateServiceTests
 {

@@ -6,7 +6,7 @@ using Syncfusion.Blazor.Grids;
 
 namespace MenuItemComponents;
 
-public class ExpiredMembershipsExportTests
+public class ExpiredMembershipsExportServiceTests
 {
     [Fact]
     public async Task ExportDataAsync_CallsPrepareDataForExportAsync_WithCorrectParameters()

@@ -7,13 +7,13 @@ namespace Service;
 
 public class ComboBoxProcessServiceTests
 {
-    private readonly Mock<ILoggerService> _loggerMock;
+    private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
     private readonly Mock<IMembersListProcessingService> _memberProcessingServiceMock;
     private readonly ComboBoxProcessService _comboBoxProcessService;
 
     public ComboBoxProcessServiceTests()
     {
-        _loggerMock = new Mock<ILoggerService>();
+        _loggerMock = new Mock<ICrossCuttingLoggerService>();
         _memberProcessingServiceMock = new Mock<IMembersListProcessingService>();
         _comboBoxProcessService = new ComboBoxProcessService(_loggerMock.Object, _memberProcessingServiceMock.Object);
     }

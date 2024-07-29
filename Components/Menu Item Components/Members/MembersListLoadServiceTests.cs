@@ -11,7 +11,7 @@ public class MembersListLoadServiceTests
     public async Task LoadMembersAsync_CallsShowLoadingPanelAsync()
     {
         // Arrange
-        var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
+        var mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         var mockLoadingPanelService = new Mock<ILoadingPanelService>();
         var service = new MembersListLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
 
@@ -27,7 +27,7 @@ public class MembersListLoadServiceTests
     {
         // Arrange
         var expectedMembers = new List<MemberEntity> { new() { /* Initialize properties as needed */ } };
-        var mockAllMembersInDBService = new Mock<IAllMembersInDBService>();
+        var mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         mockAllMembersInDBService.Setup(s => s.GetAllMembersInDBAsync()).ReturnsAsync(expectedMembers);
         var mockLoadingPanelService = new Mock<ILoadingPanelService>();
         var service = new MembersListLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);

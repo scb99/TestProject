@@ -8,7 +8,7 @@ namespace MenuItemComponents;
 
 public class PaymentsComponentTests
 {
-    private readonly Mock<ILoggerService> mockLogger = new();
+    private readonly Mock<ICrossCuttingLoggerService> mockLogger = new();
     private readonly Mock<IPaymentActionHandler> mockPaymentActionHandler = new();
     private readonly Mock<IPaymentsService> mockPaymentsService = new();
     private readonly Mock<IPaymentToMembershipIDService> mockPaymentToMembershipIDService = new();

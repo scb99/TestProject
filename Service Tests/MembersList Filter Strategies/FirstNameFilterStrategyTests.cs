@@ -1,7 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Services;
 
-namespace Service;
+namespace MembersListFilterStrategy;
 
 public class FirstNameFilterStrategyTests
 {

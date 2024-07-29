@@ -11,7 +11,7 @@ public class MembersListTextBoxProcessingServiceTests
     public async Task ProcessTextBoxInputChangeAsync_ReturnsFilteredMembers()
     {
         // Arrange
-        var mockMemberFilteringService = new Mock<IMemberFilteringService>();
+        var mockMemberFilteringService = new Mock<IMembersListMemberFilteringService>();
         var testValue = "test";
         var testFilterCriteria = "criteria";
         var expectedMembers = new List<MemberEntity>

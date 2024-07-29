@@ -7,7 +7,7 @@ namespace Service;
 
 public class AlertingClipboardHandlerServiceDecoratorTests
 {
-    private readonly Mock<IAlertService> mockAlertService = new();
+    private readonly Mock<ICrossCuttingAlertService> mockAlertService = new();
     private readonly Mock<IClipboardHandler> mockWrappedHandler = new();
     private readonly AlertingClipboardHandlerServiceDecorator decorator;
 

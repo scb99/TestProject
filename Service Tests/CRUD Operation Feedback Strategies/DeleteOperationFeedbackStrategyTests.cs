@@ -2,17 +2,17 @@
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace CRUDOperationFeedbackStrategy;
 
-public class UpdateOperationFeedbackStrategyTests
+public class DeleteOperationFeedbackStrategyTests
 {
     [Fact]
     public async Task ExecuteSuccessAsync_CallsAlertServiceWithSuccessMessage()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
-        var strategy = new UpdateOperationFeedbackStrategy();
-        var successMessage = "Selected record successfully updated in DB!";
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
+        var strategy = new DeleteOperationFeedbackStrategy();
+        var successMessage = "Selected record successfully deleted from DB!";
 
         // Act
         await strategy.ExecuteSuccessAsync(mockAlertService.Object);
@@ -25,9 +25,9 @@ public class UpdateOperationFeedbackStrategyTests
     public async Task ExecuteFailureAsync_CallsAlertServiceWithFailureMessage()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
-        var strategy = new UpdateOperationFeedbackStrategy();
-        var failureMessage = "Selected record was NOT updated in DB!";
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
+        var strategy = new DeleteOperationFeedbackStrategy();
+        var failureMessage = "Selected record was NOT deleted from DB!";
 
         // Act
         await strategy.ExecuteFailureAsync(mockAlertService.Object);

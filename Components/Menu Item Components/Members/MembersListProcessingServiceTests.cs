@@ -11,7 +11,7 @@ public class MembersListProcessingServiceTests
     public async Task ProcessComboBoxChangeAsync_CallsFilterMembersAsync_WithCorrectParameters()
     {
         // Arrange
-        var mockFilteringService = new Mock<IMemberFilteringService>();
+        var mockFilteringService = new Mock<IMembersListMemberFilteringService>();
         var service = new MembersListProcessingService(mockFilteringService.Object);
         string comboBoxValue = "TestValue";
         var expectedMembers = new List<MemberEntity>

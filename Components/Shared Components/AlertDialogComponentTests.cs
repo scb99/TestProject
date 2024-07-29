@@ -10,7 +10,7 @@ public class AlertDialogComponentTests
     public void ComponentSubscribesAndUnsubscribesToAlertServiceOnInitializedAndDispose()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
         var component = new AlertDialogComponent { AlertService = mockAlertService.Object };
 
         // Act
@@ -26,7 +26,7 @@ public class AlertDialogComponentTests
     public async Task OnShowAlertDialogBoxAsync_UpdatesStateToShowDialog()
     {
         // Arrange
-        var mockAlertService = new Mock<IAlertService>();
+        var mockAlertService = new Mock<ICrossCuttingAlertService>();
         var component = new AlertDialogComponent { AlertService = mockAlertService.Object };
         string testMessage = "Test Alert Message";
 
