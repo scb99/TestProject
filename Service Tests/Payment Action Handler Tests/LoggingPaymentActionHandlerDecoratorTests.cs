@@ -5,7 +5,7 @@ using Moq;
 using Syncfusion.Blazor.DropDowns;
 using Syncfusion.Blazor.Grids;
 
-namespace Service;
+namespace PaymentActionHandlerNS;
 
 public class LoggingPaymentActionHandlerDecoratorTests
 {

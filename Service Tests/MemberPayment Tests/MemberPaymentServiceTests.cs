@@ -3,18 +3,18 @@ using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace MemberPayment;
 
 public class MemberPaymentServiceTests
 {
-    private readonly Mock<IPaymentsService> _paymentsServiceMock;
+    private readonly Mock<ICrossCuttingPaymentsService> _paymentsServiceMock;
     private readonly Mock<ICrossCuttingMemberNameService> _memberNameServiceMock;
     private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
     private readonly MemberPaymentService _memberPaymentService;
 
     public MemberPaymentServiceTests()
     {
-        _paymentsServiceMock = new Mock<IPaymentsService>();
+        _paymentsServiceMock = new Mock<ICrossCuttingPaymentsService>();
         _memberNameServiceMock = new Mock<ICrossCuttingMemberNameService>();
         _loggerMock = new Mock<ICrossCuttingLoggerService>();
 

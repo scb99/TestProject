@@ -9,7 +9,7 @@ namespace MenuItemComponents;
 public class PaymentEntitySaveOperationServiceTests
 {
     private readonly Mock<ICrossCuttingAlertService> _mockAlertService = new();
-    private readonly Mock<IPaymentsService> _mockPaymentsService = new();
+    private readonly Mock<ICrossCuttingPaymentsService> _mockPaymentsService = new();
     private readonly PaymentEntitySaveOperationService _service;
 
     public PaymentEntitySaveOperationServiceTests()
@@ -50,7 +50,7 @@ public class PaymentEntitySaveOperationServiceTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var mockPaymentsService = new Mock<IPaymentsService>();
+        var mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
         var paymentEntities = new System.Collections.ObjectModel.ObservableCollection<PaymentEntity>
         {
             new() { Amount = "50", Description = "Initial" }

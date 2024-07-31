@@ -10,14 +10,14 @@ namespace MenuItemComponents
     {
         private readonly Mock<IClipboardHandler> _mockClipboardHandlerService;
         private readonly Mock<ICrossCuttingLoggerService> _mockLoggerService;
-        private readonly Mock<IPaymentsService> _mockPaymentsService;
+        private readonly Mock<ICrossCuttingPaymentsService> _mockPaymentsService;
         private readonly CopyToClipboardInPaymentsComponent _component;
 
         public CopyToClipboardInPaymentsComponentTests()
         {
             _mockClipboardHandlerService = new Mock<IClipboardHandler>();
             _mockLoggerService = new Mock<ICrossCuttingLoggerService>();
-            _mockPaymentsService = new Mock<IPaymentsService>();
+            _mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
 
             _component = new CopyToClipboardInPaymentsComponent
             {

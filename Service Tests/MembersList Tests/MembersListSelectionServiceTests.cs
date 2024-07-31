@@ -13,7 +13,7 @@ public class MembersListSelectionServiceTests
     {
         // Arrange
         var mockDataManager = new Mock<IDataManager>();
-        var mockMemberDetailsService = new Mock<IMemberDetailsService>();
+        var mockMemberDetailsService = new Mock<ICrossCuttingMemberDetailsService>();
         var mockUpdateMemberService = new Mock<ICrossCuttingUpdateMemberService>();
         var memberSelectionService = new MembersListSelectionService(mockDataManager.Object, mockMemberDetailsService.Object, mockUpdateMemberService.Object);
 

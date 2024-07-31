@@ -1,18 +1,18 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Interfaces;
-using DBExplorerBlazor.Services;
+using DBExplorerBlazor3.Services.PaymentTotal;
 using Moq;
 
-namespace MenuItemComponents;
+namespace PaymentTotal;
 
 public class PaymentTotalServiceTests
 {
-    private readonly Mock<IPaymentsService> _mockPaymentsService;
+    private readonly Mock<ICrossCuttingPaymentsService> _mockPaymentsService;
     private readonly PaymentTotalService _paymentTotalService;
 
     public PaymentTotalServiceTests()
     {
-        _mockPaymentsService = new Mock<IPaymentsService>();
+        _mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
         _paymentTotalService = new PaymentTotalService(_mockPaymentsService.Object);
     }
 

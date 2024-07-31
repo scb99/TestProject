@@ -10,8 +10,8 @@ public class PaymentsComponentTests
 {
     private readonly Mock<ICrossCuttingLoggerService> mockLogger = new();
     private readonly Mock<IPaymentActionHandler> mockPaymentActionHandler = new();
-    private readonly Mock<IPaymentsService> mockPaymentsService = new();
-    private readonly Mock<IPaymentToMembershipIDService> mockPaymentToMembershipIDService = new();
+    private readonly Mock<ICrossCuttingPaymentsService> mockPaymentsService = new();
+    private readonly Mock<ICrossCuttingPaymentToMembershipIDService> mockPaymentToMembershipIDService = new();
 
     [Fact]
     public async Task OnActionBeginAsync_CallsHandleActionAsync()
