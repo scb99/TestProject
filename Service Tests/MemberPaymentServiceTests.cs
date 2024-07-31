@@ -8,14 +8,14 @@ namespace Service;
 public class MemberPaymentServiceTests
 {
     private readonly Mock<IPaymentsService> _paymentsServiceMock;
-    private readonly Mock<IMemberNameService> _memberNameServiceMock;
+    private readonly Mock<ICrossCuttingMemberNameService> _memberNameServiceMock;
     private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
     private readonly MemberPaymentService _memberPaymentService;
 
     public MemberPaymentServiceTests()
     {
         _paymentsServiceMock = new Mock<IPaymentsService>();
-        _memberNameServiceMock = new Mock<IMemberNameService>();
+        _memberNameServiceMock = new Mock<ICrossCuttingMemberNameService>();
         _loggerMock = new Mock<ICrossCuttingLoggerService>();
 
         _memberPaymentService = new MemberPaymentService(
