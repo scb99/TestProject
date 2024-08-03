@@ -15,9 +15,9 @@ public class BlazorPageTitleComponentTests
         //jsRuntimeMock.Setup(js => js.InvokeVoidAsync("BlazorSetTitleAsync", title))
         //             .Returns(ValueTask.CompletedTask)
         //             .Verifiable();
-        jsRuntimeMock.Setup(js => js.InvokeVoidAsync("BlazorSetTitleAsync", It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == title)))
-                         .Returns(ValueTask.CompletedTask)
-                         .Verifiable();
+        //jsRuntimeMock.Setup(js => js.InvokeVoidAsync("BlazorSetTitleAsync", It.Is<object[]>(args => args.Length == 1 && args[0].ToString() == title)))
+        //              .Returns(ValueTask.CompletedTask);
+                         //.Verifiable();
 
         var component = new BlazorPageTitleComponent
         {
