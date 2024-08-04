@@ -2,77 +2,68 @@
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
 using Moq;
-using Syncfusion.Blazor.Grids;
 
 namespace MenuItemComponents;
 
 public class FindNewMembersComponentTests
 {
-    private readonly Mock<ICrossCuttingFileNameValidationService> _mockFileNameValidationService;
+    private readonly Mock<IFindNewMembersDataService> _mockDataService;
     private readonly Mock<IFindNewMembersExportService> _mockExportService;
-    private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
+    private readonly Mock<ICrossCuttingLoadingService> _mockLoadingService;
     private readonly FindNewMembersComponent _component;
 
     public FindNewMembersComponentTests()
     {
-        _mockFileNameValidationService = new Mock<ICrossCuttingFileNameValidationService>();
+        _mockDataService = new Mock<IFindNewMembersDataService>();
         _mockExportService = new Mock<IFindNewMembersExportService>();
-        _mockLogger = new Mock<ICrossCuttingLoggerService>();
+        _mockLoadingService = new Mock<ICrossCuttingLoadingService>();
 
         _component = new FindNewMembersComponent
         {
-            FileNameValidationService = _mockFileNameValidationService.Object,
+            FindNewMembersDataService = _mockDataService.Object,
             FindNewMembersExportService = _mockExportService.Object,
-            Logger = _mockLogger.Object,
-            StartDate = DateTime.Now.AddDays(-30),
-            EndDate = DateTime.Now,
-            Now = DateTime.Now,
-            ExcelGrid = new SfGrid<NewMemberEntity>(),
-            NewMemberEntitiesBDP = new List<NewMemberEntity>()
+            LoadingService = _mockLoadingService.Object,
+            StartDate = DateTime.Now.AddDays(-7),
+            EndDate = DateTime.Now
         };
     }
 
     [Fact]
-    public async Task OnClickExportSpreadsheetDataAsync_FileNameInvalid_DoesNotCallExportService()
+    public async Task OnParametersSetAsync_ShouldFetchNewMembers()
     {
         // Arrange
-        var fileName = "invalidFileName";
-        _mockFileNameValidationService.Setup(s => s.ValidateAndAlertAsync(fileName)).ReturnsAsync(false);
+        var newMembers = new List<NewMemberEntity>
+        {
+            new() { ID = 1, Name = "John Doe" },
+            new() { ID = 2, Name = "Jane Smith" }
+        };
+        _mockDataService.Setup(s => s.FetchNewMembersDataAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                        .ReturnsAsync(newMembers);
+        _mockLoadingService.Setup(s => s.ShowSpinnersExecuteHideSpinnersAsync(It.IsAny<Func<Task>>(), It.IsAny<Action<bool>>()))
+                           .Callback<Func<Task>, Action<bool>>((action, onLoadingStateChanged) => action.Invoke());
 
         // Act
-        await _component.OnClickExportSpreadsheetDataAsync(fileName);
+        await _component.OnParametersSet2Async();
 
         // Assert
-        _mockExportService.Verify(s => s.ExportMembersAsync(It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<SfGrid<NewMemberEntity>>(), It.IsAny<List<NewMemberEntity>>()), Times.Never);
+        Assert.Equal(newMembers, _component.NewMemberEntitiesBDP);
+        Assert.Equal($"{newMembers.Count} new member{(newMembers.Count == 1 ? "" : "s")} joined STPC between {_component.StartDate.ToShortDateString()} and {_component.EndDate.ToShortDateString()}", _component.TitleBDP);
     }
 
     [Fact]
-    public async Task OnClickExportSpreadsheetDataAsync_FileNameValid_CallsExportService()
+    public async Task OnClickExportSpreadsheetDataAsync_ShouldCallExportService()
     {
         // Arrange
-        var fileName = "validFileName";
-        _mockFileNameValidationService.Setup(s => s.ValidateAndAlertAsync(fileName)).ReturnsAsync(true);
+        var fileName = "test.xlsx";
+        _component.NewMemberEntitiesBDP = new List<NewMemberEntity>
+        {
+            new() { ID = 1, Name = "John Doe" }
+        };
 
         // Act
         await _component.OnClickExportSpreadsheetDataAsync(fileName);
 
         // Assert
         _mockExportService.Verify(s => s.ExportMembersAsync(fileName, _component.StartDate, _component.EndDate, _component.Now, _component.ExcelGrid, _component.NewMemberEntitiesBDP), Times.Once);
-    }
-
-    [Fact]
-    public async Task OnClickExportSpreadsheetDataAsync_ExceptionThrown_LogsException()
-    {
-        // Arrange
-        var fileName = "validFileName";
-        var exception = new Exception("Test exception");
-        _mockFileNameValidationService.Setup(s => s.ValidateAndAlertAsync(fileName)).ReturnsAsync(true);
-        _mockExportService.Setup(s => s.ExportMembersAsync(fileName, _component.StartDate, _component.EndDate, _component.Now, _component.ExcelGrid, _component.NewMemberEntitiesBDP)).ThrowsAsync(exception);
-
-        // Act
-        await _component.OnClickExportSpreadsheetDataAsync(fileName);
-
-        // Assert
-        _mockLogger.Verify(l => l.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
     }
 }
