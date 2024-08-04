@@ -66,4 +66,48 @@ public class FindNewMembersComponentTests
         // Assert
         _mockExportService.Verify(s => s.ExportMembersAsync(fileName, _component.StartDate, _component.EndDate, _component.Now, _component.ExcelGrid, _component.NewMemberEntitiesBDP), Times.Once);
     }
+
+    [Fact]
+    public async Task OnParametersSetAsync_ShouldFetchNewMembersData2()
+    {
+        // Arrange
+        var newMembers = new List<NewMemberEntity> { new() };
+
+        _mockDataService.Setup(ds => ds.FetchNewMembersDataAsync(_component.StartDate, _component.EndDate))
+            .ReturnsAsync(newMembers);
+
+        _mockLoadingService.Setup(ls => ls.ShowSpinnersExecuteHideSpinnersAsync(It.IsAny<Func<Task>>(), It.IsAny<Action<bool>>()))
+            .Callback<Func<Task>, Action<bool>>(async (func, setLoading) =>
+            {
+                setLoading(true);
+                await func();
+                setLoading(false);
+            });
+
+        // Act
+        await _component.OnParametersSet2Async();
+
+        // Assert
+        Assert.Equal(newMembers, _component.NewMemberEntitiesBDP);
+        Assert.Equal($"{newMembers.Count} new member{(newMembers.Count == 1 ? "" : "s")} joined STPC between {_component.StartDate.ToShortDateString()} and {_component.EndDate.ToShortDateString()}", _component.TitleBDP);
+        Assert.False(_component.LoadingBDP);
+    }
+
+    [Fact]
+    public async Task OnClickExportSpreadsheetDataAsync_ShouldCallExportService2()
+    {
+        // Arrange
+        var fileName = "test.xlsx";
+        var now = DateTime.Now;
+        var newMembers = new List<NewMemberEntity> { new() };
+
+        _component.NewMemberEntitiesBDP = newMembers;
+        _component.Now = now;
+
+        // Act
+        await _component.OnClickExportSpreadsheetDataAsync(fileName);
+
+        // Assert
+        _mockExportService.Verify(es => es.ExportMembersAsync(fileName, _component.StartDate, _component.EndDate, now, _component.ExcelGrid, newMembers), Times.Once);
+    }
 }
