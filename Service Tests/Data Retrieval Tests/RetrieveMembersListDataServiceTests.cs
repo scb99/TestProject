@@ -3,9 +3,9 @@ using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace DataRetrieval;
 
-public class MembersListLoadServiceTests
+public class RetrieveMembersListDataServiceTests
 {
     [Fact]
     public async Task LoadMembersAsync_CallsShowLoadingPanelAsync()
@@ -13,10 +13,10 @@ public class MembersListLoadServiceTests
         // Arrange
         var mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         var mockLoadingPanelService = new Mock<ICrossCuttingLoadingPanelService>();
-        var service = new MembersListLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
+        var service = new RetrieveMembersListDataService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
 
         // Act
-        await service.LoadMembersAsync();
+        await service.RetrieveMembersAsync();
 
         // Assert
         mockLoadingPanelService.Verify(lps => lps.ShowLoadingPanelAsync(), Times.Once);
@@ -30,10 +30,10 @@ public class MembersListLoadServiceTests
         var mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         mockAllMembersInDBService.Setup(s => s.GetAllMembersInDBAsync()).ReturnsAsync(expectedMembers);
         var mockLoadingPanelService = new Mock<ICrossCuttingLoadingPanelService>();
-        var service = new MembersListLoadService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
+        var service = new RetrieveMembersListDataService(mockAllMembersInDBService.Object, mockLoadingPanelService.Object);
 
         // Act
-        var result = await service.LoadMembersAsync();
+        var result = await service.RetrieveMembersAsync();
 
         // Assert
         Assert.Equal(expectedMembers, result);

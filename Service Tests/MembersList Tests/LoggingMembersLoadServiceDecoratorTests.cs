@@ -12,13 +12,13 @@ public class LoggingMembersLoadServiceDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
-        var mockInnerService = new Mock<IMembersListLoadService>();
+        var mockInnerService = new Mock<IRetrieveMembersListDataService>();
         var expectedMembers = new List<MemberEntity> { new() };
-        mockInnerService.Setup(s => s.LoadMembersAsync()).ReturnsAsync(expectedMembers);
+        mockInnerService.Setup(s => s.RetrieveMembersAsync()).ReturnsAsync(expectedMembers);
         var decorator = new LoggingMembersLoadServiceDecorator(mockLogger.Object, mockInnerService.Object);
 
         // Act
-        var result = await decorator.LoadMembersAsync();
+        var result = await decorator.RetrieveMembersAsync();
 
         // Assert
         Assert.Equal(expectedMembers, result);
@@ -30,13 +30,13 @@ public class LoggingMembersLoadServiceDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
-        var mockInnerService = new Mock<IMembersListLoadService>();
+        var mockInnerService = new Mock<IRetrieveMembersListDataService>();
         var exception = new Exception("Test exception");
-        mockInnerService.Setup(s => s.LoadMembersAsync()).ThrowsAsync(exception);
+        mockInnerService.Setup(s => s.RetrieveMembersAsync()).ThrowsAsync(exception);
         var decorator = new LoggingMembersLoadServiceDecorator(mockLogger.Object, mockInnerService.Object);
 
         // Act
-        var result = await decorator.LoadMembersAsync();
+        var result = await decorator.RetrieveMembersAsync();
 
         // Assert
         Assert.Empty(result);

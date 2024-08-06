@@ -10,7 +10,7 @@ namespace MenuItemComponents;
 
 public class ExpiredMembershipsComponentTests
 {
-    private readonly Mock<IExpiredMembershipsLoadDataService> mockLoadDataService = new();
+    private readonly Mock<IRetieveExpiredMembershipsDataService> mockLoadDataService = new();
     private readonly Mock<IExpiredMembershipsExportService> mockExportService = new();
     private readonly Mock<ICrossCuttingLoadingStateService> mockLoadingStateService = new();
     private readonly Mock<ICrossCuttingLoggerService> mockLoggerService = new();
@@ -34,7 +34,7 @@ public class ExpiredMembershipsComponentTests
 
         component = new ExpiredMembershipsComponent
         {
-            ExpiredMembershipsLoadDataService = mockLoadDataService.Object,
+            RetrieveExpiredMembershipsDataService = mockLoadDataService.Object,
             ExpiredMembershipsExportService = mockExportService.Object,
             LoadingStateService = mockLoadingStateService.Object,
             Logger = mockLoggerService.Object,
@@ -48,7 +48,7 @@ public class ExpiredMembershipsComponentTests
     {
         // Arrange
         var expiredMemberships = new List<ExpiredMembershipsEntity> { new(), new() };
-        mockLoadDataService.Setup(s => s.GetExpiredMembershipsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+        mockLoadDataService.Setup(s => s.RetrieveExpiredMembershipsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(expiredMemberships);
         mockGetTitleService.Setup(s => s.GetTitle(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .Returns("Test Title");
@@ -57,7 +57,7 @@ public class ExpiredMembershipsComponentTests
         await component.LoadMembersAndManageUIAsync();
 
         // Assert
-        mockLoadDataService.Verify(s => s.GetExpiredMembershipsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
+        mockLoadDataService.Verify(s => s.RetrieveExpiredMembershipsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
         mockGetTitleService.Verify(s => s.GetTitle(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
         Assert.Equal("Test Title", component.TitleBDP);
         Assert.Equal(2, component.ExpiredMembershipsEntitiesBDP.Count);
@@ -81,7 +81,7 @@ public class ExpiredMembershipsComponentTests
     public async Task LoadingState_IsManagedCorrectly()
     {
         // Arrange
-        mockLoadDataService.Setup(s => s.GetExpiredMembershipsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+        mockLoadDataService.Setup(s => s.RetrieveExpiredMembershipsAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
             .ReturnsAsync(new List<ExpiredMembershipsEntity>());
 
         // Act

@@ -4,19 +4,19 @@ using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace FindNewMembersData;
+namespace DataRetrieval;
 
-public class FindNewMembersDataServiceTests
+public class RetrieveNewMembersDataServiceTests
 {
     private readonly Mock<IDataManager> _mockDataManager;
     private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
-    private readonly FindNewMembersDataService _service;
+    private readonly RetrieveNewMembersDataService _service;
 
-    public FindNewMembersDataServiceTests()
+    public RetrieveNewMembersDataServiceTests()
     {
         _mockDataManager = new Mock<IDataManager>();
         _mockLogger = new Mock<ICrossCuttingLoggerService>();
-        _service = new FindNewMembersDataService(_mockDataManager.Object, _mockLogger.Object);
+        _service = new RetrieveNewMembersDataService(_mockDataManager.Object, _mockLogger.Object);
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class FindNewMembersDataServiceTests
             .ReturnsAsync(newMembers);
 
         // Act
-        var result = await _service.FetchNewMembersDataAsync(startDate, endDate);
+        var result = await _service.RetrieveNewMembersDataAsync(startDate, endDate);
 
         // Assert
         Assert.Equal(newMembers, result);
@@ -50,8 +50,8 @@ public class FindNewMembersDataServiceTests
             .ThrowsAsync(exception);
 
         // Act & Assert
-        var ex = await Assert.ThrowsAsync<Exception>(() => _service.FetchNewMembersDataAsync(startDate, endDate));
+        var ex = await Assert.ThrowsAsync<Exception>(() => _service.RetrieveNewMembersDataAsync(startDate, endDate));
         Assert.Equal(exception, ex);
-        _mockLogger.Verify(l => l.LogExceptionAsync(exception, nameof(_service.FetchNewMembersDataAsync)), Times.Once);
+        _mockLogger.Verify(l => l.LogExceptionAsync(exception, nameof(_service.RetrieveNewMembersDataAsync)), Times.Once);
     }
 }

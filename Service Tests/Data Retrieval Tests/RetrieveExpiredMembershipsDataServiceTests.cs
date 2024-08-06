@@ -3,16 +3,16 @@ using DataAccess.Models;
 using DBExplorerBlazor3.Services.ExpiredMemberships;
 using Moq;
 
-namespace MenuItemComponents;
+namespace DataRetrieval;
 
-public class ExpiredMembershipsLoadDataServiceTests
+public class RetrieveExpiredMembershipsDataServiceTests
 {
     private readonly Mock<IDataManager> mockDataManager = new();
-    private readonly ExpiredMembershipsLoadDataService service;
+    private readonly RetrieveExpiredMembershipsDataService service;
 
-    public ExpiredMembershipsLoadDataServiceTests()
+    public RetrieveExpiredMembershipsDataServiceTests()
     {
-        service = new ExpiredMembershipsLoadDataService(mockDataManager.Object);
+        service = new RetrieveExpiredMembershipsDataService(mockDataManager.Object);
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class ExpiredMembershipsLoadDataServiceTests
         mockDataManager.Setup(m => m.GetExpiredMembershipsSPAsync(startDate, endDate)).ReturnsAsync(expiredMemberships);
 
         // Act
-        var result = await service.GetExpiredMembershipsAsync(startDate, endDate);
+        var result = await service.RetrieveExpiredMembershipsAsync(startDate, endDate);
 
         // Assert
         Assert.Single(result);

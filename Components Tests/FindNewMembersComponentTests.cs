@@ -7,20 +7,20 @@ namespace MenuItemComponents;
 
 public class FindNewMembersComponentTests
 {
-    private readonly Mock<IFindNewMembersDataService> _mockDataService;
+    private readonly Mock<IRetrieveNewMembersDataService> _mockDataService;
     private readonly Mock<IFindNewMembersExportService> _mockExportService;
     private readonly Mock<ICrossCuttingLoadingService> _mockLoadingService;
     private readonly FindNewMembersComponent _component;
 
     public FindNewMembersComponentTests()
     {
-        _mockDataService = new Mock<IFindNewMembersDataService>();
+        _mockDataService = new Mock<IRetrieveNewMembersDataService>();
         _mockExportService = new Mock<IFindNewMembersExportService>();
         _mockLoadingService = new Mock<ICrossCuttingLoadingService>();
 
         _component = new FindNewMembersComponent
         {
-            FindNewMembersDataService = _mockDataService.Object,
+            RetrieveNewMembersDataService = _mockDataService.Object,
             FindNewMembersExportService = _mockExportService.Object,
             LoadingService = _mockLoadingService.Object,
             StartDate = DateTime.Now.AddDays(-7),
@@ -37,7 +37,7 @@ public class FindNewMembersComponentTests
             new() { ID = 1, Name = "John Doe" },
             new() { ID = 2, Name = "Jane Smith" }
         };
-        _mockDataService.Setup(s => s.FetchNewMembersDataAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+        _mockDataService.Setup(s => s.RetrieveNewMembersDataAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>()))
                         .ReturnsAsync(newMembers);
         _mockLoadingService.Setup(s => s.ShowSpinnersExecuteHideSpinnersAsync(It.IsAny<Func<Task>>(), It.IsAny<Action<bool>>()))
                            .Callback<Func<Task>, Action<bool>>((action, onLoadingStateChanged) => action.Invoke());
@@ -73,7 +73,7 @@ public class FindNewMembersComponentTests
         // Arrange
         var newMembers = new List<NewMemberEntity> { new() };
 
-        _mockDataService.Setup(ds => ds.FetchNewMembersDataAsync(_component.StartDate, _component.EndDate))
+        _mockDataService.Setup(ds => ds.RetrieveNewMembersDataAsync(_component.StartDate, _component.EndDate))
             .ReturnsAsync(newMembers);
 
         _mockLoadingService.Setup(ls => ls.ShowSpinnersExecuteHideSpinnersAsync(It.IsAny<Func<Task>>(), It.IsAny<Action<bool>>()))
