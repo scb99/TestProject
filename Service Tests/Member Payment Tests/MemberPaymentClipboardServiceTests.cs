@@ -89,12 +89,3 @@ public class MemberPaymentClipboardServiceTests
         _mockAlertService.Verify(a => a.AlertUsingFallingMessageBoxAsync("Added \"Item1\" to Clipboard!"), Times.Once);
     }
 }
-
-// Mock PaymentEntity class for testing purposes
-//public class PaymentEntity
-//{
-//    public int ID { get; set; }
-//    public string? Description { get; set; }
-//    public string? FirstName { get; set; }
-//    public string? LastName { get; set; }
-//}
