@@ -7,13 +7,13 @@ namespace MemberPayment;
 public class RemoveAllPaymentsServiceTests
 {
     private readonly Mock<ICrossCuttingPaymentsService> _paymentsServiceMock;
-    private readonly Mock<ILoggerService> _loggerMock;
+    private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
     private readonly RemoveAllPaymentsService _removeAllPaymentsService;
 
     public RemoveAllPaymentsServiceTests()
     {
         _paymentsServiceMock = new Mock<ICrossCuttingPaymentsService>();
-        _loggerMock = new Mock<ILoggerService>();
+        _loggerMock = new Mock<ICrossCuttingLoggerService>();
         _removeAllPaymentsService = new RemoveAllPaymentsService(_paymentsServiceMock.Object, _loggerMock.Object);
     }
 
