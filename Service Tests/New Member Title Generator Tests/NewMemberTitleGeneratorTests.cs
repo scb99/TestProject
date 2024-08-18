@@ -8,7 +8,7 @@ public class NewMemberTitleGeneratorTests
     public void GenerateNewMemberTitle_ReturnsCorrectTitle(int logCount, string startDate, string endDate, string expectedTitle)
     {
         // Arrange
-        var generator = new DBExplorerBlazor.Services.NewMemberTitleGenerator();
+        var generator = new DBExplorerBlazor.Services.NewMemberTitleGeneratorService();
         var start = DateTime.Parse(startDate);
         var end = DateTime.Parse(endDate);
 

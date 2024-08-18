@@ -14,7 +14,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
-        var mockInnerHandler = new Mock<IPaymentActionHandler>();
+        var mockInnerHandler = new Mock<IPaymentActionHandlerService>();
         var decorator = new LoggingPaymentActionHandlerDecorator(mockLogger.Object, mockInnerHandler.Object);
         var args = new ActionEventArgs<PaymentEntity>();
         var grid = new SfGrid<PaymentEntity>();
@@ -32,7 +32,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
-        var mockInnerHandler = new Mock<IPaymentActionHandler>();
+        var mockInnerHandler = new Mock<IPaymentActionHandlerService>();
         mockInnerHandler.Setup(i => i.HandleActionAsync(It.IsAny<ActionEventArgs<PaymentEntity>>(), It.IsAny<SfGrid<PaymentEntity>>(), It.IsAny<string>()))
                         .ThrowsAsync(new Exception("Test exception"));
         var decorator = new LoggingPaymentActionHandlerDecorator(mockLogger.Object, mockInnerHandler.Object);
@@ -52,7 +52,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
-        var mockInnerHandler = new Mock<IPaymentActionHandler>();
+        var mockInnerHandler = new Mock<IPaymentActionHandlerService>();
         var decorator = new LoggingPaymentActionHandlerDecorator(mockLogger.Object, mockInnerHandler.Object);
         var args = new ChangeEventArgs<string, DropDownItems>();
         string amount = "100";
@@ -69,7 +69,7 @@ public class LoggingPaymentActionHandlerDecoratorTests
     {
         // Arrange
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
-        var mockInnerHandler = new Mock<IPaymentActionHandler>();
+        var mockInnerHandler = new Mock<IPaymentActionHandlerService>();
         mockInnerHandler.Setup(i => i.OnValueChange(It.IsAny<ChangeEventArgs<string, DropDownItems>>(), ref It.Ref<string>.IsAny))
                         .Throws(new Exception("Test exception"));
         var decorator = new LoggingPaymentActionHandlerDecorator(mockLogger.Object, mockInnerHandler.Object);

@@ -10,7 +10,7 @@ public class LogsComponentTests
     private readonly Mock<ICrossCuttingLoadingPanelService> _loadingPanelServiceMock;
     private readonly Mock<ILogEntryFetcher> _logEntryFetcherMock;
     private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
-    private readonly Mock<INewMemberTitleGenerator> _newMemberTitleGeneratorMock;
+    private readonly Mock<INewMemberTitleGeneratorService> _newMemberTitleGeneratorMock;
     private readonly LogsComponent _component;
 
     public LogsComponentTests()
@@ -18,7 +18,7 @@ public class LogsComponentTests
         _loadingPanelServiceMock = new Mock<ICrossCuttingLoadingPanelService>();
         _logEntryFetcherMock = new Mock<ILogEntryFetcher>();
         _loggerMock = new Mock<ICrossCuttingLoggerService>();
-        _newMemberTitleGeneratorMock = new Mock<INewMemberTitleGenerator>();
+        _newMemberTitleGeneratorMock = new Mock<INewMemberTitleGeneratorService>();
 
         _component = new LogsComponent
         {
