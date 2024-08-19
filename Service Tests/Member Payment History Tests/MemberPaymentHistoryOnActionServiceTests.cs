@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
@@ -9,7 +10,7 @@ namespace MemberPaymentHistory;
 
 public class MemberPaymentHistoryOnActionServiceTests
 {
-    private readonly Mock<ICrossCuttingAlertService> _mockShow;
+    private readonly Mock<ICrossCuttingAlertService> _mockAlertService;
     private readonly Mock<ICrossCuttingAllMembersInDBService> _mockAllMembersInDBService;
     private readonly Mock<IDataManager> _mockDataManager;
     private readonly Mock<ICrossCuttingDBOperationService> _mockDBOperationService;
@@ -17,11 +18,15 @@ public class MemberPaymentHistoryOnActionServiceTests
     private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
     private readonly Mock<ICrossCuttingMemberNameService> _mockMemberNameService;
     private readonly Mock<ICrossCuttingSystemTimeService> _mockSystemTimeService;
+    private readonly Mock<IGetSubscriptionsByID> _mockGetSubscriptionsByID;
+    private readonly Mock<IUpdateSubscriptionNextPaymentDate> _mockUpdateSubscriptionNextPaymentDate;
+    private readonly Mock<IUpdatePaymentDetail> _mockUpdatePaymentDetail;
+
     private readonly MemberPaymentHistoryOnActionService _service;
 
     public MemberPaymentHistoryOnActionServiceTests()
     {
-        _mockShow = new Mock<ICrossCuttingAlertService>();
+        _mockAlertService = new Mock<ICrossCuttingAlertService>();
         _mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
         _mockDataManager = new Mock<IDataManager>();
         _mockDBOperationService = new Mock<ICrossCuttingDBOperationService>();
@@ -29,28 +34,34 @@ public class MemberPaymentHistoryOnActionServiceTests
         _mockLogger = new Mock<ICrossCuttingLoggerService>();
         _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
         _mockSystemTimeService = new Mock<ICrossCuttingSystemTimeService>();
+        _mockGetSubscriptionsByID = new Mock<IGetSubscriptionsByID>();
+        _mockUpdateSubscriptionNextPaymentDate = new Mock<IUpdateSubscriptionNextPaymentDate>();
+        _mockUpdatePaymentDetail = new Mock<IUpdatePaymentDetail>();
 
         _service = new MemberPaymentHistoryOnActionService(
-            _mockShow.Object,
+            _mockAlertService.Object,
             _mockAllMembersInDBService.Object,
             _mockDataManager.Object,
             _mockDBOperationService.Object,
             _mockLoggedInMemberService.Object,
             _mockLogger.Object,
             _mockMemberNameService.Object,
-            _mockSystemTimeService.Object);
+            _mockSystemTimeService.Object,
+            _mockGetSubscriptionsByID.Object,
+            _mockUpdateSubscriptionNextPaymentDate.Object,
+            _mockUpdatePaymentDetail.Object);
     }
 
     [Fact]
-    public async Task OnActionBeginAsync_AddOperation_ShouldPrepareForAdd()
+    public async Task OnActionBeginAsync_AddOperation_PreparesForAdd()
     {
         // Arrange
         var arg = new ActionEventArgs<PaymentHistoryDetailEntity> { RequestType = Syncfusion.Blazor.Grids.Action.Add, Data = new PaymentHistoryDetailEntity() };
-        var selectedID = 1;
+        int selectedID = 1;
         var paymentToMembershipId = new Dictionary<string, int>();
         var paymentHistoryDetailEntitiesBDP = new List<PaymentHistoryDetailEntity>();
-        var titleBDP = "Title";
-        var totalRowCount = 0;
+        string titleBDP = "Test Title";
+        int totalRowCount = 0;
 
         _mockSystemTimeService.Setup(s => s.Now).Returns(DateTime.Now);
 
@@ -67,19 +78,19 @@ public class MemberPaymentHistoryOnActionServiceTests
     }
 
     [Fact]
-    public async Task OnActionBeginAsync_DeleteOperation_ShouldHandleDelete()
+    public async Task OnActionBeginAsync_DeleteOperation_DeletesRecord()
     {
         // Arrange
         var arg = new ActionEventArgs<PaymentHistoryDetailEntity> { RequestType = Syncfusion.Blazor.Grids.Action.Delete, Data = new PaymentHistoryDetailEntity { ID = 1, UserID = 1, MembershipID = 1, Status = "active", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1) } };
-        var selectedID = 1;
+        int selectedID = 1;
         var paymentToMembershipId = new Dictionary<string, int>();
         var paymentHistoryDetailEntitiesBDP = new List<PaymentHistoryDetailEntity>();
-        var titleBDP = "Title";
-        var totalRowCount = 0;
+        string titleBDP = "Test Title";
+        int totalRowCount = 0;
 
         _mockLoggedInMemberService.Setup(s => s.MemberRole).Returns("SuperUser");
         _mockDataManager.Setup(d => d.DeletePaymentDetailAsync(It.IsAny<int>())).ReturnsAsync(true);
-        _mockAllMembersInDBService.Setup(a => a.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "John Doe" } });
+        _mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test User" } });
 
         // Act
         var result = await _service.OnActionBeginAsync(arg, selectedID, paymentToMembershipId, paymentHistoryDetailEntitiesBDP, titleBDP, totalRowCount);
@@ -90,19 +101,19 @@ public class MemberPaymentHistoryOnActionServiceTests
     }
 
     [Fact]
-    public async Task OnActionBeginAsync_SaveOperation_ShouldHandleSave()
+    public async Task OnActionBeginAsync_SaveOperation_CreatesRecord()
     {
         // Arrange
-        var arg = new ActionEventArgs<PaymentHistoryDetailEntity> { RequestType = Syncfusion.Blazor.Grids.Action.Save, Data = new PaymentHistoryDetailEntity { ID = 0, UserID = 1, InitialPaymentString = "30", MembershipID = 1, Status = "active", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1) } };
-        var selectedID = 1;
-        var paymentToMembershipId = new Dictionary<string, int> { { "30", 1 } };
+        var arg = new ActionEventArgs<PaymentHistoryDetailEntity> { RequestType = Syncfusion.Blazor.Grids.Action.Save, Data = new PaymentHistoryDetailEntity { ID = 0, UserID = 1, MembershipID = 1, Status = "active", StartDate = DateTime.Now, EndDate = DateTime.Now.AddYears(1), InitialPaymentString = "30" } };
+        int selectedID = 1;
+        var paymentToMembershipId = new Dictionary<string, int>();
         var paymentHistoryDetailEntitiesBDP = new List<PaymentHistoryDetailEntity>();
-        var titleBDP = "Title";
-        var totalRowCount = 0;
+        string titleBDP = "Test Title";
+        int totalRowCount = 0;
 
         _mockDataManager.Setup(d => d.CreatePaymentDetailSPAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(true);
         _mockDataManager.Setup(d => d.GetLastPaymentIDSPAsync(It.IsAny<int>())).ReturnsAsync(1);
-        _mockAllMembersInDBService.Setup(a => a.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "John Doe" } });
+        _mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test User" } });
 
         // Act
         var result = await _service.OnActionBeginAsync(arg, selectedID, paymentToMembershipId, paymentHistoryDetailEntitiesBDP, titleBDP, totalRowCount);
