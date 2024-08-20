@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
@@ -7,11 +7,11 @@ namespace CrossCuttingConcerns;
 
 public class AllMembersInDBServiceTests
 {
-    private readonly Mock<IDataManager> _dataManagerMock = new();
+    private readonly Mock<IGetAllMembers> _getAllMembersMock = new();
     private readonly AllMembersInDBService _allMembersInDBService;
 
     public AllMembersInDBServiceTests() 
-        => _allMembersInDBService = new AllMembersInDBService(_dataManagerMock.Object);
+        => _allMembersInDBService = new AllMembersInDBService(_getAllMembersMock.Object);
 
     [Fact]
     public async Task GetAllMembersInDBAsync_ReturnsMembers_WhenCacheIsNull()
@@ -22,7 +22,7 @@ public class AllMembersInDBServiceTests
             new() { ID = 1, Name = "John Doe" },
             new() { ID = 2, Name = "Jane Doe" }
         };
-        _dataManagerMock.Setup(dm => dm.GetAllMembersSPAsync()).ReturnsAsync(expectedMembers);
+        _getAllMembersMock.Setup(dm => dm.GetAllMembersSPAsync()).ReturnsAsync(expectedMembers);
 
         // Act
         var result = await _allMembersInDBService.GetAllMembersInDBAsync();
@@ -30,7 +30,7 @@ public class AllMembersInDBServiceTests
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
         Assert.Equal(expectedMembers, result);
-        _dataManagerMock.Verify(dm => dm.GetAllMembersSPAsync(), Times.Once);
+        _getAllMembersMock.Verify(dm => dm.GetAllMembersSPAsync(), Times.Once);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class AllMembersInDBServiceTests
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
         Assert.Equal(expectedMembers, result);
-        _dataManagerMock.Verify(dm => dm.GetAllMembersSPAsync(), Times.Never); // Verify that the database is not hit again
+        _getAllMembersMock.Verify(dm => dm.GetAllMembersSPAsync(), Times.Never); // Verify that the database is not hit again
     }
 
     [Fact]

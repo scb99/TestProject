@@ -18,6 +18,8 @@ public class MemberPaymentHistoryOnActionServiceTests
     private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
     private readonly Mock<ICrossCuttingMemberNameService> _mockMemberNameService;
     private readonly Mock<ICrossCuttingSystemTimeService> _mockSystemTimeService;
+    private readonly Mock<ICreatePaymentDetail> _mockCreatePaymentDetail;
+    private readonly Mock<IDeletePaymentDetail> _mockDeletePaymentDetail;
     private readonly Mock<IGetSubscriptionsByID> _mockGetSubscriptionsByID;
     private readonly Mock<IUpdateSubscriptionNextPaymentDate> _mockUpdateSubscriptionNextPaymentDate;
     private readonly Mock<IUpdatePaymentDetail> _mockUpdatePaymentDetail;
@@ -28,12 +30,14 @@ public class MemberPaymentHistoryOnActionServiceTests
     {
         _mockAlertService = new Mock<ICrossCuttingAlertService>();
         _mockAllMembersInDBService = new Mock<ICrossCuttingAllMembersInDBService>();
-        _mockDataManager = new Mock<IDataManager>();
+        _mockDataManager = new Mock<DataAccess.IDataManager>();
         _mockDBOperationService = new Mock<ICrossCuttingDBOperationService>();
         _mockLoggedInMemberService = new Mock<ICrossCuttingLoggedInMemberService>();
         _mockLogger = new Mock<ICrossCuttingLoggerService>();
         _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
         _mockSystemTimeService = new Mock<ICrossCuttingSystemTimeService>();
+        _mockCreatePaymentDetail = new Mock<ICreatePaymentDetail>();
+        _mockDeletePaymentDetail = new Mock<IDeletePaymentDetail>();
         _mockGetSubscriptionsByID = new Mock<IGetSubscriptionsByID>();
         _mockUpdateSubscriptionNextPaymentDate = new Mock<IUpdateSubscriptionNextPaymentDate>();
         _mockUpdatePaymentDetail = new Mock<IUpdatePaymentDetail>();
@@ -47,6 +51,8 @@ public class MemberPaymentHistoryOnActionServiceTests
             _mockLogger.Object,
             _mockMemberNameService.Object,
             _mockSystemTimeService.Object,
+            _mockCreatePaymentDetail.Object,
+            _mockDeletePaymentDetail.Object,
             _mockGetSubscriptionsByID.Object,
             _mockUpdateSubscriptionNextPaymentDate.Object,
             _mockUpdatePaymentDetail.Object);
@@ -89,14 +95,15 @@ public class MemberPaymentHistoryOnActionServiceTests
         int totalRowCount = 0;
 
         _mockLoggedInMemberService.Setup(s => s.MemberRole).Returns("SuperUser");
-        _mockDataManager.Setup(d => d.DeletePaymentDetailAsync(It.IsAny<int>())).ReturnsAsync(true);
+        _mockDeletePaymentDetail.Setup(d => d.DeletePaymentDetailAsync(It.IsAny<int>())).ReturnsAsync(true);
+        //_mockDataManager.Setup(d => d.DeletePaymentDetailAsync(It.IsAny<int>())).ReturnsAsync(true);
         _mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test User" } });
 
         // Act
         var result = await _service.OnActionBeginAsync(arg, selectedID, paymentToMembershipId, paymentHistoryDetailEntitiesBDP, titleBDP, totalRowCount);
 
         // Assert
-        _mockDataManager.Verify(d => d.DeletePaymentDetailAsync(It.IsAny<int>()), Times.Once);
+        _mockDeletePaymentDetail.Verify(d => d.DeletePaymentDetailAsync(It.IsAny<int>()), Times.Once);
         _mockLogger.Verify(l => l.LogResultAsync(It.IsAny<string>()), Times.Once);
     }
 
@@ -111,7 +118,7 @@ public class MemberPaymentHistoryOnActionServiceTests
         string titleBDP = "Test Title";
         int totalRowCount = 0;
 
-        _mockDataManager.Setup(d => d.CreatePaymentDetailSPAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(true);
+        _mockCreatePaymentDetail.Setup(d => d.CreatePaymentDetailSPAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(true);
         _mockDataManager.Setup(d => d.GetLastPaymentIDSPAsync(It.IsAny<int>())).ReturnsAsync(1);
         _mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test User" } });
 
@@ -119,7 +126,7 @@ public class MemberPaymentHistoryOnActionServiceTests
         var result = await _service.OnActionBeginAsync(arg, selectedID, paymentToMembershipId, paymentHistoryDetailEntitiesBDP, titleBDP, totalRowCount);
 
         // Assert
-        _mockDataManager.Verify(d => d.CreatePaymentDetailSPAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
+        _mockCreatePaymentDetail.Verify(d => d.CreatePaymentDetailSPAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()), Times.Once);
         _mockLogger.Verify(l => l.LogResultAsync(It.IsAny<string>()), Times.Once);
     }
 }

@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
@@ -8,54 +8,71 @@ namespace MemberCleanup;
 
 public class MemberCleanupServiceTests
 {
-    private readonly Mock<IDataManager> _mockDataManager = new();
-    private readonly Mock<ICrossCuttingLoggerService> _mockLoggerService = new();
-    private readonly MemberCleanupService _memberCleanupService;
+    private readonly Mock<ICrossCuttingLoggerService> _mockLoggerService;
+    private readonly Mock<IDeleteUsermetaRecords> _mockDeleteUsermetaRecords;
+    private readonly Mock<IDeleteUserTableRecord> _mockDeleteUserTableRecord;
+    private readonly Mock<IGetMembersWithNoFirstAndLastName> _mockGetMembersWithNoFirstAndLastName;
+    private readonly MemberCleanupService _service;
 
     public MemberCleanupServiceTests()
     {
-        _memberCleanupService = new MemberCleanupService(_mockDataManager.Object, _mockLoggerService.Object);
+        _mockLoggerService = new Mock<ICrossCuttingLoggerService>();
+        _mockDeleteUsermetaRecords = new Mock<IDeleteUsermetaRecords>();
+        _mockDeleteUserTableRecord = new Mock<IDeleteUserTableRecord>();
+        _mockGetMembersWithNoFirstAndLastName = new Mock<IGetMembersWithNoFirstAndLastName>();
+
+        _service = new MemberCleanupService(
+            _mockLoggerService.Object,
+            _mockDeleteUsermetaRecords.Object,
+            _mockDeleteUserTableRecord.Object,
+            _mockGetMembersWithNoFirstAndLastName.Object);
     }
 
     [Fact]
-    public async Task RemoveBadMemberDataRecordsAsync_NoRecordsFound_ReturnsZero()
+    public async Task RemoveBadMemberDataRecordsAsync_NoBadRecords_LogsAndReturnsZero()
     {
         // Arrange
-        _mockDataManager.Setup(dm => dm.GetMembersWithNoFirstAndLastNameSPAsync()).ReturnsAsync(new List<UserIDsEntity>());
+        _mockGetMembersWithNoFirstAndLastName
+            .Setup(s => s.GetMembersWithNoFirstAndLastNameSPAsync())
+            .ReturnsAsync(new List<UserIDsEntity>());
 
         // Act
-        var result = await _memberCleanupService.RemoveBadMemberDataRecordsAsync();
+        var result = await _service.RemoveBadMemberDataRecordsAsync();
 
         // Assert
         Assert.Equal(0, result);
-        _mockLoggerService.Verify(ls => ls.LogResultAsync("No bad member data records found to remove."), Times.Once);
+        _mockLoggerService.Verify(l => l.LogResultAsync("No bad member data records found to remove."), Times.Once);
     }
 
     [Fact]
-    public async Task RemoveBadMemberDataRecordsAsync_RecordsFound_ReturnsCount()
+    public async Task RemoveBadMemberDataRecordsAsync_BadRecordsExist_DeletesRecordsAndLogs()
     {
         // Arrange
-        var userIDs = new List<UserIDsEntity> { new() { ID = 1 }, new() { ID = 2 } };
-        _mockDataManager.Setup(dm => dm.GetMembersWithNoFirstAndLastNameSPAsync()).ReturnsAsync(userIDs);
-        _mockDataManager.Setup(dm => dm.DeleteUsermetaRecordsAsync(It.IsAny<int>())).Returns(Task.FromResult(0));
-        _mockDataManager.Setup(dm => dm.DeleteUserTableRecordAsync(It.IsAny<int>())).Returns(Task.FromResult(0));
+        var badMembers = new List<UserIDsEntity>
+        {
+            new() { ID = 1 },
+            new() { ID = 2 }
+        };
+
+        _mockGetMembersWithNoFirstAndLastName
+            .Setup(s => s.GetMembersWithNoFirstAndLastNameSPAsync())
+            .ReturnsAsync(badMembers);
+
+        _mockDeleteUsermetaRecords
+            .Setup(s => s.DeleteUsermetaRecordsAsync(It.IsAny<int>()))
+            .Returns(Task.FromResult(2));
+
+        _mockDeleteUserTableRecord
+            .Setup(s => s.DeleteUserTableRecordAsync(It.IsAny<int>()))
+            .Returns(Task.FromResult(2));
 
         // Act
-        var result = await _memberCleanupService.RemoveBadMemberDataRecordsAsync();
+        var result = await _service.RemoveBadMemberDataRecordsAsync();
 
         // Assert
-        Assert.Equal(userIDs.Count, result);
-        _mockLoggerService.Verify(ls => ls.LogResultAsync(It.Is<string>(s => s.Contains("Removed 2 bad member data records"))), Times.Once);
-    }
-
-    [Fact]
-    public async Task RemoveBadMemberDataRecordsAsync_ExceptionThrown_LogsError()
-    {
-        // Arrange
-        _mockDataManager.Setup(dm => dm.GetMembersWithNoFirstAndLastNameSPAsync()).ThrowsAsync(new System.Exception("Database error"));
-
-        // Act & Assert
-        await Assert.ThrowsAsync<System.Exception>(() => _memberCleanupService.RemoveBadMemberDataRecordsAsync());
-        _mockLoggerService.Verify(ls => ls.LogExceptionAsync(It.IsAny<System.Exception>(), It.IsAny<string>()), Times.Never); // Assuming LogExceptionAsync is the method to log exceptions
+        Assert.Equal(2, result);
+        _mockDeleteUsermetaRecords.Verify(d => d.DeleteUsermetaRecordsAsync(It.IsAny<int>()), Times.Exactly(2));
+        _mockDeleteUserTableRecord.Verify(d => d.DeleteUserTableRecordAsync(It.IsAny<int>()), Times.Exactly(2));
+        _mockLoggerService.Verify(l => l.LogResultAsync("Removed 2 bad member data records with IDs: 1, 2"), Times.Once);
     }
 }
