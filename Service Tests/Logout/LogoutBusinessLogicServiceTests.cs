@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
@@ -17,17 +18,18 @@ public class LogoutBusinessLogicServiceTests
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
         var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
+        var mockGetMembersWithMultipleActiveRecords = new Mock<IGetMembersWithMultipleActiveRecords>();
 
         mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("SuperUser");
-        mockDataManager.Setup(manager => manager.GetMembersWithMultipleActiveRecordsSPAsync())
+        mockGetMembersWithMultipleActiveRecords.Setup(manager => manager.GetMembersWithMultipleActiveRecordsSPAsync())
             .ReturnsAsync(new List<MemberEntity> { new(), new() });
 
         var service = new LogoutBusinessLogicService(
-            mockDataManager.Object,
             mockLoggedInMemberService.Object,
             mockLogger.Object,
             mockMemberIDService.Object,
-            mockMemberNameService.Object
+            mockMemberNameService.Object,
+            mockGetMembersWithMultipleActiveRecords.Object
         );
 
         // Act
@@ -41,22 +43,22 @@ public class LogoutBusinessLogicServiceTests
     public async Task CanLogoutAsync_SuperUserWithNoMultipleActiveRecords_ReturnsTrue()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
         var mockLoggedInMemberService = new Mock<ICrossCuttingLoggedInMemberService>();
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
         var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
+        var mockGetMembersWithMultipleActiveRecords = new Mock<IGetMembersWithMultipleActiveRecords>();
 
         mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("SuperUser");
-        mockDataManager.Setup(manager => manager.GetMembersWithMultipleActiveRecordsSPAsync())
+        mockGetMembersWithMultipleActiveRecords.Setup(manager => manager.GetMembersWithMultipleActiveRecordsSPAsync())
             .ReturnsAsync(new List<MemberEntity>());
 
         var service = new LogoutBusinessLogicService(
-            mockDataManager.Object,
             mockLoggedInMemberService.Object,
             mockLogger.Object,
             mockMemberIDService.Object,
-            mockMemberNameService.Object
+            mockMemberNameService.Object,
+            mockGetMembersWithMultipleActiveRecords.Object
         );
 
         // Act
@@ -70,20 +72,20 @@ public class LogoutBusinessLogicServiceTests
     public async Task CanLogoutAsync_NonSuperUser_ReturnsTrue()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
         var mockLoggedInMemberService = new Mock<ICrossCuttingLoggedInMemberService>();
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
         var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
+        var mockGetMembersWithMultipleActiveRecords = new Mock<IGetMembersWithMultipleActiveRecords>();
 
         mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("RegularUser");
 
         var service = new LogoutBusinessLogicService(
-            mockDataManager.Object,
             mockLoggedInMemberService.Object,
             mockLogger.Object,
             mockMemberIDService.Object,
-            mockMemberNameService.Object
+            mockMemberNameService.Object,
+            mockGetMembersWithMultipleActiveRecords.Object
         );
 
         // Act

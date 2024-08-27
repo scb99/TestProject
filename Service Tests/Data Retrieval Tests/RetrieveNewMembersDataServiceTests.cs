@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
@@ -8,15 +8,15 @@ namespace DataRetrieval;
 
 public class RetrieveNewMembersDataServiceTests
 {
-    private readonly Mock<IDataManager> _mockDataManager;
+    private readonly Mock<IGetNewMembers> _mockDataManager;
     private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
     private readonly RetrieveNewMembersDataService _service;
 
     public RetrieveNewMembersDataServiceTests()
     {
-        _mockDataManager = new Mock<IDataManager>();
         _mockLogger = new Mock<ICrossCuttingLoggerService>();
-        _service = new RetrieveNewMembersDataService(_mockDataManager.Object, _mockLogger.Object);
+        _mockDataManager = new Mock<IGetNewMembers>();
+        _service = new RetrieveNewMembersDataService(_mockLogger.Object, _mockDataManager.Object);
     }
 
     [Fact]

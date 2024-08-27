@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
@@ -7,12 +7,12 @@ namespace CrossCuttingConcerns;
 
 public class PaymentToMembershipIDServiceTests
 {
-    private readonly Mock<IDataManager> _dataManagerMock;
+    private readonly Mock<IGetPaymentToMembershipID> _dataManagerMock;
     private readonly PaymentToMembershipIDService _service;
 
     public PaymentToMembershipIDServiceTests()
     {
-        _dataManagerMock = new Mock<IDataManager>();
+        _dataManagerMock = new Mock<IGetPaymentToMembershipID>();
         _service = new PaymentToMembershipIDService(_dataManagerMock.Object);
     }
 

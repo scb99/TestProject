@@ -1,5 +1,7 @@
 ﻿using DataAccess;
 using DataAccess.Models;
+using DataAccessCommands.Commands;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
@@ -11,8 +13,8 @@ public class LogFetcherServiceTests
     public async Task FetchLogEntriesAsync_CallsDataManagerWithCorrectParameters()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
-        var service = new LogFetcherService(mockDataManager.Object);
+        var mockGetLogEntries = new Mock<IGetLogEntries>();
+        var service = new LogFetcherService(mockGetLogEntries.Object);
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = DateTime.Now;
         var expectedLogEntries = new List<LogEntryEntity>
@@ -20,7 +22,7 @@ public class LogFetcherServiceTests
             new() { /* Initialize properties as needed */ }
         };
 
-        mockDataManager.Setup(dm => dm.GetLogEntriesSPAsync(startDate, endDate))
+        mockGetLogEntries.Setup(dm => dm.GetLogEntriesSPAsync(startDate, endDate))
                        .ReturnsAsync(expectedLogEntries)
                        .Verifiable("DataManager was not called with the correct parameters.");
 
@@ -28,7 +30,7 @@ public class LogFetcherServiceTests
         var result = await service.FetchLogEntriesAsync(startDate, endDate);
 
         // Assert
-        mockDataManager.Verify(); // Verifies that IDataManager.GetLogEntriesSPAsync was called with the specified parameters
+        mockGetLogEntries.Verify(); // Verifies that IDataManager.GetLogEntriesSPAsync was called with the specified parameters
         Assert.Equal(expectedLogEntries, result); // Asserts that the method returns the expected result
     }
 
@@ -36,12 +38,12 @@ public class LogFetcherServiceTests
     public async Task FetchLogEntriesAsync_ReturnsEmptyListWhenNoLogsFound()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
-        var service = new LogFetcherService(mockDataManager.Object);
+        var mockGetLogEntries = new Mock<IGetLogEntries>();
+        var service = new LogFetcherService(mockGetLogEntries.Object);
         var startDate = DateTime.Now.AddDays(-1);
         var endDate = DateTime.Now;
 
-        mockDataManager.Setup(dm => dm.GetLogEntriesSPAsync(startDate, endDate))
+        mockGetLogEntries.Setup(dm => dm.GetLogEntriesSPAsync(startDate, endDate))
                        .ReturnsAsync(new List<LogEntryEntity>());
 
         // Act

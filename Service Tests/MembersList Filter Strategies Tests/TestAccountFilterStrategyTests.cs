@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
@@ -11,7 +11,7 @@ public class TestAccountFilterStrategyTests
     public async Task FilterAsync_ReturnsTestAccountMembers()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
+        var mockDataManager = new Mock<IGetMembersByMetaKeyAndMetaValue>();
         var expectedMembers = new List<MemberEntity>
         {
             new() { ID = 1, Name = "TestUser1" },
@@ -35,7 +35,7 @@ public class TestAccountFilterStrategyTests
     public async Task FilterAsync_ReturnsEmptyList_WhenNoTestAccountMembers()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
+        var mockDataManager = new Mock<IGetMembersByMetaKeyAndMetaValue>();
         var expectedMembers = new List<MemberEntity>();
 
         mockDataManager

@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
@@ -8,7 +8,7 @@ namespace MembersListFilterStrategy;
 
 public class DeceasedMembersFilterStrategyTests
 {
-    private readonly Mock<IDataManager> _mockDataManager = new();
+    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _mockDataManager = new();
     private readonly IDeceasedMembersFilterStrategy _filterStrategy;
 
     public DeceasedMembersFilterStrategyTests() 

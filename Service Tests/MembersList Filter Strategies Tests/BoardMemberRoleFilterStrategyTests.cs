@@ -1,5 +1,5 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
@@ -7,7 +7,7 @@ namespace MembersListFilterStrategy;
 
 public class BoardMemberRoleFilterStrategyTests
 {
-    private readonly Mock<IDataManager> _dataManagerMock = new();
+    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _dataManagerMock = new();
     private readonly BoardMemberRoleFilterStrategy _boardMemberRoleFilterStrategy;
 
     public BoardMemberRoleFilterStrategyTests() 
