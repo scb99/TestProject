@@ -11,11 +11,11 @@ public class CreateOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new CreateOperationFeedbackStrategy();
+        var strategy = new CreateOperationFeedbackStrategy(mockAlertService.Object);
         var successMessage = "New record successfully created in DB!";
 
         // Act
-        await strategy.ExecuteSuccessAsync(mockAlertService.Object);
+        await strategy.ExecuteSuccessAsync();
 
         // Assert
         mockAlertService.Verify(service => service.AlertUsingFallingMessageBoxAsync(successMessage), Times.Once);
@@ -26,11 +26,11 @@ public class CreateOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new CreateOperationFeedbackStrategy();
+        var strategy = new CreateOperationFeedbackStrategy(mockAlertService.Object);
         var failureMessage = "New record was NOT successfully created in DB!";
 
         // Act
-        await strategy.ExecuteFailureAsync(mockAlertService.Object);
+        await strategy.ExecuteFailureAsync();
 
         // Assert
         mockAlertService.Verify(service => service.AlertUsingFallingMessageBoxAsync(failureMessage), Times.Once);

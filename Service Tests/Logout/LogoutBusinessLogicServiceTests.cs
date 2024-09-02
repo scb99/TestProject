@@ -1,5 +1,4 @@
-﻿using DataAccess;
-using DataAccess.Models;
+﻿using DataAccess.Models;
 using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
@@ -13,7 +12,6 @@ public class LogoutBusinessLogicServiceTests
     public async Task CanLogoutAsync_SuperUserWithMultipleActiveRecords_ReturnsFalse()
     {
         // Arrange
-        var mockDataManager = new Mock<IDataManager>();
         var mockLoggedInMemberService = new Mock<ICrossCuttingLoggedInMemberService>();
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();

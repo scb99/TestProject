@@ -12,7 +12,7 @@ public class DBOperationServiceTests
     public DBOperationServiceTests()
     {
         _alertServiceMock = new Mock<ICrossCuttingAlertService>();
-        _dbOperationService = new DBOperationService();
+        _dbOperationService = new DBOperationService(_alertServiceMock.Object);
     }
 
     [Theory]
@@ -22,7 +22,7 @@ public class DBOperationServiceTests
     public async Task AfterSuccessfulDBOperationAsync_DisplaysCorrectMessage(DBOperation operation, string expectedMessage)
     {
         // Act
-        await _dbOperationService.AfterSuccessfulDBOperationAsync(operation, _alertServiceMock.Object);
+        await _dbOperationService.AfterSuccessfulDBOperationAsync(operation);
 
         // Assert
         _alertServiceMock.Verify(a => a.AlertUsingFallingMessageBoxAsync(expectedMessage), Times.Once);
@@ -40,7 +40,7 @@ public class DBOperationServiceTests
         string fullErrorMessage = operation == DBOperation.Read ? expectedMessage + errorMessage : expectedMessage;
 
         // Act
-        await _dbOperationService.AfterUnSuccessfulDBOperationAsync(operation, _alertServiceMock.Object, errorMessage);
+        await _dbOperationService.AfterUnSuccessfulDBOperationAsync(operation, errorMessage);
 
         // Assert
         _alertServiceMock.Verify(a => a.AlertUsingFallingMessageBoxAsync(fullErrorMessage), Times.Once);

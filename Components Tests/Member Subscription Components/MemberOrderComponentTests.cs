@@ -8,95 +8,81 @@ namespace MenuItemComponents;
 
 public class MemberOrderComponentTests
 {
-    private readonly MemberOrderComponent _component;
-    private readonly Mock<IGetOrdersByID> _mockDataManager;
-    private readonly Mock<ICrossCuttingMemberNameService> _mockMemberNameService;
+    private readonly Mock<ICrossCuttingMemberNameService> mockMemberNameService;
+    private readonly Mock<IGetOrdersByID> mockGetOrdersByID;
+    private readonly MemberOrderComponent memberOrderComponent;
 
     public MemberOrderComponentTests()
     {
-        _mockDataManager = new Mock<IGetOrdersByID>();
-        _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
-        _component = new MemberOrderComponent
+        mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
+        mockGetOrdersByID = new Mock<IGetOrdersByID>();
+        memberOrderComponent = new MemberOrderComponent
         {
-            //DataManager = _mockDataManager.Object,
-            MemberNameService = _mockMemberNameService.Object
+            MemberNameService = mockMemberNameService.Object,
+            GetOrdersByID = mockGetOrdersByID.Object
         };
     }
 
     [Fact]
-    public async Task OnParametersSetAsync_ShouldFetchOrderDataAndGenerateTitle_WhenSelectedIDIsNotZero()
+    public async Task OnParametersSetAsync_SelectedIDIsNotZero_FetchesOrderDataAndGeneratesTitle()
     {
         // Arrange
-        _component.SelectedID = 1;
-        var orders = new List<OrderEntity> { new() { OrderID = 1 } };
-        _mockDataManager.Setup(dm => dm.GetOrdersByIDSPAsync(It.IsAny<int>())).ReturnsAsync(orders);
-        _mockMemberNameService.Setup(mns => mns.MemberName).Returns("John Doe");
+        int selectedID = 1;
+        memberOrderComponent.SelectedID = selectedID;
+        var orders = new List<OrderEntity> { new(), new() };
+        mockGetOrdersByID.Setup(service => service.GetOrdersByIDSPAsync(selectedID)).ReturnsAsync(orders);
+        mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
 
         // Act
-        await _component.OnParametersSet2Async();
+        await memberOrderComponent.OnParametersSet2Async();
 
         // Assert
-        Assert.Equal(orders, _component.OrderEntitiesBDP);
-        Assert.Equal("1 Order entry for John Doe", _component.TitleBDP);
+        Assert.Equal(orders, memberOrderComponent.OrderEntitiesBDP);
+        Assert.Equal("2 Order entries for John Doe", memberOrderComponent.TitleBDP);
     }
 
     [Fact]
-    public async Task OnParametersSetAsync_ShouldNotFetchOrderDataOrGenerateTitle_WhenSelectedIDIsZero()
+    public async Task OnParametersSetAsync_SelectedIDIsZero_DoesNotFetchOrderDataOrGenerateTitle()
     {
         // Arrange
-        _component.SelectedID = 0;
+        memberOrderComponent.SelectedID = 0;
 
         // Act
-        await _component.OnParametersSet2Async();
+        await memberOrderComponent.OnParametersSet2Async();
 
         // Assert
-        _mockDataManager.Verify(dm => dm.GetOrdersByIDSPAsync(It.IsAny<int>()), Times.Never);
-        Assert.Empty(_component.OrderEntitiesBDP);
-        Assert.Null(_component.TitleBDP);
+        mockGetOrdersByID.Verify(service => service.GetOrdersByIDSPAsync(It.IsAny<int>()), Times.Never);
+        Assert.Empty(memberOrderComponent.OrderEntitiesBDP);
+        Assert.Null(memberOrderComponent.TitleBDP);
     }
 
     [Fact]
-    public async Task FetchOrderDataAsync_ShouldFetchOrderData()
+    public async Task FetchOrderDataAsync_ValidID_FetchesOrderData()
     {
         // Arrange
-        var orders = new List<OrderEntity> { new() { OrderID = 1 } };
-        _mockDataManager.Setup(dm => dm.GetOrdersByIDSPAsync(It.IsAny<int>())).ReturnsAsync(orders);
+        int selectedID = 1;
+        var orders = new List<OrderEntity> { new(), new() };
+        mockGetOrdersByID.Setup(service => service.GetOrdersByIDSPAsync(selectedID)).ReturnsAsync(orders);
 
         // Act
-        await _component.FetchOrderDataAsync(1);
+        await memberOrderComponent.FetchOrderDataAsync(selectedID);
 
         // Assert
-        Assert.Equal(orders, _component.OrderEntitiesBDP);
+        Assert.Equal(orders, memberOrderComponent.OrderEntitiesBDP);
     }
 
     [Fact]
-    public void GenerateTitle_ShouldGenerateCorrectTitle()
+    public void GenerateTitle_GeneratesCorrectTitle()
     {
         // Arrange
-        _component.OrderEntitiesBDP = new List<OrderEntity> { new() { OrderID = 1 } };
-        _mockMemberNameService.Setup(mns => mns.MemberName).Returns("John Doe");
+        var orders = new List<OrderEntity> { new() };
+        memberOrderComponent.OrderEntitiesBDP = orders;
+        mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
 
         // Act
-        _component.GenerateTitle();
+        memberOrderComponent.GenerateTitle();
 
         // Assert
-        Assert.Equal("1 Order entry for John Doe", _component.TitleBDP);
-    }
-
-    [Fact]
-    public async Task OnParametersSet2Async_ShouldCallOnParametersSetAsync()
-    {
-        // Arrange
-        var orders = new List<OrderEntity> { new() { OrderID = 1 } };
-        _mockDataManager.Setup(dm => dm.GetOrdersByIDSPAsync(It.IsAny<int>())).ReturnsAsync(orders);
-        _mockMemberNameService.Setup(mns => mns.MemberName).Returns("John Doe");
-        _component.SelectedID = 1;
-
-        // Act
-        await _component.OnParametersSet2Async();
-
-        // Assert
-        Assert.Equal(orders, _component.OrderEntitiesBDP);
-        Assert.Equal("1 Order entry for John Doe", _component.TitleBDP);
+        Assert.Equal("1 Order entry for John Doe", memberOrderComponent.TitleBDP);
     }
 }

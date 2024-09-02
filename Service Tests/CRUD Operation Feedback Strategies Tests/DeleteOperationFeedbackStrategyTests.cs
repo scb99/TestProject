@@ -11,11 +11,11 @@ public class DeleteOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new DeleteOperationFeedbackStrategy();
+        var strategy = new DeleteOperationFeedbackStrategy(mockAlertService.Object);
         var successMessage = "Selected record successfully deleted from DB!";
 
         // Act
-        await strategy.ExecuteSuccessAsync(mockAlertService.Object);
+        await strategy.ExecuteSuccessAsync();
 
         // Assert
         mockAlertService.Verify(service => service.AlertUsingFallingMessageBoxAsync(successMessage), Times.Once);
@@ -26,11 +26,11 @@ public class DeleteOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new DeleteOperationFeedbackStrategy();
+        var strategy = new DeleteOperationFeedbackStrategy(mockAlertService.Object);
         var failureMessage = "Selected record was NOT deleted from DB!";
 
         // Act
-        await strategy.ExecuteFailureAsync(mockAlertService.Object);
+        await strategy.ExecuteFailureAsync();
 
         // Assert
         mockAlertService.Verify(service => service.AlertUsingFallingMessageBoxAsync(failureMessage), Times.Once);

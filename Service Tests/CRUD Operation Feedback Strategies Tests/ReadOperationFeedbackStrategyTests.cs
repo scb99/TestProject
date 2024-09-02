@@ -11,12 +11,12 @@ public class ReadOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new ReadOperationFeedbackStrategy();
+        var strategy = new ReadOperationFeedbackStrategy(mockAlertService.Object);
         var errorMessage = "Error accessing database";
         var expectedMessage = $"Tried to read record and got message:{errorMessage}";
 
         // Act
-        await strategy.ExecuteFailureAsync(mockAlertService.Object, errorMessage);
+        await strategy.ExecuteFailureAsync(errorMessage);
 
         // Assert
         mockAlertService.Verify(service => service.AlertUsingFallingMessageBoxAsync(expectedMessage), Times.Once);
