@@ -1,90 +1,78 @@
 ﻿using DataAccess.Models;
+using DataAccessCommands.Interfaces;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
 using Moq;
 
-namespace MenuItemComponents;
-
-public class LogsComponentTests
+namespace DBExplorerBlazor.Tests.Components
 {
-    private readonly Mock<ICrossCuttingLoadingPanelService> _loadingPanelServiceMock;
-    private readonly Mock<ILogEntryFetcher> _logEntryFetcherMock;
-    private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
-    private readonly Mock<INewMemberTitleGeneratorService> _newMemberTitleGeneratorMock;
-    private readonly LogsComponent _component;
-
-    public LogsComponentTests()
+    public class LogsComponentTests
     {
-        _loadingPanelServiceMock = new Mock<ICrossCuttingLoadingPanelService>();
-        _logEntryFetcherMock = new Mock<ILogEntryFetcher>();
-        _loggerMock = new Mock<ICrossCuttingLoggerService>();
-        _newMemberTitleGeneratorMock = new Mock<INewMemberTitleGeneratorService>();
+        private readonly Mock<ICrossCuttingLoadingPanelService> _mockLoadingPanelService;
+        private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
+        private readonly Mock<IGetLogEntriesByDateRange> _mockLogRepository;
+        private readonly Mock<ILogTitleGeneratorService> _mockNewMemberTitleGenerator;
+        private readonly LogsComponent _component;
 
-        _component = new LogsComponent
+        public LogsComponentTests()
         {
-            LoadingPanelService = _loadingPanelServiceMock.Object,
-            LogEntryFetcher = _logEntryFetcherMock.Object,
-            Logger = _loggerMock.Object,
-            NewMemberTitleGenerator = _newMemberTitleGeneratorMock.Object
-        };
-    }
+            _mockLoadingPanelService = new Mock<ICrossCuttingLoadingPanelService>();
+            _mockLogger = new Mock<ICrossCuttingLoggerService>();
+            _mockLogRepository = new Mock<IGetLogEntriesByDateRange>();
+            _mockNewMemberTitleGenerator = new Mock<ILogTitleGeneratorService>();
 
-    [Fact]
-    public async Task OnParametersSetAsync_ShouldFetchLogEntriesAndSetTitle()
-    {
-        // Arrange
-        var startDate = new DateTime(2023, 1, 1);
-        var endDate = new DateTime(2023, 12, 31);
-        var logEntries = new List<LogEntryEntity>
+            _component = new LogsComponent
+            {
+                LoadingPanelService = _mockLoadingPanelService.Object,
+                Logger = _mockLogger.Object,
+                LogRepository = _mockLogRepository.Object,
+                LogTitleGenerator = _mockNewMemberTitleGenerator.Object,
+                StartDate = new DateTime(2023, 1, 1),
+                EndDate = new DateTime(2023, 1, 31)
+            };
+        }
+
+        [Fact]
+        public async Task OnParametersSetAsync_LoadsLogEntriesAndSetsTitle()
         {
-            new() { UserID = 1, Message = "Log 1" },
-            new() { UserID = 2, Message = "Log 2" }
-        };
-        var expectedTitle = "2 logs found between 01/01/2023 and 12/31/2023";
+            // Arrange
+            var logEntries = new List<LogEntryEntity>
+            {
+                new() { UserID = 1, Message = "Log Entry 1", TimeStamp = new DateTime(2023, 1, 10) },
+                new() { UserID = 2, Message = "Log Entry 2", TimeStamp = new DateTime(2023, 1, 20) }
+            };
+            var title = "Title";
 
-        _logEntryFetcherMock
-            .Setup(fetcher => fetcher.FetchLogEntriesAsync(startDate, endDate))
-            .ReturnsAsync(logEntries);
+            _mockLogRepository.Setup(repo => repo.GetAllLogEntriesByDateRangeAsync(_component.StartDate, _component.EndDate))
+                .ReturnsAsync(logEntries);
+            _mockNewMemberTitleGenerator.Setup(generator => generator.GenerateLogTitle(logEntries.Count, _component.StartDate, _component.EndDate))
+                .Returns(title);
 
-        _newMemberTitleGeneratorMock
-            .Setup(generator => generator.GenerateNewMemberTitle(logEntries.Count, startDate, endDate))
-            .Returns(expectedTitle);
+            // Act
+            await _component.OnParametersSet2Async();
 
-        _component.StartDate = startDate;
-        _component.EndDate = endDate;
+            // Assert
+            Assert.Equal(logEntries, _component.LogEntitiesBDP);
+            Assert.Equal(title, _component.TitleBDP);
+            _mockLoadingPanelService.Verify(service => service.ShowLoadingPanelAsync(), Times.Once);
+            _mockLogger.VerifyNoOtherCalls();
+        }
 
-        // Act
-        await _component.OnParametersSet2Async();
+        [Fact]
+        public async Task OnParametersSetAsync_LogsExceptionOnFailure()
+        {
+            // Arrange
+            var exception = new Exception("Test exception");
 
-        // Assert
-        _loadingPanelServiceMock.Verify(service => service.ShowLoadingPanelAsync(), Times.Once);
-        _logEntryFetcherMock.Verify(fetcher => fetcher.FetchLogEntriesAsync(startDate, endDate), Times.Once);
-        _newMemberTitleGeneratorMock.Verify(generator => generator.GenerateNewMemberTitle(logEntries.Count, startDate, endDate), Times.Once);
-        Assert.Equal(logEntries, _component.LogEntitiesBDP);
-        Assert.Equal(expectedTitle, _component.TitleBDP);
-        Assert.False(_component.LoadingBDP);
-    }
+            _mockLogRepository.Setup(repo => repo.GetAllLogEntriesByDateRangeAsync(_component.StartDate, _component.EndDate))
+                .ThrowsAsync(exception);
 
-    [Fact]
-    public async Task OnParametersSetAsync_ShouldHandleException()
-    {
-        // Arrange
-        var startDate = new DateTime(2023, 1, 1);
-        var endDate = new DateTime(2023, 12, 31);
-        var exception = new Exception("Test exception");
+            // Act
+            await _component.OnParametersSet2Async();
 
-        _logEntryFetcherMock
-            .Setup(fetcher => fetcher.FetchLogEntriesAsync(startDate, endDate))
-            .ThrowsAsync(exception);
-
-        _component.StartDate = startDate;
-        _component.EndDate = endDate;
-
-        // Act
-        await _component.OnParametersSet2Async();
-
-        // Assert
-        _loggerMock.Verify(logger => logger.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
-        Assert.False(_component.LoadingBDP);
+            // Assert
+            _mockLogger.Verify(logger => logger.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
+            _mockLoadingPanelService.Verify(service => service.ShowLoadingPanelAsync(), Times.Once);
+        }
     }
 }

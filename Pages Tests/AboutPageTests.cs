@@ -13,7 +13,7 @@ public class AboutPageTests
 
         // Act
         var yearBDPField = aboutPage.GetType().GetProperty("YearBDP", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var yearBDPValue = yearBDPField.GetValue(aboutPage).ToString();
+        var yearBDPValue = yearBDPField?.GetValue(aboutPage)?.ToString();
 
         // Assert
         Assert.Equal(currentYear, yearBDPValue);

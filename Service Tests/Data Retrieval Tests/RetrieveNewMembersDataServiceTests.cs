@@ -1,5 +1,5 @@
 ﻿using DataAccess.Models;
-using DataAccessCommands.Interfaces;
+using DataAccessCommands.Interfaces.Additional;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
@@ -27,7 +27,7 @@ public class RetrieveNewMembersDataServiceTests
         var endDate = new DateTime(2023, 12, 31);
         var newMembers = new List<NewMemberEntity> { new() };
 
-        _mockDataManager.Setup(dm => dm.GetNewMembersSPAsync(startDate, endDate))
+        _mockDataManager.Setup(dm => dm.GetNewMembersAsync(startDate, endDate))
             .ReturnsAsync(newMembers);
 
         // Act
@@ -46,7 +46,7 @@ public class RetrieveNewMembersDataServiceTests
         var endDate = new DateTime(2023, 12, 31);
         var exception = new Exception("Test exception");
 
-        _mockDataManager.Setup(dm => dm.GetNewMembersSPAsync(startDate, endDate))
+        _mockDataManager.Setup(dm => dm.GetNewMembersAsync(startDate, endDate))
             .ThrowsAsync(exception);
 
         // Act & Assert

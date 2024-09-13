@@ -7,11 +7,11 @@ namespace CrossCuttingConcerns;
 
 public class AllMembersInDBServiceTests
 {
-    private readonly Mock<IGetAllMembers> _getAllMembersMock = new();
+    private readonly Mock<IRepository<MemberEntity>> mockRepository = new Mock<IRepository<MemberEntity>>();
     private readonly AllMembersInDBService _allMembersInDBService;
 
     public AllMembersInDBServiceTests() 
-        => _allMembersInDBService = new AllMembersInDBService(_getAllMembersMock.Object);
+        => _allMembersInDBService = new AllMembersInDBService(mockRepository.Object);
 
     [Fact]
     public async Task GetAllMembersInDBAsync_ReturnsMembers_WhenCacheIsNull()
@@ -22,7 +22,7 @@ public class AllMembersInDBServiceTests
             new() { ID = 1, Name = "John Doe" },
             new() { ID = 2, Name = "Jane Doe" }
         };
-        _getAllMembersMock.Setup(dm => dm.GetAllMembersSPAsync()).ReturnsAsync(expectedMembers);
+        mockRepository.Setup(dm => dm.GetAllAsync()).ReturnsAsync(expectedMembers);
 
         // Act
         var result = await _allMembersInDBService.GetAllMembersInDBAsync();
@@ -30,7 +30,7 @@ public class AllMembersInDBServiceTests
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
         Assert.Equal(expectedMembers, result);
-        _getAllMembersMock.Verify(dm => dm.GetAllMembersSPAsync(), Times.Once);
+        mockRepository.Verify(dm => dm.GetAllAsync(), Times.Once);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class AllMembersInDBServiceTests
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
         Assert.Equal(expectedMembers, result);
-        _getAllMembersMock.Verify(dm => dm.GetAllMembersSPAsync(), Times.Never); // Verify that the database is not hit again
+        mockRepository.Verify(dm => dm.GetAllAsync(), Times.Never); // Verify that the database is not hit again
     }
 
     [Fact]

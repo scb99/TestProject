@@ -16,10 +16,10 @@ public class LogoutBusinessLogicServiceTests
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
         var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
-        var mockGetMembersWithMultipleActiveRecords = new Mock<IGetMembersWithMultipleActiveRecords>();
+        var mockGetMembersWithMultipleActiveRecords = new Mock<IRepositoryGetMembersWith<MemberEntity>>();
 
         mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("SuperUser");
-        mockGetMembersWithMultipleActiveRecords.Setup(manager => manager.GetMembersWithMultipleActiveRecordsSPAsync())
+        mockGetMembersWithMultipleActiveRecords.Setup(manager => manager.GetMembersWithMultipleActiveRecordsAsync())
             .ReturnsAsync(new List<MemberEntity> { new(), new() });
 
         var service = new LogoutBusinessLogicService(
@@ -45,10 +45,10 @@ public class LogoutBusinessLogicServiceTests
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
         var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
-        var mockGetMembersWithMultipleActiveRecords = new Mock<IGetMembersWithMultipleActiveRecords>();
+        var mockGetMembersWithMultipleActiveRecords = new Mock<IRepositoryGetMembersWith<MemberEntity>>();
 
         mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("SuperUser");
-        mockGetMembersWithMultipleActiveRecords.Setup(manager => manager.GetMembersWithMultipleActiveRecordsSPAsync())
+        mockGetMembersWithMultipleActiveRecords.Setup(manager => manager.GetMembersWithMultipleActiveRecordsAsync())
             .ReturnsAsync(new List<MemberEntity>());
 
         var service = new LogoutBusinessLogicService(
@@ -74,7 +74,7 @@ public class LogoutBusinessLogicServiceTests
         var mockLogger = new Mock<ICrossCuttingLoggerService>();
         var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
         var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
-        var mockGetMembersWithMultipleActiveRecords = new Mock<IGetMembersWithMultipleActiveRecords>();
+        var mockGetMembersWithMultipleActiveRecords = new Mock<IRepositoryGetMembersWith<MemberEntity>>();
 
         mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("RegularUser");
 

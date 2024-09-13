@@ -1,19 +1,18 @@
-﻿//using DataAccess.Models;
-//using DataAccessCommands.Interfaces;
+﻿//using DataAccess;
+//using DataAccess.Models;
 //using DBExplorerBlazor3.Services.ExpiredMemberships;
 //using Moq;
 
-//namespace DataRetrieval;
+//namespace MenuItemComponents;
 
-//public class RetrieveExpiredMembershipsDataServiceTests
+//public class ExpiredMembershipsLoadDataServiceTests
 //{
-//    private readonly Mock<IGetExpiredMemberships> mockGetExpiredMemberships = new(); 
-//    private readonly Mock<IGetMembersInGoodStanding> mockGetMembersInGoodStanding = new();
-//    private readonly RetrieveExpiredMembershipsDataService service;
+//    private readonly Mock<IDataManager> mockDataManager = new();
+//    private readonly ExpiredMembershipsLoadDataService service;
 
-//    public RetrieveExpiredMembershipsDataServiceTests()
+//    public ExpiredMembershipsLoadDataServiceTests()
 //    {
-//        service = new RetrieveExpiredMembershipsDataService(mockGetExpiredMemberships.Object, mockGetMembersInGoodStanding.Object);
+//        service = new ExpiredMembershipsLoadDataService(mockDataManager.Object);
 //    }
 
 //    [Fact]
@@ -34,11 +33,11 @@
 //            new() { ID = 4, Deceased = "No" }  // Should remain
 //        };
 
-//        mockGetMembersInGoodStanding.Setup(m => m.GetMembersInGoodStandingSPAsync()).ReturnsAsync(goodStandingMembers);
-//        mockGetExpiredMemberships.Setup(m => m.GetExpiredMembershipsSPAsync(startDate, endDate)).ReturnsAsync(expiredMemberships);
+//        mockDataManager.Setup(m => m.GetMembersInGoodStandingSPAsync()).ReturnsAsync(goodStandingMembers);
+//        mockDataManager.Setup(m => m.GetExpiredMembershipsSPAsync(startDate, endDate)).ReturnsAsync(expiredMemberships);
 
 //        // Act
-//        var result = await service.RetrieveExpiredMembershipsAsync(startDate, endDate);
+//        var result = await service.GetExpiredMembershipsAsync(startDate, endDate);
 
 //        // Assert
 //        Assert.Single(result);
