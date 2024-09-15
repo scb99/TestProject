@@ -9,17 +9,17 @@ namespace MenuItemComponents;
 public class MemberOrderComponentTests
 {
     private readonly Mock<ICrossCuttingMemberNameService> mockMemberNameService;
-    private readonly Mock<IGetOrdersByID> mockGetOrdersByID;
+    private readonly Mock<IRepositoryOrdersByID> mockGetOrdersByID;
     private readonly MemberOrderComponent memberOrderComponent;
 
     public MemberOrderComponentTests()
     {
         mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
-        mockGetOrdersByID = new Mock<IGetOrdersByID>();
+        mockGetOrdersByID = new Mock<IRepositoryOrdersByID>();
         memberOrderComponent = new MemberOrderComponent
         {
             MemberNameService = mockMemberNameService.Object,
-            GetOrdersByID = mockGetOrdersByID.Object
+            OrdersByIDRepository = mockGetOrdersByID.Object
         };
     }
 
@@ -30,7 +30,7 @@ public class MemberOrderComponentTests
         int selectedID = 1;
         memberOrderComponent.SelectedID = selectedID;
         var orders = new List<OrderEntity> { new(), new() };
-        mockGetOrdersByID.Setup(service => service.GetOrdersByIDSPAsync(selectedID)).ReturnsAsync(orders);
+        mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
         mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
 
         // Act
@@ -51,7 +51,7 @@ public class MemberOrderComponentTests
         await memberOrderComponent.OnParametersSet2Async();
 
         // Assert
-        mockGetOrdersByID.Verify(service => service.GetOrdersByIDSPAsync(It.IsAny<int>()), Times.Never);
+        mockGetOrdersByID.Verify(service => service.GetOrdersByIDAsync(It.IsAny<int>()), Times.Never);
         Assert.Empty(memberOrderComponent.OrderEntitiesBDP);
         Assert.Null(memberOrderComponent.TitleBDP);
     }
@@ -62,7 +62,7 @@ public class MemberOrderComponentTests
         // Arrange
         int selectedID = 1;
         var orders = new List<OrderEntity> { new(), new() };
-        mockGetOrdersByID.Setup(service => service.GetOrdersByIDSPAsync(selectedID)).ReturnsAsync(orders);
+        mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
 
         // Act
         await memberOrderComponent.FetchOrderDataAsync(selectedID);

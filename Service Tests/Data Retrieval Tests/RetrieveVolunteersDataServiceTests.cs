@@ -8,13 +8,13 @@ namespace DataRetrieval;
 public class RetrieveVolunteersDataServiceTests
 {
     private readonly Mock<IRepository<DeceasedMemberEntity>> mockDeceasedMemberRepository;
-    private readonly Mock<IGetVolunteers> mockGetVolunteers;
+    private readonly Mock<IRepositoryVolunteers> mockGetVolunteers;
     private readonly RetrieveVolunteersDataService service;
 
     public RetrieveVolunteersDataServiceTests()
     {
         mockDeceasedMemberRepository = new Mock<IRepository<DeceasedMemberEntity>>();
-        mockGetVolunteers = new Mock<IGetVolunteers>();
+        mockGetVolunteers = new Mock<IRepositoryVolunteers>();
         service = new RetrieveVolunteersDataService(mockDeceasedMemberRepository.Object, mockGetVolunteers.Object);
     }
 

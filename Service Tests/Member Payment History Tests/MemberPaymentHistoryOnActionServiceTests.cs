@@ -16,8 +16,8 @@ public class MemberPaymentHistoryOnActionServiceTests
     private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
     private readonly Mock<ICrossCuttingMemberNameService> _mockMemberNameService;
     private readonly Mock<ICrossCuttingSystemTimeService> _mockSystemTimeService;
-    private readonly Mock<IGetLastPaymentID> _mockGetLastPaymentID;
-    private readonly Mock<IGetSubscriptionsByID> _mockGetSubscriptionsByID;
+    private readonly Mock<IRepositoryLastPaymentID> _mockGetLastPaymentID;
+    private readonly Mock<IRepositoryPost> _mockGetSubscriptionsByID;
     private readonly Mock<IRepository<PaymentHistoryDetailEntity>> _mockPaymentHistoryRepository;
     private readonly Mock<IUpdateSubscriptionNextPaymentDate> _mockUpdateSubscriptionNextPaymentDate;
 
@@ -32,8 +32,8 @@ public class MemberPaymentHistoryOnActionServiceTests
         _mockLogger = new Mock<ICrossCuttingLoggerService>();
         _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
         _mockSystemTimeService = new Mock<ICrossCuttingSystemTimeService>();
-        _mockGetLastPaymentID = new Mock<IGetLastPaymentID>();
-        _mockGetSubscriptionsByID = new Mock<IGetSubscriptionsByID>();
+        _mockGetLastPaymentID = new Mock<IRepositoryLastPaymentID>();
+        _mockGetSubscriptionsByID = new Mock<IRepositoryPost>();
         _mockPaymentHistoryRepository = new Mock<IRepository<PaymentHistoryDetailEntity>>();
         _mockUpdateSubscriptionNextPaymentDate = new Mock<IUpdateSubscriptionNextPaymentDate>();
 
@@ -112,7 +112,7 @@ public class MemberPaymentHistoryOnActionServiceTests
         int totalRowCount = 0;
 
         _mockPaymentHistoryRepository.Setup(s => s.AddAsync(It.IsAny<PaymentHistoryDetailEntity>())).ReturnsAsync(true);
-        _mockGetLastPaymentID.Setup(d => d.GetLastPaymentIDSPAsync(It.IsAny<int>())).ReturnsAsync(1);
+        _mockGetLastPaymentID.Setup(d => d.GetLastPaymentIDAsync(It.IsAny<int>())).ReturnsAsync(1);
         _mockAllMembersInDBService.Setup(s => s.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test User" } });
 
         // Act

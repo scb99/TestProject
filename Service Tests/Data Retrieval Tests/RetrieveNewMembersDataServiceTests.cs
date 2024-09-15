@@ -8,14 +8,14 @@ namespace DataRetrieval;
 
 public class RetrieveNewMembersDataServiceTests
 {
-    private readonly Mock<IGetNewMembers> _mockDataManager;
+    private readonly Mock<IRepositoryNewMembers> _mockDataManager;
     private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
     private readonly RetrieveNewMembersDataService _service;
 
     public RetrieveNewMembersDataServiceTests()
     {
         _mockLogger = new Mock<ICrossCuttingLoggerService>();
-        _mockDataManager = new Mock<IGetNewMembers>();
+        _mockDataManager = new Mock<IRepositoryNewMembers>();
         _service = new RetrieveNewMembersDataService(_mockLogger.Object, _mockDataManager.Object);
     }
 

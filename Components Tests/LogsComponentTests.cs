@@ -10,7 +10,7 @@ namespace DBExplorerBlazor.Tests.Components
     {
         private readonly Mock<ICrossCuttingLoadingPanelService> _mockLoadingPanelService;
         private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
-        private readonly Mock<IGetLogEntriesByDateRange> _mockLogRepository;
+        private readonly Mock<IRepositoryLogEntriesByDateRange> _mockLogRepository;
         private readonly Mock<ILogTitleGeneratorService> _mockNewMemberTitleGenerator;
         private readonly LogsComponent _component;
 
@@ -18,7 +18,7 @@ namespace DBExplorerBlazor.Tests.Components
         {
             _mockLoadingPanelService = new Mock<ICrossCuttingLoadingPanelService>();
             _mockLogger = new Mock<ICrossCuttingLoggerService>();
-            _mockLogRepository = new Mock<IGetLogEntriesByDateRange>();
+            _mockLogRepository = new Mock<IRepositoryLogEntriesByDateRange>();
             _mockNewMemberTitleGenerator = new Mock<ILogTitleGeneratorService>();
 
             _component = new LogsComponent
