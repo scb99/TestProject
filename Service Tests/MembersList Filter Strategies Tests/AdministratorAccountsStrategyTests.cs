@@ -7,7 +7,7 @@ namespace MembersListFilterStrategy;
 
 public class AdministratorAccountsStrategyTests
 {
-    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _dataManagerMock = new();
+    private readonly Mock<IRepositoryMember> _dataManagerMock = new();
     private readonly AdministratorAccountsStrategy _administratorAccountsStrategy;
 
     public AdministratorAccountsStrategyTests() 
@@ -22,13 +22,13 @@ public class AdministratorAccountsStrategyTests
             new() { /* Initialize properties as needed */ },
             new() { /* Initialize properties as needed */ }
         };
-        _dataManagerMock.Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("administrator", "Yes")).ReturnsAsync(expectedMembers);
+        _dataManagerMock.Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("administrator", "Yes")).ReturnsAsync(expectedMembers);
 
         // Act
         var result = await _administratorAccountsStrategy.FilterAsync();
 
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
-        _dataManagerMock.Verify(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("administrator", "Yes"), Times.Once);
+        _dataManagerMock.Verify(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("administrator", "Yes"), Times.Once);
     }
 }

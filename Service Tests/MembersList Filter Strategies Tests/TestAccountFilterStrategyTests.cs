@@ -11,7 +11,7 @@ public class TestAccountFilterStrategyTests
     public async Task FilterAsync_ReturnsTestAccountMembers()
     {
         // Arrange
-        var mockDataManager = new Mock<IGetMembersByMetaKeyAndMetaValue>();
+        var mockDataManager = new Mock<IRepositoryMember>();
         var expectedMembers = new List<MemberEntity>
         {
             new() { ID = 1, Name = "TestUser1" },
@@ -19,7 +19,7 @@ public class TestAccountFilterStrategyTests
         };
 
         mockDataManager
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("test_account", "Yes"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("test_account", "Yes"))
             .ReturnsAsync(expectedMembers);
 
         var strategy = new TestAccountFilterStrategy(mockDataManager.Object);
@@ -35,11 +35,11 @@ public class TestAccountFilterStrategyTests
     public async Task FilterAsync_ReturnsEmptyList_WhenNoTestAccountMembers()
     {
         // Arrange
-        var mockDataManager = new Mock<IGetMembersByMetaKeyAndMetaValue>();
+        var mockDataManager = new Mock<IRepositoryMember>();
         var expectedMembers = new List<MemberEntity>();
 
         mockDataManager
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("test_account", "Yes"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("test_account", "Yes"))
             .ReturnsAsync(expectedMembers);
 
         var strategy = new TestAccountFilterStrategy(mockDataManager.Object);

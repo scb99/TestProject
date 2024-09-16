@@ -9,17 +9,17 @@ namespace MemberCleanup;
 public class MemberCleanupServiceTests
 {
     private readonly Mock<ICrossCuttingLoggerService> _mockLoggerService;
-    private readonly Mock<IDeleteUsermetaRecords> _mockDeleteUsermetaRecords;
-    private readonly Mock<IDeleteUserTableRecord> _mockDeleteUserTableRecord;
-    private readonly Mock<IGetMembersWithNoFirstAndLastName> _mockGetMembersWithNoFirstAndLastName;
+    private readonly Mock<IRepositoryUsermeta> _mockDeleteUsermetaRecords;
+    private readonly Mock<IRepositoryUsers> _mockDeleteUserTableRecord;
+    private readonly Mock<IRepositoryMembersWithNoFirstAndLastName> _mockGetMembersWithNoFirstAndLastName;
     private readonly MemberCleanupService _service;
 
     public MemberCleanupServiceTests()
     {
         _mockLoggerService = new Mock<ICrossCuttingLoggerService>();
-        _mockDeleteUsermetaRecords = new Mock<IDeleteUsermetaRecords>();
-        _mockDeleteUserTableRecord = new Mock<IDeleteUserTableRecord>();
-        _mockGetMembersWithNoFirstAndLastName = new Mock<IGetMembersWithNoFirstAndLastName>();
+        _mockDeleteUsermetaRecords = new Mock<IRepositoryUsermeta>();
+        _mockDeleteUserTableRecord = new Mock<IRepositoryUsers>();
+        _mockGetMembersWithNoFirstAndLastName = new Mock<IRepositoryMembersWithNoFirstAndLastName>();
 
         _service = new MemberCleanupService(
             _mockLoggerService.Object,
@@ -33,7 +33,7 @@ public class MemberCleanupServiceTests
     {
         // Arrange
         _mockGetMembersWithNoFirstAndLastName
-            .Setup(s => s.GetMembersWithNoFirstAndLastNameSPAsync())
+            .Setup(s => s.GetMembersWithNoFirstAndLastNameAsync())
             .ReturnsAsync(new List<UserIDsEntity>());
 
         // Act
@@ -55,7 +55,7 @@ public class MemberCleanupServiceTests
         };
 
         _mockGetMembersWithNoFirstAndLastName
-            .Setup(s => s.GetMembersWithNoFirstAndLastNameSPAsync())
+            .Setup(s => s.GetMembersWithNoFirstAndLastNameAsync())
             .ReturnsAsync(badMembers);
 
         _mockDeleteUsermetaRecords
@@ -63,7 +63,7 @@ public class MemberCleanupServiceTests
             .Returns(Task.FromResult(2));
 
         _mockDeleteUserTableRecord
-            .Setup(s => s.DeleteUserTableRecordAsync(It.IsAny<int>()))
+            .Setup(s => s.DeleteUsersRecordAsync(It.IsAny<int>()))
             .Returns(Task.FromResult(2));
 
         // Act
@@ -72,7 +72,7 @@ public class MemberCleanupServiceTests
         // Assert
         Assert.Equal(2, result);
         _mockDeleteUsermetaRecords.Verify(d => d.DeleteUsermetaRecordsAsync(It.IsAny<int>()), Times.Exactly(2));
-        _mockDeleteUserTableRecord.Verify(d => d.DeleteUserTableRecordAsync(It.IsAny<int>()), Times.Exactly(2));
+        _mockDeleteUserTableRecord.Verify(d => d.DeleteUsersRecordAsync(It.IsAny<int>()), Times.Exactly(2));
         _mockLoggerService.Verify(l => l.LogResultAsync("Removed 2 bad member data records with IDs: 1, 2"), Times.Once);
     }
 }

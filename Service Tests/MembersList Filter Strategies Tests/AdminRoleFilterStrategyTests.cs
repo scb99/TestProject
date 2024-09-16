@@ -7,7 +7,7 @@ namespace MembersListFilterStrategy;
 
 public class AdminRoleFilterStrategyTests
 {
-    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _dataManagerMock = new();
+    private readonly Mock<IRepositoryMember> _dataManagerMock = new();
     private readonly AdminRoleFilterStrategy _adminRoleFilterStrategy;
 
     public AdminRoleFilterStrategyTests() 
@@ -22,13 +22,13 @@ public class AdminRoleFilterStrategyTests
             new() { /* Initialize properties as needed */ },
             new() { /* Initialize properties as needed */ }
         };
-        _dataManagerMock.Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("role", "Admin")).ReturnsAsync(expectedMembers);
+        _dataManagerMock.Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("role", "Admin")).ReturnsAsync(expectedMembers);
 
         // Act
         var result = await _adminRoleFilterStrategy.FilterAsync();
 
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
-        _dataManagerMock.Verify(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("role", "Admin"), Times.Once);
+        _dataManagerMock.Verify(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("role", "Admin"), Times.Once);
     }
 }

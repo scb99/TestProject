@@ -7,7 +7,7 @@ namespace MembersListFilterStrategy;
 
 public class LifetimeMembersFilterStrategyTests
 {
-    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _dataManagerMock = new();
+    private readonly Mock<IRepositoryMember> _dataManagerMock = new();
     private readonly LifetimeMembersFilterStrategy _lifetimeMembersFilterStrategy;
 
     public LifetimeMembersFilterStrategyTests() 
@@ -24,7 +24,7 @@ public class LifetimeMembersFilterStrategyTests
         };
 
         _dataManagerMock
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("lifetime_member", "Yes"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("lifetime_member", "Yes"))
             .ReturnsAsync(expectedMembers);
 
         // Act
@@ -43,7 +43,7 @@ public class LifetimeMembersFilterStrategyTests
         var expectedMembers = new List<MemberEntity>();
 
         _dataManagerMock
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("lifetime_member", "Yes"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("lifetime_member", "Yes"))
             .ReturnsAsync(expectedMembers);
 
         // Act

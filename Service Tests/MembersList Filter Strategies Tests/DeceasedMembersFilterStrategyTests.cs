@@ -8,7 +8,7 @@ namespace MembersListFilterStrategy;
 
 public class DeceasedMembersFilterStrategyTests
 {
-    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _mockDataManager = new();
+    private readonly Mock<IRepositoryMember> _mockDataManager = new();
     private readonly IDeceasedMembersFilterStrategy _filterStrategy;
 
     public DeceasedMembersFilterStrategyTests() 
@@ -25,7 +25,7 @@ public class DeceasedMembersFilterStrategyTests
         };
 
         _mockDataManager
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("deceased", "Yes"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("deceased", "Yes"))
             .ReturnsAsync(expectedMembers);
 
         // Act
@@ -42,7 +42,7 @@ public class DeceasedMembersFilterStrategyTests
         var expectedMembers = new List<MemberEntity>();
 
         _mockDataManager
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("deceased", "Yes"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("deceased", "Yes"))
             .ReturnsAsync(expectedMembers);
 
         // Act

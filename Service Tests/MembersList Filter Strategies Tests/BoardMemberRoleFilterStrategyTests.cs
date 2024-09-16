@@ -7,7 +7,7 @@ namespace MembersListFilterStrategy;
 
 public class BoardMemberRoleFilterStrategyTests
 {
-    private readonly Mock<IGetMembersByMetaKeyAndMetaValue> _dataManagerMock = new();
+    private readonly Mock<IRepositoryMember> _dataManagerMock = new();
     private readonly BoardMemberRoleFilterStrategy _boardMemberRoleFilterStrategy;
 
     public BoardMemberRoleFilterStrategyTests() 
@@ -22,13 +22,13 @@ public class BoardMemberRoleFilterStrategyTests
             new() { /* Initialize properties as needed */ },
             new() { /* Initialize properties as needed */ }
         };
-        _dataManagerMock.Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("role", "BoardMember")).ReturnsAsync(expectedMembers);
+        _dataManagerMock.Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("role", "BoardMember")).ReturnsAsync(expectedMembers);
 
         // Act
         var result = await _boardMemberRoleFilterStrategy.FilterAsync();
 
         // Assert
         Assert.Equal(expectedMembers.Count, result.Count);
-        _dataManagerMock.Verify(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("role", "BoardMember"), Times.Once);
+        _dataManagerMock.Verify(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("role", "BoardMember"), Times.Once);
     }
 }

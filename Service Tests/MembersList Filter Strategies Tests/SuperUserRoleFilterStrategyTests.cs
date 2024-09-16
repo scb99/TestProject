@@ -11,7 +11,7 @@ public class SuperUserRoleFilterStrategyTests
     public async Task FilterAsync_ReturnsSuperUserMembers()
     {
         // Arrange
-        var mockDataManager = new Mock<IGetMembersByMetaKeyAndMetaValue>();
+        var mockDataManager = new Mock<IRepositoryMember>();
         var expectedMembers = new List<MemberEntity>
         {
             new() { ID = 1, Name = "SuperUser1" },
@@ -19,7 +19,7 @@ public class SuperUserRoleFilterStrategyTests
         };
 
         mockDataManager
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("role", "SuperUser"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("role", "SuperUser"))
             .ReturnsAsync(expectedMembers);
 
         var strategy = new SuperUserRoleFilterStrategy(mockDataManager.Object);
@@ -35,11 +35,11 @@ public class SuperUserRoleFilterStrategyTests
     public async Task FilterAsync_ReturnsEmptyList_WhenNoSuperUserMembers()
     {
         // Arrange
-        var mockDataManager = new Mock<IGetMembersByMetaKeyAndMetaValue>();
+        var mockDataManager = new Mock<IRepositoryMember>();
         var expectedMembers = new List<MemberEntity>();
 
         mockDataManager
-            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueSPAsync("role", "SuperUser"))
+            .Setup(dm => dm.GetMembersByMetaKeyAndMetaValueAsync("role", "SuperUser"))
             .ReturnsAsync(expectedMembers);
 
         var strategy = new SuperUserRoleFilterStrategy(mockDataManager.Object);
