@@ -7,12 +7,12 @@ namespace CrossCuttingConcerns;
 
 public class PaymentToMembershipIDServiceTests
 {
-    private readonly Mock<IGetPaymentToMembershipID> _dataManagerMock;
+    private readonly Mock<IRepositoryPaymentToMembershipID> _dataManagerMock;
     private readonly PaymentToMembershipIDService _service;
 
     public PaymentToMembershipIDServiceTests()
     {
-        _dataManagerMock = new Mock<IGetPaymentToMembershipID>();
+        _dataManagerMock = new Mock<IRepositoryPaymentToMembershipID>();
         _service = new PaymentToMembershipIDService(_dataManagerMock.Object);
     }
 
@@ -26,7 +26,7 @@ public class PaymentToMembershipIDServiceTests
             new() { Payment = "Payment2", MembershipID = 2 }
         };
 
-        _dataManagerMock.Setup(dm => dm.GetPaymentToMembershipIDSPAsync())
+        _dataManagerMock.Setup(dm => dm.GetPaymentToMembershipIDAsync())
             .ReturnsAsync(paymentToMembershipIDList);
 
         // Act
@@ -49,7 +49,7 @@ public class PaymentToMembershipIDServiceTests
             new() { Payment = "Payment2", MembershipID = 2 }
         };
 
-        _dataManagerMock.Setup(dm => dm.GetPaymentToMembershipIDSPAsync())
+        _dataManagerMock.Setup(dm => dm.GetPaymentToMembershipIDAsync())
             .ReturnsAsync(paymentToMembershipIDList);
 
         // Act

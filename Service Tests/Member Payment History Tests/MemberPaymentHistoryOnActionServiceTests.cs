@@ -19,7 +19,7 @@ public class MemberPaymentHistoryOnActionServiceTests
     private readonly Mock<IRepositoryLastPaymentID> _mockGetLastPaymentID;
     private readonly Mock<IRepositoryPost> _mockGetSubscriptionsByID;
     private readonly Mock<IRepository<PaymentHistoryDetailEntity>> _mockPaymentHistoryRepository;
-    private readonly Mock<IUpdateSubscriptionNextPaymentDate> _mockUpdateSubscriptionNextPaymentDate;
+    private readonly Mock<IRepositoryPostmeta3> _mockUpdateSubscriptionNextPaymentDate;
 
     private readonly MemberPaymentHistoryOnActionService _service;
 
@@ -35,7 +35,7 @@ public class MemberPaymentHistoryOnActionServiceTests
         _mockGetLastPaymentID = new Mock<IRepositoryLastPaymentID>();
         _mockGetSubscriptionsByID = new Mock<IRepositoryPost>();
         _mockPaymentHistoryRepository = new Mock<IRepository<PaymentHistoryDetailEntity>>();
-        _mockUpdateSubscriptionNextPaymentDate = new Mock<IUpdateSubscriptionNextPaymentDate>();
+        _mockUpdateSubscriptionNextPaymentDate = new Mock<IRepositoryPostmeta3>();
 
         _service = new MemberPaymentHistoryOnActionService(
             _mockShow.Object,
