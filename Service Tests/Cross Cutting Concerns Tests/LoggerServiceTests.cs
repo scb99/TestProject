@@ -1,4 +1,4 @@
-﻿using DataAccess;
+﻿using DataAccess.Interfaces;
 using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;

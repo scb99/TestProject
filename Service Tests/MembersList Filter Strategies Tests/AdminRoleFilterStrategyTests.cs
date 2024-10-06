@@ -1,5 +1,5 @@
 ﻿using DataAccess.Models;
-using DataAccessCommands.Interfaces;
+using DataAccess.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
