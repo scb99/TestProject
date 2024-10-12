@@ -33,7 +33,7 @@ public class PrepareListForClipboardComponentTests
     public async Task OnClickAsync_ShouldPrepareClipboardList_WhenButtonTitleIsOriginal()
     {
         // Arrange
-        _component.ButtonTitleBDP = _component.originalButtonTitle;
+        _component.ButtonTitleBDP = _component.OriginalButtonTitle;
         var preparedList = new List<string> { "Item1", "Item2" };
         _mockClipboardService.Setup(s => s.PrepareClipboardList()).Returns(preparedList);
 
@@ -41,32 +41,32 @@ public class PrepareListForClipboardComponentTests
         await _component.OnClickAsync();
 
         // Assert
-        Assert.Equal(_component.newButtonTitle, _component.ButtonTitleBDP);
-        Assert.Equal(preparedList, _component.clipBoardList);
+        Assert.Equal(_component.NewButtonTitle, _component.ButtonTitleBDP);
+        Assert.Equal(preparedList, _component._clipBoardList);
     }
 
     [Fact]
     public async Task OnClickAsync_ShouldSendNextItemToClipboard_WhenButtonTitleIsNew()
     {
         // Arrange
-        _component.ButtonTitleBDP = _component.newButtonTitle;
-        _component.clipBoardList = new List<string> { "Item1", "Item2" };
-        _component.listIndex = 0;
-        _mockClipboardService.Setup(s => s.SendNextItemToClipboardAsync(_component.clipBoardList, _component.listIndex))
+        _component.ButtonTitleBDP = _component.NewButtonTitle;
+        _component._clipBoardList = new List<string> { "Item1", "Item2" };
+        _component._listIndex = 0;
+        _mockClipboardService.Setup(s => s.SendNextItemToClipboardAsync(_component._clipBoardList, _component._listIndex))
                              .ReturnsAsync(1);
 
         // Act
         await _component.OnClickAsync();
 
         // Assert
-        Assert.Equal(1, _component.listIndex);
+        Assert.Equal(1, _component._listIndex);
     }
 
     [Fact]
     public async Task OnClickAsync_ShouldLogException_WhenExceptionIsThrown()
     {
         // Arrange
-        _component.ButtonTitleBDP = _component.originalButtonTitle;
+        _component.ButtonTitleBDP = _component.OriginalButtonTitle;
         _mockClipboardService.Setup(s => s.PrepareClipboardList()).Throws(new Exception("Test Exception"));
 
         // Act

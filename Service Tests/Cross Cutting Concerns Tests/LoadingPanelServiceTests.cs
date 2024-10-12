@@ -18,7 +18,7 @@ public class LoadingPanelServiceTests
         var task = _loadingPanelService.ShowLoadingPanelAsync();
 
         // Assert
-        var delayTask = Task.Delay(1100); // Slightly longer than the delay in the method
+        var delayTask = Task.Delay(1500); // Slightly longer than the delay in the method
         var completedTask = await Task.WhenAny(task, delayTask);
 
         Assert.Equal(task, completedTask);

@@ -2,95 +2,91 @@
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
 using Moq;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
 
-namespace DBExplorerBlazor.Tests
+namespace MenuItemComponents;
+
+public class MemberDetailsCHelperTests
 {
-    public class MemberDetailsCHelperTests
+    [Fact]
+    public void GetDisplayNames_ReturnsCorrectDisplayNames()
     {
-        [Fact]
-        public void GetDisplayNames_ReturnsCorrectDisplayNames()
+        // Act
+        var displayNames = MemberDetailsCHelper.GetDisplayNames();
+
+        // Assert
+        var expectedDisplayNames = new[]
         {
-            // Act
-            var displayNames = MemberDetailsCHelper.GetDisplayNames();
+            "Last Name", "First Name", "Comments", "Skills/Hobbies", "STPC Note", "Reminder Sent"
+        };
+        Assert.Equal(expectedDisplayNames, displayNames);
+    }
 
-            // Assert
-            var expectedDisplayNames = new[]
-            {
-                "Last Name", "First Name", "Comments", "Skills/Hobbies", "STPC Note", "Reminder Sent"
-            };
-            Assert.Equal(expectedDisplayNames, displayNames);
-        }
-
-        [Fact]
-        public void GetMemberDetailEntities_ReturnsCorrectEntities()
+    [Fact]
+    public void GetMemberDetailEntities_ReturnsCorrectEntities()
+    {
+        // Arrange
+        var displayNames = new[]
         {
-            // Arrange
-            var displayNames = new[]
-            {
-                "Last Name", "First Name", "Comments", "Skills/Hobbies", "STPC Note", "Reminder Sent"
-            };
-            var memberDetails = new List<MemberDetailEntity>
-            {
-                new() { DisplayName = "Last Name", Value = "Doe" },
-                new() { DisplayName = "First Name", Value = "John" },
-                new() { DisplayName = "Comments", Value = "Test Comment" },
-                new() { DisplayName = "Skills/Hobbies", Value = "Coding" },
-                new() { DisplayName = "STPC Note", Value = "Note" },
-                new() { DisplayName = "Reminder Sent", Value = "Yes" }
-            };
-            var mockDetailsService = new Mock<ICrossCuttingMemberDetailsService>();
-            mockDetailsService.Setup(s => s.MemberDetailEntities).Returns(memberDetails);
-
-            // Act
-            var result = MemberDetailsCHelper.GetMemberDetailEntities(displayNames, mockDetailsService.Object);
-
-            // Assert
-            Assert.Equal(memberDetails, result);
-        }
-
-        [Fact]
-        public void GetMemberName_ReturnsCorrectMemberName()
+            "Last Name", "First Name", "Comments", "Skills/Hobbies", "STPC Note", "Reminder Sent"
+        };
+        var memberDetails = new List<MemberDetailEntity>
         {
-            // Arrange
-            var memberDetails = new List<MemberDetailEntity>
-            {
-                new() { DisplayName = "Last Name", Value = "Doe" },
-                new() { DisplayName = "First Name", Value = "John" }
-            };
+            new() { DisplayName = "Last Name", Value = "Doe" },
+            new() { DisplayName = "First Name", Value = "John" },
+            new() { DisplayName = "Comments", Value = "Test Comment" },
+            new() { DisplayName = "Skills/Hobbies", Value = "Coding" },
+            new() { DisplayName = "STPC Note", Value = "Note" },
+            new() { DisplayName = "Reminder Sent", Value = "Yes" }
+        };
+        var mockDetailsService = new Mock<ICrossCuttingMemberDetailsService>();
+        mockDetailsService.Setup(s => s.MemberDetailEntities).Returns(memberDetails);
 
-            // Act
-            var memberName = MemberDetailsCHelper.GetMemberName(memberDetails);
+        // Act
+        var result = MemberDetailsCHelper.GetMemberDetailEntities(displayNames, mockDetailsService.Object);
 
-            // Assert
-            Assert.Equal("John Doe", memberName);
-        }
+        // Assert
+        Assert.Equal(memberDetails, result);
+    }
 
-        [Fact]
-        public void SkipInitialDetails_SkipsFirstTwoDetails()
+    [Fact]
+    public void GetMemberName_ReturnsCorrectMemberName()
+    {
+        // Arrange
+        var memberDetails = new List<MemberDetailEntity>
         {
-            // Arrange
-            var memberDetails = new List<MemberDetailEntity>
-            {
-                new() { DisplayName = "Last Name", Value = "Doe" },
-                new() { DisplayName = "First Name", Value = "John" },
-                new() { DisplayName = "Comments", Value = "Test Comment" },
-                new() { DisplayName = "Skills/Hobbies", Value = "Coding" },
-                new() { DisplayName = "STPC Note", Value = "Note" },
-                new() { DisplayName = "Reminder Sent", Value = "Yes" }
-            };
+            new() { DisplayName = "Last Name", Value = "Doe" },
+            new() { DisplayName = "First Name", Value = "John" }
+        };
 
-            // Act
-            var result = MemberDetailsCHelper.SkipInitialDetails(memberDetails);
+        // Act
+        var memberName = MemberDetailsCHelper.GetMemberName(memberDetails);
 
-            // Assert
-            Assert.Equal(4, result.Count);
-            Assert.Equal("Test Comment", result[0].Value);
-            Assert.Equal("Coding", result[1].Value);
-            Assert.Equal("Note", result[2].Value);
-            Assert.Equal("Yes", result[3].Value);
-        }
+        // Assert
+        Assert.Equal("John Doe", memberName);
+    }
+
+    [Fact]
+    public void SkipInitialDetails_SkipsFirstTwoDetails()
+    {
+        // Arrange
+        var memberDetails = new List<MemberDetailEntity>
+        {
+            new() { DisplayName = "Last Name", Value = "Doe" },
+            new() { DisplayName = "First Name", Value = "John" },
+            new() { DisplayName = "Comments", Value = "Test Comment" },
+            new() { DisplayName = "Skills/Hobbies", Value = "Coding" },
+            new() { DisplayName = "STPC Note", Value = "Note" },
+            new() { DisplayName = "Reminder Sent", Value = "Yes" }
+        };
+
+        // Act
+        var result = MemberDetailsCHelper.SkipInitialDetails(memberDetails);
+
+        // Assert
+        Assert.Equal(4, result.Count);
+        Assert.Equal("Test Comment", result[0].Value);
+        Assert.Equal("Coding", result[1].Value);
+        Assert.Equal("Note", result[2].Value);
+        Assert.Equal("Yes", result[3].Value);
     }
 }

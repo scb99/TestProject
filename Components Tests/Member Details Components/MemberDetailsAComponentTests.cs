@@ -34,7 +34,7 @@ public class MemberDetailsAComponentTests
         _component.OnParametersSet2();
 
         // Assert
-        Assert.Null(_component.MemberDetailEntitiesBDP);
+        Assert.Empty(_component.MemberDetailEntitiesBDP);
         Assert.Equal(" No Selected Member", _component.MemberNameBDP);
     }
 

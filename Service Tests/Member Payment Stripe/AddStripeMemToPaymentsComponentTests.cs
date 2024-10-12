@@ -36,7 +36,7 @@ public class AddStripeMemToPaymentsComponentTests
     public void OnAddButtonClicked_ShouldCallAddStripePayment()
     {
         // Arrange
-        _component.selectedStripeMemberID = 1;
+        _component._selectedStripeMemberID = 1;
 
         // Act
         _component.OnAddButtonClicked();
@@ -53,7 +53,7 @@ public class AddStripeMemToPaymentsComponentTests
 
     //    // Assert
     //    Assert.False(_component.Disabled);
-    //    Assert.Equal(1, _component.selectedStripeMemberID);
+    //    Assert.Equal(1, _component._selectedStripeMemberID);
     //}
 
     //[Fact]
@@ -64,7 +64,7 @@ public class AddStripeMemToPaymentsComponentTests
 
     //    // Assert
     //    Assert.True(_component.Disabled);
-    //    Assert.Equal(0, _component.selectedStripeMemberID);
+    //    Assert.Equal(0, _component._selectedStripeMemberID);
     //}
 
     [Fact]
