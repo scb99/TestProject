@@ -4,7 +4,7 @@ using DBExplorerBlazor.Services;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
-namespace MenuItemComponents;
+namespace ExpiredMemberships;
 
 public class ExpiredMembershipsExportServiceTests
 {

@@ -2,7 +2,7 @@
 using DBExplorerBlazor.Services;
 using Syncfusion.Blazor.Grids;
 
-namespace PaymentEntityEditOperation;
+namespace MenuItemComponents;
 
 public class PaymentEntityEditOperationServiceTests
 {

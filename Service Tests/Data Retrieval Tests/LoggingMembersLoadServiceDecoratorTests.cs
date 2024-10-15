@@ -3,7 +3,7 @@ using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace MembersList;
+namespace DataRetrieval;
 
 public class LoggingMembersLoadServiceDecoratorTests
 {
