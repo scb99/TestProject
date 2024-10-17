@@ -30,8 +30,4 @@
     <ProjectReference Include="..\DBExplorerBlazor3\DBExplorerBlazor3.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Service Tests\PaymentTotal Tests\" />
-  </ItemGroup>
-
 </Project>

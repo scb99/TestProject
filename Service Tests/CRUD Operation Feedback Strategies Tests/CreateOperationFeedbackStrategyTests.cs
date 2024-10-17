@@ -11,7 +11,7 @@ public class CreateOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new CreateOperationFeedbackStrategy(mockAlertService.Object);
+        var strategy = new CreateOperationFeedbackStrategyService(mockAlertService.Object);
         var successMessage = "New record successfully created in DB!";
 
         // Act
@@ -26,7 +26,7 @@ public class CreateOperationFeedbackStrategyTests
     {
         // Arrange
         var mockAlertService = new Mock<ICrossCuttingAlertService>();
-        var strategy = new CreateOperationFeedbackStrategy(mockAlertService.Object);
+        var strategy = new CreateOperationFeedbackStrategyService(mockAlertService.Object);
         var failureMessage = "New record was NOT successfully created in DB!";
 
         // Act

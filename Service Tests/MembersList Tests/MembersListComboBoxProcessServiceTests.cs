@@ -1,56 +1,66 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Interfaces;
-using DBExplorerBlazor3.Services.MembersList;
+using DBExplorerBlazor.Services;
 using Moq;
 
-namespace Service;
+namespace MembersList;
 
-public class MembersListComboBoxProcessServiceTests
+public class MembersListComboBoxProcessingServiceTests
 {
+    private readonly Mock<IMembersListMemberFilteringService> _memberFilteringServiceMock;
     private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
-    private readonly Mock<IMembersListComboBoxProcessingService> _memberProcessingServiceMock;
-    private readonly MembersListComboBoxProcessService _comboBoxProcessService;
+    private readonly MembersListComboBoxProcessingService _service;
 
-    public MembersListComboBoxProcessServiceTests()
+    public MembersListComboBoxProcessingServiceTests()
     {
+        _memberFilteringServiceMock = new Mock<IMembersListMemberFilteringService>();
         _loggerMock = new Mock<ICrossCuttingLoggerService>();
-        _memberProcessingServiceMock = new Mock<IMembersListComboBoxProcessingService>();
-        _comboBoxProcessService = new MembersListComboBoxProcessService(_loggerMock.Object, _memberProcessingServiceMock.Object);
+        _service = new MembersListComboBoxProcessingService(_memberFilteringServiceMock.Object, _loggerMock.Object);
     }
 
     [Fact]
-    public async Task ProcessComboBoxChangeAsync_ReturnsMembers_OnSuccess()
+    public async Task ProcessComboBoxChangeAsync_CallsFilterMembersAsyncWithCorrectParameters()
     {
         // Arrange
-        string selection = "TestSelection";
-        var expectedMembers = new List<MemberEntity>
-        {
-            new() { /* Initialize properties as needed */ },
-            new() { /* Initialize properties as needed */ }
-        };
-        _memberProcessingServiceMock.Setup(m => m.ProcessComboBoxChangeAsync(selection)).ReturnsAsync(expectedMembers);
+        var comboBoxValue = "Filter by Last Name";
+        var members = new List<MemberEntity> { new MemberEntity() };
+        _memberFilteringServiceMock.Setup(s => s.FilterMembersAsync(comboBoxValue, string.Empty)).ReturnsAsync(members);
 
         // Act
-        var result = await _comboBoxProcessService.ProcessComboBoxChangeAsync(selection);
+        var result = await _service.ProcessComboBoxChangeAsync(comboBoxValue);
 
         // Assert
-        Assert.Equal(expectedMembers.Count, result.Count);
-        _memberProcessingServiceMock.Verify(m => m.ProcessComboBoxChangeAsync(selection), Times.Once);
+        _memberFilteringServiceMock.Verify(s => s.FilterMembersAsync(comboBoxValue, string.Empty), Times.Once);
+        Assert.Equal(members, result);
     }
 
     [Fact]
-    public async Task ProcessComboBoxChangeAsync_LogsException_OnFailure()
+    public async Task ProcessComboBoxChangeAsync_LogsCorrectMessage()
     {
         // Arrange
-        string selection = "TestSelection";
-        var exception = new Exception("Test exception");
-        _memberProcessingServiceMock.Setup(m => m.ProcessComboBoxChangeAsync(selection)).ThrowsAsync(exception);
+        var comboBoxValue = "Filter by Last Name";
+        var members = new List<MemberEntity> { new MemberEntity() };
+        _memberFilteringServiceMock.Setup(s => s.FilterMembersAsync(comboBoxValue, string.Empty)).ReturnsAsync(members);
 
         // Act
-        var result = await _comboBoxProcessService.ProcessComboBoxChangeAsync(selection);
+        await _service.ProcessComboBoxChangeAsync(comboBoxValue);
 
         // Assert
-        Assert.Empty(result);
-        _loggerMock.Verify(l => l.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
+        _loggerMock.Verify(s => s.LogResultAsync($"ComboBox value changed to: {comboBoxValue}"), Times.Once);
+    }
+
+    [Fact]
+    public async Task ProcessComboBoxChangeAsync_ReturnsCorrectResult()
+    {
+        // Arrange
+        var comboBoxValue = "Filter by Last Name";
+        var members = new List<MemberEntity> { new MemberEntity() };
+        _memberFilteringServiceMock.Setup(s => s.FilterMembersAsync(comboBoxValue, string.Empty)).ReturnsAsync(members);
+
+        // Act
+        var result = await _service.ProcessComboBoxChangeAsync(comboBoxValue);
+
+        // Assert
+        Assert.Equal(members, result);
     }
 }
