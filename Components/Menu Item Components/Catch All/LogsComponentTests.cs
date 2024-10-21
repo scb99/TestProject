@@ -27,9 +27,9 @@ public class LogsComponentTests
             Logger = _mockLoggerService.Object,
             LogRepository = _mockLogRepository.Object,
             LogTitleGenerator = _mockLogTitleGenerator.Object,
-            StartDate = DateTime.Now.AddDays(-30),
-            EndDate = DateTime.Now
         };
+
+        _component.Initialize(DateTime.Now.AddDays(-30), DateTime.Now);
     }
 
     [Fact]

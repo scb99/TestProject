@@ -71,7 +71,7 @@ public class SoonToExpireMembershipsComponentTests
             .Setup(repo => repo.GetSoonToExpireMembershipsAsync(It.IsAny<int>()))
             .ReturnsAsync(memberships);
         _mockSystemTimeService.Setup(service => service.Now).Returns(DateTime.Now);
-        _component.EndDate = DateTime.Now.AddDays(30);
+        _component.Initialize(DateTime.Now.AddDays(30));
 
         // Act
         await _component.LoadSoonToExpireMembershipsAndManageUIAsync();

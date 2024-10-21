@@ -9,7 +9,7 @@ public class FilterUtilityTests
 
     public FilterUtilityTests()
     {
-        this.filterUtility = new FilterUtility();
+        filterUtility = new FilterUtility();
     }
 
     [Theory]
@@ -24,7 +24,7 @@ public class FilterUtilityTests
     public void ShouldMemberBeIncluded_ShouldReturnExpectedResult(string nameOrID, string filter, bool expectedResult)
     {
         // Act
-        var result = this.filterUtility.ShouldMemberBeIncluded(nameOrID, filter);
+        var result = filterUtility.ShouldMemberBeIncluded(nameOrID, filter);
 
         // Assert
         Assert.Equal(expectedResult, result);
@@ -38,7 +38,7 @@ public class FilterUtilityTests
         string filter = "test";
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => this.filterUtility.ShouldMemberBeIncluded(nameOrID, filter));
+        Assert.Throws<ArgumentNullException>(() => filterUtility.ShouldMemberBeIncluded(nameOrID, filter));
     }
 }
     

@@ -28,7 +28,7 @@ public class MemberOrderComponentTests
     {
         // Arrange
         int selectedID = 1;
-        memberOrderComponent.SelectedID = selectedID;
+        memberOrderComponent.Initialize(selectedID);
         var orders = new List<OrderEntity> { new(), new() };
         mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
         mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
@@ -45,7 +45,7 @@ public class MemberOrderComponentTests
     public async Task OnParametersSetAsync_SelectedIDIsZero_DoesNotFetchOrderDataOrGenerateTitle()
     {
         // Arrange
-        memberOrderComponent.SelectedID = 0;
+        memberOrderComponent.Initialize(0);
 
         // Act
         await memberOrderComponent.OnParametersSet2Async();

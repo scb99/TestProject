@@ -23,9 +23,9 @@ public class FindNewMembersComponentTests
             LoadingPanelService = _mockLoadingPanelService.Object,
             FindNewMembersExportService = _mockExportService.Object,
             RetrieveNewMembersDataService = _mockRetrieveService.Object,
-            StartDate = DateTime.Now.AddDays(-30),
-            EndDate = DateTime.Now
         };
+
+        _component.Initialize(DateTime.Now.AddDays(-30), DateTime.Now);
     }
 
     [Fact]
