@@ -70,7 +70,7 @@ public class RosterRecipientsComponentTests
         _mockRosterRecipientsRepository
             .Setup(repo => repo.GetRosterRecipientsAsync(It.IsAny<int>()))
             .ReturnsAsync(recipients);
-        _component.GracePeriod = 30;
+        _component.Initialize(30);
 
         // Act
         await _component.LoadRosterRecipientsAndManageUIAsync();

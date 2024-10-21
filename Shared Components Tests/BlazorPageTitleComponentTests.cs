@@ -21,9 +21,10 @@ public class BlazorPageTitleComponentTests
 
         var component = new BlazorPageTitleComponent
         {
-            Title = title,
             JSRuntime = jsRuntimeMock.Object
         };
+
+        component.Initialize(title);
 
         // Act
         await component.OnAfterRender2Async(true);

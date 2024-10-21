@@ -28,7 +28,7 @@ public class MemberDetailsCComponentTests
     public void OnParametersSet_SelectedIDIsZero_DoesNotLoadMemberDetails()
     {
         // Arrange
-        _component.SelectedID = 0;
+        _component.Initialize(0);
 
         // Act
         _component.OnParametersSet2();
@@ -42,7 +42,7 @@ public class MemberDetailsCComponentTests
     public void OnParametersSet_SelectedIDIsNotZero_LoadsMemberDetails()
     {
         // Arrange
-        _component.SelectedID = 1;
+        _component.Initialize(1);
         var memberDetails = new List<MemberDetailEntity>
         {
             new() { DisplayName = "Last Name", Value = "Doe" },

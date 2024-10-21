@@ -32,8 +32,9 @@ public class MembersListComponentTests
             MembersListComboBoxProcessingService = _mockComboBoxService.Object,
             MembersListSelectionService = _mockSelectionService.Object,
             MembersListTextBoxProcessService = _mockTextBoxService.Object,
-            Height = "500px"
         };
+
+        _component.Initialize("500px");
     }
 
     [Fact]

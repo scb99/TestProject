@@ -46,7 +46,7 @@ public class CompleteRosterComponentTests
         _mockRosterRepository
             .Setup(repo => repo.GetCompleteRosterAsync(It.IsAny<int>()))
             .ReturnsAsync(completeRosterEntities);
-        _component.GracePeriod = 30;
+        _component.Initialize(30);
 
         // Act
         await _component.OnParametersSet2Async();

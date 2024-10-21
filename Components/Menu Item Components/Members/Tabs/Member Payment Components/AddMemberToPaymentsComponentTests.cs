@@ -22,7 +22,7 @@ public class AddMemberToPaymentsComponentTests
     public void OnParametersSet_ShouldUpdateIsAddButtonDisabledBDP()
     {
         // Arrange
-        _component.SelectedID = 1;
+        _component.Initialize(1);
 
         // Act
         _component.OnParametersSet2();
@@ -31,8 +31,8 @@ public class AddMemberToPaymentsComponentTests
         Assert.False(_component.IsAddButtonDisabledBDP);
 
         // Arrange
-        _component.SelectedID = 0;
-
+        _component.Initialize(0);
+            
         // Act
         _component.OnParametersSet2();
 
@@ -45,7 +45,7 @@ public class AddMemberToPaymentsComponentTests
     {
         // Arrange
         int selectedID = 1;
-        _component.SelectedID = selectedID;
+        _component.Initialize(selectedID);
 
         // Act
         await _component.OnAddButtonClickedAsync();

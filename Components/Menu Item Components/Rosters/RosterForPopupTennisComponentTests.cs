@@ -45,7 +45,7 @@ public class RosterForPopupTennisComponentTests
         // Arrange
         var gracePeriod = 5;
         var roster = new List<PopUpTennisEntity> { new() { Name = "Test Member" } };
-        _component.GracePeriod = gracePeriod;
+        _component.Initialize(gracePeriod);
         _mockPopUpTennisRosterRepository.Setup(repo => repo.GetRosterForPopUpTennisAsync(gracePeriod)).ReturnsAsync(roster);
 
         // Act
@@ -61,7 +61,7 @@ public class RosterForPopupTennisComponentTests
         // Arrange
         var gracePeriod = 5;
         var roster = new List<PopUpTennisEntity> { new() { Name = "Test Member" } };
-        _component.GracePeriod = gracePeriod;
+        _component.Initialize(gracePeriod);
         _mockPopUpTennisRosterRepository.Setup(repo => repo.GetRosterForPopUpTennisAsync(gracePeriod)).ReturnsAsync(roster);
 
         // Act
@@ -79,7 +79,7 @@ public class RosterForPopupTennisComponentTests
         // Arrange
         var gracePeriod = 5;
         var exception = new Exception("Test Exception");
-        _component.GracePeriod = gracePeriod;
+        _component.Initialize(gracePeriod);
         _mockPopUpTennisRosterRepository.Setup(repo => repo.GetRosterForPopUpTennisAsync(gracePeriod)).ThrowsAsync(exception);
 
         // Act
@@ -97,7 +97,7 @@ public class RosterForPopupTennisComponentTests
         var gracePeriod = 5;
         var now = DateTime.Now;
         var roster = new List<PopUpTennisEntity> { new() { Name = "Test Member" } };
-        _component.GracePeriod = gracePeriod;
+        _component.Initialize(gracePeriod);
         _component.PopUpTennisEntitiesBDP = roster;
         _mockIsValidFileNameService.Setup(service => service.FileNameValid(fileName)).Returns(true);
         _mockSystemTimeService.Setup(service => service.Now).Returns(now);

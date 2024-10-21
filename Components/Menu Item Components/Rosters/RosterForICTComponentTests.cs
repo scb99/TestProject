@@ -36,8 +36,9 @@ public class RosterForICTComponentTests
             IsValidFileNameService = _mockFileNameService.Object,
             SystemTimeService = _mockSystemTimeService.Object,
             ICTRosterRepository = _mockICTRosterRepository.Object,
-            GracePeriod = 30
         };
+
+        _component.Initialize(30);
     }
 
     [Fact]

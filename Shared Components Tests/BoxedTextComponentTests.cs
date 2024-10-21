@@ -12,7 +12,7 @@ public class BoxedTextComponentTests
         var expectedText = "Sample Text";
 
         // Act
-        component.Text = expectedText;
+        component.Initialize(expectedText, string.Empty);
         var actualText = component.Text;
 
         // Assert
@@ -27,7 +27,7 @@ public class BoxedTextComponentTests
         var expectedStyle = "color: red;";
 
         // Act
-        component.Style = expectedStyle;
+        component.Initialize(string.Empty,expectedStyle);
         var actualStyle = component.Style;
 
         // Assert

@@ -82,7 +82,7 @@ public class ReadTextFromClipboardInPaymentsComponentTests
         var textFromClipboard = string.Empty;
 
         _memberPaymentClipboardTextProcessorServiceMock.Setup(m => m.ProcessText(textFromClipboard, _allMembersInDBServiceMock.Object))
-            .Returns((List<PaymentEntity>)null);
+            .Returns((List<PaymentEntity>?)null);
 
         // Act
         await _component.OnReadTextFromClipboardButtonClickedAsync(textFromClipboard);
