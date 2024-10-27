@@ -76,6 +76,6 @@ public class MemberDetailsCComponentTests
 
         // Assert
         _mockBaseService.Verify(s => s.OnActionBeginAsync(arg, null), Times.Once);
-        Assert.Equal(clonedEntity, _component.clonedMemberDetailEntity);
+        Assert.Equal(clonedEntity, _component._clonedMemberDetailEntity);
     }
 }
