@@ -5,7 +5,7 @@ using Moq;
 
 namespace MenuItemComponents;
 
-public class FindNewMembersComponentTests
+public class FindNewMembersComponentTests : FindNewMembersComponent
 {
     private readonly Mock<ICrossCuttingLoadingPanelService> _mockLoadingPanelService;
     private readonly Mock<IFindNewMembersExportService> _mockExportService;
