@@ -72,6 +72,6 @@ public class PaymentsComponentTests
         await component.OnParametersSet2Async();
 
         // Assert
-        Assert.Equal(expectedItems, component.Items);
+        Assert.Equal(expectedItems, component._items);
     }
 }
