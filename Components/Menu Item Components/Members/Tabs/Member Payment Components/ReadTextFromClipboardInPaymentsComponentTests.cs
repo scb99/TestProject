@@ -4,7 +4,7 @@ using DBExplorerBlazor.Interfaces;
 using Microsoft.JSInterop;
 using Moq;
 
-namespace MemberPayment;
+namespace MenuItemComponents;
 
 public class ReadTextFromClipboardInPaymentsComponentTests
 {
@@ -80,10 +80,9 @@ public class ReadTextFromClipboardInPaymentsComponentTests
     {
         // Arrange
         var textFromClipboard = string.Empty;
-
         _memberPaymentClipboardTextProcessorServiceMock.Setup(m => m.ProcessText(textFromClipboard, _allMembersInDBServiceMock.Object))
-            .Returns((List<PaymentEntity>?)null);
-
+            .Returns((List<PaymentEntity>?)null!);
+        
         // Act
         await _component.OnReadTextFromClipboardButtonClickedAsync(textFromClipboard);
 
