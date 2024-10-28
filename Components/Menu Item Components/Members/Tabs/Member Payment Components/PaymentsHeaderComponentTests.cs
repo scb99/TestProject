@@ -6,6 +6,13 @@ namespace MenuItemComponents;
 
 public class PaymentsHeaderComponentTests
 {
+    private readonly Mock<ICrossCuttingConditionalCodeService> _mockExecute;
+
+    public PaymentsHeaderComponentTests()
+    {
+        _mockExecute = new Mock<ICrossCuttingConditionalCodeService>();
+    }
+
     [Fact]
     public void OnTotalAmountChanged_UpdatesPaymentTitleBDP()
     {
@@ -14,8 +21,10 @@ public class PaymentsHeaderComponentTests
 
         var component = new PaymentsHeaderComponent
         {
-            PaymentsTotalService = mockPaymentTotalService.Object
+            PaymentsTotalService = mockPaymentTotalService.Object,
+            Execute = _mockExecute.Object
         };
+        _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Simulate the component's OnInitialized method
         component.OnInitialized2();
@@ -27,6 +36,26 @@ public class PaymentsHeaderComponentTests
 
         // Assert
         Assert.Equal($"Total: ${expectedTotal:F2}", component.PaymentTitleBDP);
+    }
+
+    [Fact]
+    public void OnTotalAmountChanged2_UpdatesPaymentTitleBDP()
+    {
+        // Arrange
+        var mockPaymentTotalService = new Mock<IPaymentTotalService>();
+        var component = new PaymentsHeaderComponent
+        {
+            PaymentsTotalService = mockPaymentTotalService.Object,
+            Execute = _mockExecute.Object
+        };
+        _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
+        var totalAmount = 123.45;
+
+        // Act
+        component.OnTotalAmountChanged(totalAmount);
+
+        // Assert
+        Assert.Equal($"Total: ${totalAmount:F2}", component.PaymentTitleBDP);
     }
 
     [Fact]
