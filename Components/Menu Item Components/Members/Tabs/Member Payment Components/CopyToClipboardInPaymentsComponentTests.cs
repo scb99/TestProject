@@ -8,6 +8,7 @@ namespace MenuItemComponents
 {
     public class CopyToClipboardInPaymentsComponentTests
     {
+        private readonly Mock<ICrossCuttingConditionalCodeService> _mockExecute;
         private readonly Mock<IClipboardHandler> _mockClipboardHandlerService;
         private readonly Mock<ICrossCuttingLoggerService> _mockLoggerService;
         private readonly Mock<ICrossCuttingPaymentsService> _mockPaymentsService;
@@ -15,12 +16,14 @@ namespace MenuItemComponents
 
         public CopyToClipboardInPaymentsComponentTests()
         {
+            _mockExecute = new Mock<ICrossCuttingConditionalCodeService>();
             _mockClipboardHandlerService = new Mock<IClipboardHandler>();
             _mockLoggerService = new Mock<ICrossCuttingLoggerService>();
             _mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
 
             _component = new CopyToClipboardInPaymentsComponent
             {
+                Execute = _mockExecute.Object,
                 ClipboardHandlerService = _mockClipboardHandlerService.Object,
                 Logger = _mockLoggerService.Object,
                 PaymentsService = _mockPaymentsService.Object
@@ -46,12 +49,12 @@ namespace MenuItemComponents
                 new() { ID = 1, Description = "Payment 1", FirstName = "John", LastName = "Doe", Amount = "100" }
             };
             _mockPaymentsService.Setup(p => p.PaymentEntities).Returns(paymentEntities);
+            _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
             // Act
-            _component.OnPaymentEntitiesSizeChanged2();
+            _component.OnPaymentEntitiesSizeChanged();
 
             // Assert
-            //Assert.False(_component.IsCopyButtonDisabledBDP);
             Assert.False(_component.IsCopyButtonDisabled);
         }
 
@@ -93,11 +96,9 @@ namespace MenuItemComponents
         {
             // Act
             _component.Dispose();
-            //_mockPaymentsService.Setup(p => p.PaymentEntitiesSizeChanged -= It.IsAny<Action>());
 
             // Assert
-            _mockPaymentsService.Verify(p => p.OnPaymentEntitiesSizeChanged()/*.PaymentEntitiesSizeChanged*/, Times.Never);
-            //_mockPaymentsService.Verify(p => p.PaymentEntitiesSizeChanged, Times.Once);
+            _mockPaymentsService.Verify(p => p.OnPaymentEntitiesSizeChanged(), Times.Never);
         }
     }
 }
