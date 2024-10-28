@@ -4,10 +4,11 @@ using DBExplorerBlazor.Interfaces;
 using Moq;
 using System.Collections.ObjectModel;
 
-namespace MemberPayment;
+namespace MenuItemComponents;
 
 public class RemoveAllFromPaymentsComponentTests
 {
+    private readonly Mock<ICrossCuttingConditionalCodeService> _mockExecute;
     private readonly Mock<ICrossCuttingLoggerService> _loggerMock;
     private readonly Mock<ICrossCuttingPaymentsService> _paymentsServiceMock;
     private readonly Mock<IRemoveAllPaymentsService> _removeAllPaymentsServiceMock;
@@ -15,11 +16,13 @@ public class RemoveAllFromPaymentsComponentTests
 
     public RemoveAllFromPaymentsComponentTests()
     {
+        _mockExecute = new Mock<ICrossCuttingConditionalCodeService>();
         _loggerMock = new Mock<ICrossCuttingLoggerService>();
         _paymentsServiceMock = new Mock<ICrossCuttingPaymentsService>();
         _removeAllPaymentsServiceMock = new Mock<IRemoveAllPaymentsService>();
         _component = new RemoveAllFromPaymentsComponent
         {
+            Execute = _mockExecute.Object,
             Logger = _loggerMock.Object,
             PaymentsService = _paymentsServiceMock.Object,
             RemoveAllPaymentsService = _removeAllPaymentsServiceMock.Object
@@ -42,9 +45,10 @@ public class RemoveAllFromPaymentsComponentTests
         // Arrange
         ObservableCollection<PaymentEntity> temp = new();
         _paymentsServiceMock.Setup(p => p.PaymentEntities).Returns(temp);
+        _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
-        _component.OnPaymentEntitiesSizeChanged2();
+        _component.OnPaymentEntitiesSizeChanged();
 
         // Assert
         Assert.True(_component.DisabledBDP);
