@@ -3,7 +3,7 @@ using DBExplorerBlazor.Interfaces;
 using DBExplorerBlazor.Services;
 using Moq;
 
-namespace MemberPaymentStripe;
+namespace Services;
 
 public class StripePaymentHandlerServiceTests
 {
