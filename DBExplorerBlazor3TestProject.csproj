@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="Components Tests\Member Payment Stripe Components\" />
+    <Folder Include="Components Tests\Member Subscription Components\" />
   </ItemGroup>
 
 </Project>
