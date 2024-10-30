@@ -30,9 +30,4 @@
     <ProjectReference Include="..\DBExplorerBlazor3\DBExplorerBlazor3.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components Tests\Member Payment Stripe Components\" />
-    <Folder Include="Components Tests\Member Subscription Components\" />
-  </ItemGroup>
-
 </Project>
