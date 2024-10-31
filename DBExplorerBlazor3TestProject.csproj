@@ -33,6 +33,7 @@
   <ItemGroup>
     <Folder Include="Components\Menu Item Components\MailChimp\" />
     <Folder Include="Components\Menu Item Components\Website\" />
+    <Folder Include="Shared Components Tests\" />
   </ItemGroup>
 
 </Project>
