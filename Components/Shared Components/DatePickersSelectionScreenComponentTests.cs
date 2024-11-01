@@ -22,23 +22,26 @@ public class DatePickersSelectionScreenComponentTests
     }
 
     [Fact]
-    public async Task OnSubmitButtonClickedAsync_ShouldSwapDatesIfStartDateIsGreaterThanEndDate()
+    public async Task OnSubmitButtonClickedAsync_ShouldPreventStartDateBeingGreaterThanEndDate()
     {
         // Arrange
         var mockShow = new Mock<ICrossCuttingAlertService>();
+        var mockExecute = new Mock<ICrossCuttingConditionalCodeService>();
         var component = new DatePickersSelectionScreenComponent
         {
             Show = mockShow.Object,
+            Execute = mockExecute.Object
         };
         component.Initialize(new DateTime(2023, 1, 2), new DateTime(2023, 1, 1), new EventCallback<DateTime>(), new EventCallback<DateTime>());
+        mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
         await component.OnSubmitButtonClickedAsync();
 
         // Assert
-        Assert.Equal(new DateTime(2023, 1, 1), component.StartDate);
-        Assert.Equal(new DateTime(2023, 1, 2), component.EndDate);
-        mockShow.Verify(s => s.AlertUsingPopUpMessageBoxAsync("1/2/2023 <-> 1/1/2023 swapped!"), Times.Once);
+        Assert.Equal(new DateTime(2023, 1, 2), component.StartDate);
+        Assert.Equal(new DateTime(2023, 1, 1), component.EndDate);
+        mockShow.Verify(s => s.AlertUsingPopUpMessageBoxAsync($"You cannot have a start date later than the end date!{Environment.NewLine} We will reset end date to its previous value."), Times.Once);
     }
 
     [Fact]
