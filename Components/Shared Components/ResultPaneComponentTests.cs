@@ -42,7 +42,6 @@ public class ResultPaneComponentTests
         var childContent = new RenderFragment(builder => builder.AddContent(0, "Test Content"));
 
         // Act
-        //resultPaneComponent.ChildContent = childContent;
         resultPaneComponent.Initialize(childContent, "resultPane");
 
         // Assert
@@ -57,7 +56,6 @@ public class ResultPaneComponentTests
         var cssClass = "customClass";
 
         // Act
-        //resultPaneComponent.CSSClass = cssClass;
         resultPaneComponent.Initialize(new RenderFragment(builder => builder.AddContent(0, "Test Content")), cssClass);
 
         // Assert
