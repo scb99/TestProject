@@ -2,7 +2,7 @@
 using DBExplorerBlazor.Pages;
 using Moq;
 
-namespace Pages;
+namespace MenuItemPages;
 
 public class MailChimpGracePeriodPageTests
 {

@@ -1,14 +1,14 @@
 ﻿using DBExplorerBlazor.Pages;
 
-namespace Pages;
+namespace MenuItemPages;
 
-public class RosterForPopupTennisGracePeriodPageTests
+public class RosterForICTGracePeriodPageTests
 {
     [Fact]
     public void CanShowRoster_ShouldReturnFalse_WhenGracePeriodIsMinusOne()
     {
         // Arrange
-        var page = new RosterForPopupTennisGracePeriodPage();
+        var page = new RosterForICTGracePeriodPage();
 
         // Act
         var result = page.CanShowRoster;
@@ -21,7 +21,7 @@ public class RosterForPopupTennisGracePeriodPageTests
     public void CanShowRoster_ShouldReturnTrue_WhenGracePeriodIsSet()
     {
         // Arrange
-        var page = new RosterForPopupTennisGracePeriodPage
+        var page = new RosterForICTGracePeriodPage
         {
             GracePeriod = 10
         };
@@ -37,7 +37,7 @@ public class RosterForPopupTennisGracePeriodPageTests
     public void CanShowRoster_ShouldReturnTrue_WhenGracePeriodIsZero()
     {
         // Arrange
-        var page = new RosterForPopupTennisGracePeriodPage
+        var page = new RosterForICTGracePeriodPage
         {
             GracePeriod = 0
         };

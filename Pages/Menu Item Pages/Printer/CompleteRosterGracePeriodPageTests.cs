@@ -1,6 +1,6 @@
 ﻿using DBExplorerBlazor.Pages;
 
-namespace Pages;
+namespace MenuItemPages;
 
 public class CompleteRosterGracePeriodPageTests
 {

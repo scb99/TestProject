@@ -34,14 +34,7 @@
     <Folder Include="Components\Menu Item Components\MailChimp\" />
     <Folder Include="Components\Menu Item Components\Website\" />
     <Folder Include="Pages\Login\" />
-    <Folder Include="Pages\Menu Item Pages\Board\" />
-    <Folder Include="Pages\Menu Item Pages\Logs\" />
-    <Folder Include="Pages\Menu Item Pages\MailChimp\" />
-    <Folder Include="Pages\Menu Item Pages\Members\" />
-    <Folder Include="Pages\Menu Item Pages\Memberships\" />
     <Folder Include="Pages\Menu Item Pages\Website\" />
-    <Folder Include="Pages\Menu Item Pages\Rosters\" />
-    <Folder Include="Pages\Menu Item Pages\Printer\" />
     <Folder Include="Shared Components Tests\" />
   </ItemGroup>
 

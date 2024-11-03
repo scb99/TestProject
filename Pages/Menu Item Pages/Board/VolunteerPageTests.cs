@@ -3,7 +3,7 @@ using DBExplorerBlazor.Pages;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
-namespace MenuItemComponents;
+namespace MenuItemPages;
 
 public class VolunteersPageTests
 {
