@@ -35,7 +35,7 @@
     <Folder Include="Components\Menu Item Components\Website\" />
     <Folder Include="Pages\Login\" />
     <Folder Include="Pages\Menu Item Pages\Website\" />
-    <Folder Include="Shared Components Tests\" />
+    <Folder Include="Shared\" />
   </ItemGroup>
 
 </Project>
