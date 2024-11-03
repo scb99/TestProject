@@ -2,7 +2,7 @@
 using DBExplorerBlazor.Pages;
 using Moq;
 
-namespace MenuItemComponents;
+namespace MenuItemPages;
 
 public class LogoutPageTests
 {

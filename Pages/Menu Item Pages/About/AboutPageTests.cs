@@ -1,6 +1,6 @@
 ﻿using DBExplorerBlazor.Pages;
 
-namespace MenuItemComponents;
+namespace MenuItemPages;
 
 public class AboutPageTests
 {

@@ -5,7 +5,7 @@ using Moq;
 using Syncfusion.Blazor.DropDowns;
 using VanguardLib;
 
-namespace MenuItemComponents;
+namespace MenuItemPages;
 
 public class ProcessVanguardCSVPageTests
 {
