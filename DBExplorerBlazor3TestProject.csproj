@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Login\" />
     <Folder Include="Pages\Menu Item Pages\Website\" />
     <Folder Include="Shared\" />
   </ItemGroup>
