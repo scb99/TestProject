@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 
 namespace MenuItemComponents;
@@ -21,15 +22,15 @@ public class LogsComponentTests
         _mockLogRepository = new Mock<IRepositoryLogEntriesByDateRange>();
         _mockLogTitleGenerator = new Mock<ILogTitleGeneratorService>();
 
-        _component = new LogsComponent
-        {
-            LoadingPanelService = _mockLoadingPanelService.Object,
-            Logger = _mockLoggerService.Object,
-            LogRepository = _mockLogRepository.Object,
-            LogTitleGenerator = _mockLogTitleGenerator.Object,
-        };
+        _component = new LogsComponent();
 
-        _component.Initialize(DateTime.Now.AddDays(-30), DateTime.Now);
+        _component.SetPrivatePropertyValue("LoadingPanelService", _mockLoadingPanelService.Object);
+        _component.SetPrivatePropertyValue("Logger", _mockLoggerService.Object);
+        _component.SetPrivatePropertyValue("LogRepository", _mockLogRepository.Object);
+        _component.SetPrivatePropertyValue("LogTitleGenerator", _mockLogTitleGenerator.Object);
+
+        _component.SetPublicPropertyValue("StartDate", DateTime.Now.AddDays(-30));
+        _component.SetPublicPropertyValue("EndDate", DateTime.Now);
     }
 
     [Fact]
@@ -43,11 +44,11 @@ public class LogsComponentTests
                               .Returns("Generated Title");
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(LogsComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(logs, _component.LogEntitiesBDP);
-        Assert.Equal("Generated Title", _component.TitleBDP);
+        Assert.Equal(logs, _component.GetPrivatePropertyValue<List<LogEntryEntity>>("LogEntitiesBDP"));
+        Assert.Equal("Generated Title", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -61,12 +62,12 @@ public class LogsComponentTests
                               .Returns("Generated Title");
 
         // Act
-        await _component.LoadLogsAndManageUIAsync();
+        await typeof(LogsComponent).InvokeAsync("LoadLogsAndManageUIAsync", _component);
 
         // Assert
-        Assert.False(_component.LoadingBDP);
-        Assert.Equal(logs, _component.LogEntitiesBDP);
-        Assert.Equal("Generated Title", _component.TitleBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
+        Assert.Equal(logs, _component.GetPrivatePropertyValue<List<LogEntryEntity>>("LogEntitiesBDP"));
+        Assert.Equal("Generated Title", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -78,11 +79,11 @@ public class LogsComponentTests
                           .ReturnsAsync(logs);
 
         // Act
-        await _component.LoadLogsAndManageUIAsync();
+        await typeof(LogsComponent).InvokeAsync("LoadLogsAndManageUIAsync", _component);
 
         // Assert
         _mockLoadingPanelService.Verify(service => service.ShowLoadingPanelAsync(), Times.Once);
-        Assert.False(_component.LoadingBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
     }
 
     [Fact]
@@ -94,10 +95,10 @@ public class LogsComponentTests
                           .ThrowsAsync(exception);
 
         // Act
-        await _component.LoadLogsAndManageUIAsync();
+        await typeof(LogsComponent).InvokeAsync("LoadLogsAndManageUIAsync", _component);
 
         // Assert
         _mockLoggerService.Verify(logger => logger.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
-        Assert.False(_component.LoadingBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
     }
 }

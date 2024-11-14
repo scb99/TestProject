@@ -62,7 +62,7 @@ public static class HelperMethods
 
     public static async Task InvokeAsync(this MethodInfo methodInfo, object obj, params object[] parameters)
     {
-        dynamic awaitable = methodInfo.Invoke(obj, parameters);
+        dynamic awaitable = methodInfo.Invoke(obj, parameters)!;
         await awaitable;
     }
 
