@@ -1,7 +1,9 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
+using Syncfusion.Blazor.Grids;
 
 namespace MenuItemComponents;
 
@@ -18,14 +20,14 @@ public class FindNewMembersComponentTests : FindNewMembersComponent
         _mockExportService = new Mock<IFindNewMembersExportService>();
         _mockRetrieveService = new Mock<IRetrieveNewMembersDataService>();
 
-        _component = new FindNewMembersComponent
-        {
-            LoadingPanelService = _mockLoadingPanelService.Object,
-            FindNewMembersExportService = _mockExportService.Object,
-            RetrieveNewMembersDataService = _mockRetrieveService.Object,
-        };
+        _component = new FindNewMembersComponent();
 
-        _component.Initialize(DateTime.Now.AddDays(-30), DateTime.Now);
+        _component.SetPrivatePropertyValue("LoadingPanelService", _mockLoadingPanelService.Object);
+        _component.SetPrivatePropertyValue("FindNewMembersExportService", _mockExportService.Object);
+        _component.SetPrivatePropertyValue("RetrieveNewMembersDataService", _mockRetrieveService.Object);
+
+        _component.SetPublicPropertyValue(nameof(StartDate), DateTime.Now.AddDays(-30));
+        _component.SetPublicPropertyValue(nameof(EndDate), DateTime.Now);
     }
 
     [Fact]
@@ -37,11 +39,11 @@ public class FindNewMembersComponentTests : FindNewMembersComponent
                             .ReturnsAsync(members);
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(FindNewMembersComponent).InvokeAsync(nameof(OnParametersSetAsync), _component);
 
         // Assert
-        Assert.Equal(members, _component.NewMemberEntitiesBDP);
-        Assert.Equal($"{members.Count} new member{(members.Count == 1 ? "" : "s")} joined STPC between {_component.StartDate.ToShortDateString()} and {_component.EndDate.ToShortDateString()}", _component.TitleBDP);
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<NewMemberEntity>>("NewMemberEntitiesBDP"));
+        Assert.Equal($"{members.Count} new member{(members.Count == 1 ? "" : "s")} joined STPC between {_component.StartDate.ToShortDateString()} and {_component.EndDate.ToShortDateString()}", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -56,9 +58,9 @@ public class FindNewMembersComponentTests : FindNewMembersComponent
         await _component.LoadNewMembersAndManageUIAsync();
 
         // Assert
-        Assert.False(_component.LoadingBDP);
-        Assert.Equal(members, _component.NewMemberEntitiesBDP);
-        Assert.Equal($"{members.Count} new member{(members.Count == 1 ? "" : "s")} joined STPC between {_component.StartDate.ToShortDateString()} and {_component.EndDate.ToShortDateString()}", _component.TitleBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<NewMemberEntity>>("NewMemberEntitiesBDP"));
+        Assert.Equal($"{members.Count} new member{(members.Count == 1 ? "" : "s")} joined STPC between {_component.StartDate.ToShortDateString()} and {_component.EndDate.ToShortDateString()}", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -67,13 +69,16 @@ public class FindNewMembersComponentTests : FindNewMembersComponent
         // Arrange
         var fileName = "test.xlsx";
         var members = new List<NewMemberEntity> { new() };
-        _component.NewMemberEntitiesBDP = members;
+        _component.SetPrivatePropertyValue("NewMemberEntitiesBDP", members);
 
         // Act
         await _component.OnClickExportSpreadsheetDataAsync(fileName);
 
         // Assert
-        _mockExportService.Verify(service => service.ExportMembersAsync(fileName, _component.StartDate, _component.EndDate, _component.Now, _component.ExcelGrid, members), Times.Once);
+        _mockExportService.Verify(service => service.ExportMembersAsync(fileName, _component.StartDate, _component.EndDate,
+            _component.GetPrivatePropertyValue<DateTime>("Now"),
+            _component.GetPrivatePropertyValue<SfGrid<NewMemberEntity>>("ExcelGrid"),
+            members), Times.Once);
     }
 
     [Fact]
@@ -89,6 +94,6 @@ public class FindNewMembersComponentTests : FindNewMembersComponent
 
         // Assert
         _mockLoadingPanelService.Verify(service => service.ShowLoadingPanelAsync(), Times.Once);
-        Assert.False(_component.LoadingBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
     }
 }
