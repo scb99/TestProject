@@ -12,22 +12,23 @@ public class MemberDetailsTabItemComponentTests
     public MemberDetailsTabItemComponentTests()
     {
         _mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
-        _component = new MemberDetailsTabItemComponent
-        {
-            MemberIDService = _mockMemberIDService.Object
-        };
+
+        _component = new MemberDetailsTabItemComponent();
     }
 
     [Fact]
-    public void MemberIDService_IsInjected()
+    public void MemberDetailsTabItemComponent_InjectsMemberIDService()
     {
-        // Arrange & Act
-        var memberIDServiceField = _component.GetType().GetProperty("MemberIDService"); //, System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var memberIDServiceValue = memberIDServiceField?.GetValue(_component);
+        // Arrange
+        var serviceField = _component.GetType().GetField("<MemberIDService>k__BackingField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        // Act
+        serviceField!.SetValue(_component, _mockMemberIDService.Object);
 
         // Assert
-        Assert.NotNull(memberIDServiceValue);
-        Assert.IsAssignableFrom<ICrossCuttingMemberIDService>(memberIDServiceValue);
+        var injectedService = serviceField.GetValue(_component) as ICrossCuttingMemberIDService;
+        Assert.NotNull(injectedService);
+        Assert.Equal(_mockMemberIDService.Object, injectedService);
     }
 
     // Additional tests can be added here to verify other behaviors of the component
