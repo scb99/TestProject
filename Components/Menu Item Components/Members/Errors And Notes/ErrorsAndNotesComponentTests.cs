@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -38,21 +39,20 @@ public class ErrorsAndNotesComponentTests
         _mockGetCountOfRepository = new Mock<IRepositoryGetCountOf<int>>();
         _mockGetMembersWithRepository = new Mock<IRepositoryGetMembersWith<MemberEntity>>();
 
-        _component = new ErrorsAndNotesComponent
-        {
-            Execute = _mockExecute.Object,
-            Show = _mockShow.Object,
-            AllMembersInDBService = _mockAllMembersInDBService.Object,
-            LoadingPanelService = _mockLoadingPanelService.Object,
-            Logger = _mockLogger.Object,
-            MemberDetailsService = _mockMemberDetailsService.Object,
-            MemberIDService = _mockMemberIDService.Object,
-            MemberNameService = _mockMemberNameService.Object,
-            NotesCenterService = _mockNotesCenterService.Object,
-            MemberDetailRepository = _mockMemberDetailRepository.Object,
-            GetCountOfRepository = _mockGetCountOfRepository.Object,
-            GetMembersWithRepository = _mockGetMembersWithRepository.Object
-        };
+        _component = new ErrorsAndNotesComponent();
+
+        _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+        _component.SetPrivatePropertyValue("Show", _mockShow.Object);
+        _component.SetPrivatePropertyValue("AllMembersInDBService", _mockAllMembersInDBService.Object);
+        _component.SetPrivatePropertyValue("LoadingPanelService", _mockLoadingPanelService.Object);
+        _component.SetPrivatePropertyValue("Logger", _mockLogger.Object);
+        _component.SetPrivatePropertyValue("MemberDetailsService", _mockMemberDetailsService.Object);
+        _component.SetPrivatePropertyValue("MemberIDService", _mockMemberIDService.Object);
+        _component.SetPrivatePropertyValue("MemberNameService", _mockMemberNameService.Object);
+        _component.SetPrivatePropertyValue("NotesCenterService", _mockNotesCenterService.Object);
+        _component.SetPrivatePropertyValue("MemberDetailRepository", _mockMemberDetailRepository.Object);
+        _component.SetPrivatePropertyValue("GetCountOfRepository", _mockGetCountOfRepository.Object);
+        _component.SetPrivatePropertyValue("GetMembersWithRepository", _mockGetMembersWithRepository.Object);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class ErrorsAndNotesComponentTests
         _mockGetCountOfRepository.Setup(r => r.GetCountOfExpiredMembershipsAsync()).ReturnsAsync(7);
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(ErrorsAndNotesComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
         _mockLoadingPanelService.Verify(l => l.ShowLoadingPanelAsync(), Times.Once);
@@ -95,7 +95,7 @@ public class ErrorsAndNotesComponentTests
         _mockGetMembersWithRepository.Setup(r => r.GetMembersWithBadBirthDatesAsync()).ReturnsAsync(new List<MemberEntity>());
 
         // Act
-        await _component.OnRefreshButtonClickedAsync();
+        await typeof(ErrorsAndNotesComponent).InvokeAsync("OnRefreshButtonClickedAsync", _component);
 
         // Assert
         _mockLoadingPanelService.Verify(l => l.ShowLoadingPanelAsync(), Times.Once);
@@ -113,7 +113,7 @@ public class ErrorsAndNotesComponentTests
         _mockMemberDetailRepository.Setup(r => r.GetMemberDetailsAsync(1)).ReturnsAsync(new List<MemberDetailEntity>());
 
         // Act
-        await _component.OnSelectedRowChangedAsync(args);
+        await typeof(ErrorsAndNotesComponent).InvokeAsync("OnSelectedRowChangedAsync", _component, args);
 
         // Assert
         _mockLogger.Verify(l => l.LogResultAsync("Selected member (in ErrorsAndNotesComponent) with id= 1 (John Doe)"), Times.Once);
@@ -133,10 +133,10 @@ public class ErrorsAndNotesComponentTests
         _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
-        _component.AddListOfNotesToDisplayableList(listOfNotes);
+        typeof(ErrorsAndNotesComponent).Invoke("AddListOfNotesToDisplayableList", _component, listOfNotes);
 
         // Assert
-        Assert.Contains(listOfNotes[0], _component.MemberEntitiesToDisplayBDP);
+        Assert.Contains(listOfNotes[0], _component.GetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP"));
     }
 
     [Fact]
@@ -149,9 +149,9 @@ public class ErrorsAndNotesComponentTests
         _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
-        _component.AddMemberEntityListToListOfNotes("Test Message", list);
+        typeof(ErrorsAndNotesComponent).Invoke("AddMemberEntityListToListOfNotes", _component, "Test Message", list);
 
         // Assert
-        Assert.Contains(list[0], _component.MemberEntitiesToDisplayBDP);
+        Assert.Contains(list[0], _component.GetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP"));
     }
 }
