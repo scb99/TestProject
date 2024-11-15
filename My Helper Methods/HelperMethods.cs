@@ -26,6 +26,13 @@ public static class HelperMethods
                       .GetValue(obj) ?? default(T)!);
     }
 
+    public static T GetPrivateMemberValue<T>(this object obj, string memberName)
+    {
+        return (T)(obj.GetType()
+                      .GetField(memberName, BindingFlags.Instance | BindingFlags.NonPublic)?
+                      .GetValue(obj) ?? default(T)!);
+    }
+
     public static T GetPrivateDictionaryValue<T>(this object obj, string propertyName, string key)
     {
         return (T)(obj.GetType()
