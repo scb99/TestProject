@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -17,32 +18,31 @@ public class MemberDetailsAComponentTests
         _mockBaseService = new Mock<ICrossCuttingMemberDetailsBaseService>();
         _mockDetailsService = new Mock<ICrossCuttingMemberDetailsService>();
 
-        _component = new MemberDetailsAComponent
-        {
-            MemberDetailsBaseService = _mockBaseService.Object,
-            MemberDetailsService = _mockDetailsService.Object
-        };
+        _component = new MemberDetailsAComponent();
+
+        _component.SetPrivatePropertyValue("MemberDetailsBaseService", _mockBaseService.Object);
+        _component.SetPrivatePropertyValue("MemberDetailsService", _mockDetailsService.Object);
     }
 
     [Fact]
     public void OnParametersSet_SelectedIDIsZero_DoesNotLoadMemberDetails()
     {
         // Arrange
-        _component.Initialize(0);
+        _component.SetPublicPropertyValue<int>("SelectedID", 0);
 
         // Act
-        _component.OnParametersSet2();
+        typeof(MemberDetailsAComponent).Invoke("OnParametersSet", _component);
 
         // Assert
-        Assert.Empty(_component.MemberDetailEntitiesBDP);
-        Assert.Equal(" No Selected Member", _component.MemberNameBDP);
+        Assert.Empty(_component.GetPrivatePropertyValue<List<MemberDetailEntity>>("MemberDetailEntitiesBDP"));
+        Assert.Equal(" No Selected Member", _component.GetPrivatePropertyValue<string>("MemberNameBDP"));
     }
 
     [Fact]
     public void OnParametersSet_SelectedIDIsNotZero_LoadsMemberDetails()
     {
         // Arrange
-        _component.Initialize(1);
+        _component.SetPublicPropertyValue<int>("SelectedID", 1);
         var displayNames = new[] { "First Name", "Last Name" };
         var memberDetailEntities = new List<MemberDetailEntity>
         {
@@ -53,11 +53,11 @@ public class MemberDetailsAComponentTests
         _mockDetailsService.Setup(s => s.MemberDetailEntities).Returns(memberDetailEntities);
 
         // Act
-        _component.OnParametersSet2();
+        typeof(MemberDetailsAComponent).Invoke("OnParametersSet", _component);
 
         // Assert
-        Assert.NotNull(_component.MemberDetailEntitiesBDP);
-        Assert.Equal("John Doe", _component.MemberNameBDP);
+        Assert.NotNull(_component.GetPrivatePropertyValue<List<MemberDetailEntity>>("MemberDetailEntitiesBDP"));
+        Assert.Equal("John Doe", _component.GetPrivatePropertyValue<string>("MemberNameBDP"));
     }
 
     [Fact]
@@ -74,10 +74,10 @@ public class MemberDetailsAComponentTests
                         .ReturnsAsync(new MemberDetailEntity());
 
         // Act
-        await _component.OnActionBeginAsync(arg);
+        await typeof(MemberDetailsAComponent).InvokeAsync("OnActionBeginAsync", _component, arg);
 
         // Assert
-        Assert.Equal("John Doe", _component.DisplayNameBDP);
+        Assert.Equal("John Doe", _component.GetPrivatePropertyValue<string>("DisplayNameBDP"));
     }
 
     [Fact]
@@ -94,9 +94,9 @@ public class MemberDetailsAComponentTests
                         .ReturnsAsync(new MemberDetailEntity());
 
         // Act
-        await _component.OnActionBeginAsync(arg);
+        await typeof(MemberDetailsAComponent).InvokeAsync("OnActionBeginAsync", _component, arg);
 
         // Assert
-        Assert.Null(_component.DisplayNameBDP);
+        Assert.Null(_component.GetPrivatePropertyValue<string>("DisplayNameBDP"));
     }
 }
