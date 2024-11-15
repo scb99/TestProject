@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Microsoft.AspNetCore.Components;
 using Moq;
 using Syncfusion.Blazor.Grids;
@@ -25,16 +26,15 @@ public class MembersListComponentTests
         _mockSelectionService = new Mock<IMembersListSelectionService>();
         _mockTextBoxService = new Mock<IMembersListTextBoxProcessingService>();
 
-        _component = new MembersListComponent
-        {
-            LoadingPanelService = _mockLoadingPanelService.Object,
-            RetrieveMembersListDataService = _mockRetrieveService.Object,
-            MembersListComboBoxProcessingService = _mockComboBoxService.Object,
-            MembersListSelectionService = _mockSelectionService.Object,
-            MembersListTextBoxProcessService = _mockTextBoxService.Object,
-        };
+        _component = new MembersListComponent();
 
-        _component.Initialize("500px");
+        _component.SetPrivatePropertyValue("LoadingPanelService", _mockLoadingPanelService.Object);
+        _component.SetPrivatePropertyValue("RetrieveMembersListDataService", _mockRetrieveService.Object);
+        _component.SetPrivatePropertyValue("MembersListComboBoxProcessingService", _mockComboBoxService.Object);
+        _component.SetPrivatePropertyValue("MembersListSelectionService", _mockSelectionService.Object);
+        _component.SetPrivatePropertyValue("MembersListTextBoxProcessService", _mockTextBoxService.Object);
+
+        _component.SetPublicPropertyValue("Height", "500px");
     }
 
     [Fact]
@@ -46,11 +46,11 @@ public class MembersListComponentTests
                             .ReturnsAsync(members);
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(MembersListComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(members, _component.MemberEntitiesToDisplayBDP);
-        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.TitleBDP);
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP"));
+        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -63,12 +63,12 @@ public class MembersListComponentTests
                             .ReturnsAsync(members);
 
         // Act
-        await _component.OnComboBoxChangedAsync(new ChangeEventArgs { Value = comboBoxValue });
+        await typeof(MembersListComponent).InvokeAsync("OnComboBoxChangedAsync", _component, new ChangeEventArgs { Value = comboBoxValue } );
 
         // Assert
-        Assert.Equal(comboBoxValue, _component.ComboBoxSelectionBDP);
-        Assert.Equal(members, _component.MemberEntitiesToDisplayBDP);
-        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.TitleBDP);
+        Assert.Equal(comboBoxValue, _component.GetPrivatePropertyValue<string>("ComboBoxSelectionBDP"));
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP"));
+        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -77,16 +77,16 @@ public class MembersListComponentTests
         // Arrange
         var textBoxValue = "Smith";
         var members = new List<MemberEntity> { new() };
-        _mockTextBoxService.Setup(service => service.ProcessTextBoxInputChangeAsync(_component.ComboBoxSelectionBDP, textBoxValue))
+        _mockTextBoxService.Setup(service => service.ProcessTextBoxInputChangeAsync(_component.GetPrivatePropertyValue<string>("ComboBoxSelectionBDP"), textBoxValue))
                            .ReturnsAsync(members);
 
         // Act
-        await _component.OnTextBoxInputChangedAsync(new InputEventArgs { Value = textBoxValue });
+        await typeof(MembersListComponent).InvokeAsync("OnTextBoxInputChangedAsync", _component, new InputEventArgs { Value = textBoxValue } );
 
         // Assert
-        Assert.Equal(textBoxValue, _component.TextBoxValueBDP);
-        Assert.Equal(members, _component.MemberEntitiesToDisplayBDP);
-        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.TitleBDP);
+        Assert.Equal(textBoxValue, _component.GetPrivatePropertyValue<string>("TextBoxValueBDP"));
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP"));
+        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -95,10 +95,10 @@ public class MembersListComponentTests
         // Arrange
         var member = new MemberEntity { ID = 1 };
         var members = new List<MemberEntity> { member };
-        _component.MemberEntitiesToDisplayBDP = members;
+        _component.SetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP", members);
 
         // Act
-        await _component.OnSelectedRowChangedAsync(new RowSelectEventArgs<MemberEntity> { Data = member });
+        await typeof(MembersListComponent).InvokeAsync("OnSelectedRowChangedAsync", _component, new RowSelectEventArgs<MemberEntity> { Data = member });
 
         // Assert
         _mockSelectionService.Verify(service => service.ProcessSelectedMemberAsync(member.ID, members), Times.Once);
@@ -113,11 +113,11 @@ public class MembersListComponentTests
                             .ReturnsAsync(members);
 
         // Act
-        await _component.LoadMembersAndManageUIAsync();
+        await typeof(MembersListComponent).InvokeAsync("LoadMembersAndManageUIAsync", _component);
 
         // Assert
-        Assert.False(_component.LoadingBDP);
-        Assert.Equal(members, _component.MemberEntitiesToDisplayBDP);
-        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.TitleBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<MemberEntity>>("MemberEntitiesToDisplayBDP"));
+        Assert.Equal($"{members.Count} member{(members.Count == 1 ? "" : "s")} displayed", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 }
