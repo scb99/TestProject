@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using MailChimp.Net.Core;
 using MailChimp.Net.Interfaces;
 using MailChimp.Net.Models;
@@ -31,27 +32,26 @@ public class MailChimpRecipientsComponentTests
         _mailChimpServiceMock.Setup(m => m.MailChimpManager).Returns(_mailChimpManagerMock.Object);
         _mailChimpServiceMock.Setup(m => m.ListID).Returns("test-list-id");
 
-        _component = new MailChimpRecipientsComponent
-        {
-            Execute = _mockExecute.Object,
-            Logger = _loggerMock.Object,
-            MailChimpService = _mailChimpServiceMock.Object,
-            ExpiredMembershipsRepository = _expiredMembershipsRepositoryMock.Object,
-            MailChimpMembersRepository = _mailChimpMembersRepositoryMock.Object
-        };
+        _component = new MailChimpRecipientsComponent();
 
-        _component.OnInitialized2();
+        _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+        _component.SetPrivatePropertyValue("Logger", _loggerMock.Object);
+        _component.SetPrivatePropertyValue("MailChimpService", _mailChimpServiceMock.Object);
+        _component.SetPrivatePropertyValue("ExpiredMembershipsRepository", _expiredMembershipsRepositoryMock.Object);
+        _component.SetPrivatePropertyValue("MailChimpMembersRepository", _mailChimpMembersRepositoryMock.Object);
+
+        typeof(MailChimpRecipientsComponent).Invoke("OnInitialized", _component);
     }
 
     [Fact]
     public async Task OnParametersSetAsync_GracePeriodChanged_PerformsSteps()
     {
         // Arrange
-        _component.Initialize(30);
+        _component.SetPublicPropertyValue<int>("GracePeriod", 30);
         _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(MailChimpRecipientsComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
         _loggerMock.Verify(l => l.LogResultAsync(It.IsAny<string>()), Times.AtLeastOnce);
@@ -70,7 +70,7 @@ public class MailChimpRecipientsComponentTests
             .ReturnsAsync(members);
 
         // Act
-        await _component.Step1GetAllMailChimpMembersAsync();
+        await typeof(MailChimpRecipientsComponent).InvokeAsync("Step1GetAllMailChimpMembersAsync", _component);
 
         // Assert
         Assert.Equal(2, _component.MailChimpMembers.Count);
@@ -91,7 +91,7 @@ public class MailChimpRecipientsComponentTests
             .ReturnsAsync(members);
 
         // Act
-        await _component.Step2MembersInGoodStandingAsync();
+        await typeof(MailChimpRecipientsComponent).InvokeAsync("Step2MembersInGoodStandingAsync", _component);
 
         // Assert
         Assert.Equal(2, _component.MembersInGoodStanding.Count);
@@ -107,7 +107,7 @@ public class MailChimpRecipientsComponentTests
         _component.MembersInGoodStanding["test1@example.com"] = new MailChimpMemberFromDBEntity { Deceased = "yes" };
 
         // Act
-        await _component.Step3RemoveDeceasedMembersAsync();
+        await typeof(MailChimpRecipientsComponent).InvokeAsync("Step3RemoveDeceasedMembersAsync", _component);
 
         // Assert
         _mailChimpManagerMock.Verify(m => m.Members.PermanentDeleteAsync(It.IsAny<string>(), "test1@example.com"), Times.Never);
@@ -120,7 +120,7 @@ public class MailChimpRecipientsComponentTests
         _component.MembersInGoodStanding["test1@example.com"] = new MailChimpMemberFromDBEntity { Email = "test1@example.com", FirstName = "Test", LastName = "User" };
 
         // Act
-        await _component.Step4AddNewMembersToMailChimpAsync();
+        await typeof(MailChimpRecipientsComponent).InvokeAsync("Step4AddNewMembersToMailChimpAsync", _component);
 
         // Assert
         //_mailChimpManagerMock.Verify(m => m.Members.AddOrUpdateAsync(It.IsAny<string>(), It.Is<Member>(member => member.EmailAddress == "test1@example.com")), Times.Once);
@@ -145,7 +145,7 @@ public class MailChimpRecipientsComponentTests
         };
 
         // Act
-        await _component.Step5ChangeSubscribedMembersToArchivedMembersAsync();
+        await typeof(MailChimpRecipientsComponent).InvokeAsync("Step5ChangeSubscribedMembersToArchivedMembersAsync", _component);
 
         // Assert
         _mailChimpManagerMock.Verify(m => m.Members.DeleteAsync(It.IsAny<string>(), "test1@example.com"), Times.Never);
