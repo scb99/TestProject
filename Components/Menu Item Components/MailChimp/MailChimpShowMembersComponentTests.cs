@@ -1,5 +1,6 @@
 ﻿using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using MailChimp.Net.Core;
 using MailChimp.Net.Interfaces;
 using MailChimp.Net.Models;
@@ -24,12 +25,11 @@ public class MailChimpShowMembersComponentTests
 
         _mailChimpServiceMock.Setup(m => m.MailChimpManager).Returns(_mailChimpManagerMock.Object);
 
-        _component = new MailChimpShowMembersComponent
-        {
-            Execute = _mockExecute.Object,
-            LoggerService = _mockLoggerService.Object,
-            MailChimpService = _mailChimpServiceMock.Object
-        };
+        _component = new MailChimpShowMembersComponent();
+
+        _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+        _component.SetPrivatePropertyValue("LoggerService", _mockLoggerService.Object);
+        _component.SetPrivatePropertyValue("MailChimpService", _mailChimpServiceMock.Object);
     }
 
     [Fact]
@@ -39,10 +39,10 @@ public class MailChimpShowMembersComponentTests
         _mockExecute.Setup(x => x.ConditionalCode()).Returns(false);
 
         // Act
-        await _component.OnInitialized2Async();
+        await typeof(MailChimpShowMembersComponent).InvokeAsync("OnInitializedAsync", _component);
 
         // Assert
-        Assert.False(_component.LoadingBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
         _mockExecute.Verify(x => x.ConditionalCode(), Times.Once);
     }
 
@@ -53,11 +53,11 @@ public class MailChimpShowMembersComponentTests
         _mockExecute.Setup(x => x.ConditionalCode()).Returns(false);
 
         // Act
-        await _component.GetMailChimpMembersAsync();
+        await typeof(MailChimpShowMembersComponent).InvokeAsync("GetMailChimpMembersAsync", _component);
 
         // Assert
         _mockLoggerService.Verify(x => x.LogResultAsync(It.IsAny<string>()), Times.Once);
-        Assert.False(_component.LoadingBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("LoadingBDP"));
     }
 
     [Fact]
