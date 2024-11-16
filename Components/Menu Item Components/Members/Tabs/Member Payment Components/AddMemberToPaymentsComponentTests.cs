@@ -1,5 +1,6 @@
 ﻿using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 
 namespace MenuItemComponents;
@@ -12,32 +13,32 @@ public class AddMemberToPaymentsComponentTests
     public AddMemberToPaymentsComponentTests()
     {
         _memberPaymentServiceMock = new Mock<IMemberPaymentService>();
-        _component = new AddMemberToPaymentsComponent
-        {
-            MemberPaymentService = _memberPaymentServiceMock.Object
-        };
+
+        _component = new AddMemberToPaymentsComponent();
+
+        _component.SetPrivatePropertyValue("MemberPaymentService", _memberPaymentServiceMock.Object);
     }
 
     [Fact]
     public void OnParametersSet_ShouldUpdateIsAddButtonDisabledBDP()
     {
         // Arrange
-        _component.Initialize(1);
+        _component.SetPublicPropertyValue<int>("SelectedID", 1);
 
         // Act
-        _component.OnParametersSet2();
+        typeof(AddMemberToPaymentsComponent).Invoke("OnParametersSet", _component);
 
         // Assert
-        Assert.False(_component.IsAddButtonDisabledBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("IsAddButtonDisabledBDP"));
 
         // Arrange
-        _component.Initialize(0);
+        _component.SetPublicPropertyValue<int>("SelectedID", 0);
             
         // Act
-        _component.OnParametersSet2();
+        typeof(AddMemberToPaymentsComponent).Invoke("OnParametersSet", _component);
 
         // Assert
-        Assert.True(_component.IsAddButtonDisabledBDP);
+        Assert.True(_component.GetPrivatePropertyValue<bool>("IsAddButtonDisabledBDP"));
     }
 
     [Fact]
@@ -45,10 +46,10 @@ public class AddMemberToPaymentsComponentTests
     {
         // Arrange
         int selectedID = 1;
-        _component.Initialize(selectedID);
+        _component.SetPublicPropertyValue<int>("SelectedID", selectedID);
 
         // Act
-        await _component.OnAddButtonClickedAsync();
+        await typeof(AddMemberToPaymentsComponent).InvokeAsync("OnAddButtonClickedAsync", _component);
 
         // Assert
         _memberPaymentServiceMock.Verify(service => service.AddPaymentAsync(selectedID), Times.Once);
