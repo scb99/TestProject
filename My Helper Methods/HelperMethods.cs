@@ -4,9 +4,9 @@ namespace DBExplorerBlazor3TestProject;
 
 public static class HelperMethods
 {
-    public static async Task InvokeAsync(this Type t, string methodNmae, object obj, params object[] parameters)
+    public static async Task InvokeAsync(this Type t, string methodName, object obj, params object[] parameters)
     {
-        var temp = t.GetMethod(methodNmae, BindingFlags.NonPublic | BindingFlags.Instance)!;
+        var temp = t.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)!;
         await temp.InvokeAsync(obj, parameters);
     }
 
@@ -15,6 +15,9 @@ public static class HelperMethods
        var temp = t.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)!;
        temp.Invoke(obj, paramaters);
     }
+
+    public static Delegate GetDelegate(this Type t, string methodName, object obj)
+        => t.GetMethodInfo(methodName)!.CreateDelegate(typeof(Action), obj);
 
     public static MethodInfo GetMethodInfo(this Type t, string methodName)
         => t.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)!;
@@ -61,6 +64,13 @@ public static class HelperMethods
     {
         obj.GetType()
            .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
+           .SetValue(obj, value);
+    }
+
+    public static void SetPrivateMemberValue<T>(this object obj, string memberName, T value)
+    {
+        obj.GetType()
+           .GetField(memberName, BindingFlags.Instance | BindingFlags.NonPublic)?
            .SetValue(obj, value);
     }
 

@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 using System.Collections.ObjectModel;
 
@@ -21,59 +22,58 @@ public class PrepareListForClipboardComponentTests
         _mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
         _mockClipboardService = new Mock<IMemberPaymentClipboardService>();
 
-        _component = new PrepareListForClipboardComponent
-        {
-            Execute = _mockExecute.Object,
-            Logger = _mockLogger.Object,
-            PaymentsService = _mockPaymentsService.Object,
-            MemberPaymentClipboardService = _mockClipboardService.Object
-        };
+        _component = new PrepareListForClipboardComponent();
 
-        _component.OnInitialized2();
+        _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+        _component.SetPrivatePropertyValue("Logger", _mockLogger.Object);
+        _component.SetPrivatePropertyValue("PaymentsService", _mockPaymentsService.Object);
+        _component.SetPrivatePropertyValue("MemberPaymentClipboardService", _mockClipboardService.Object);
+
+        typeof(PrepareListForClipboardComponent).Invoke("OnInitialized", _component);
     }
 
     [Fact]
     public async Task OnClickAsync_ShouldPrepareClipboardList_WhenButtonTitleIsOriginal()
     {
         // Arrange
-        _component.ButtonTitleBDP = _component._originalButtonTitle;
+        _component.SetPrivatePropertyValue<string>("ButtonTitleBDP", _component.GetPrivateMemberValue<string>("_originalButtonTitle"));
         var preparedList = new List<string> { "Item1", "Item2" };
         _mockClipboardService.Setup(s => s.PrepareClipboardList()).Returns(preparedList);
 
         // Act
-        await _component.OnClickAsync();
+        await typeof(PrepareListForClipboardComponent).InvokeAsync("OnClickAsync", _component);
 
         // Assert
-        Assert.Equal(_component._newButtonTitle, _component.ButtonTitleBDP);
-        Assert.Equal(preparedList, _component._clipBoardList);
+        Assert.Equal(_component.GetPrivateMemberValue<string>("_newButtonTitle"), _component.GetPrivatePropertyValue<string>("ButtonTitleBDP"));
+        Assert.Equal(preparedList, _component.GetPrivateMemberValue<List<string>>("_clipBoardList"));
     }
 
     [Fact]
     public async Task OnClickAsync_ShouldSendNextItemToClipboard_WhenButtonTitleIsNew()
     {
         // Arrange
-        _component.ButtonTitleBDP = _component._newButtonTitle;
-        _component._clipBoardList = new List<string> { "Item1", "Item2" };
-        _component._listIndex = 0;
-        _mockClipboardService.Setup(s => s.SendNextItemToClipboardAsync(_component._clipBoardList, _component._listIndex))
+        _component.SetPrivatePropertyValue<string>("ButtonTitleBDP", _component.GetPrivateMemberValue<string>("_newButtonTitle"));
+        _component.SetPrivateMemberValue<List<string>>("_clipBoardList", new List<string> { "Item1", "Item2" } );
+        _component.SetPrivateMemberValue<int>("_listIndex", 0);
+        _mockClipboardService.Setup(s => s.SendNextItemToClipboardAsync(_component.GetPrivateMemberValue<List<string>>("_clipBoardList"), _component.GetPrivateMemberValue<int>("_listIndex")))
                              .ReturnsAsync(1);
 
         // Act
-        await _component.OnClickAsync();
+        await typeof(PrepareListForClipboardComponent).InvokeAsync("OnClickAsync", _component);
 
         // Assert
-        Assert.Equal(1, _component._listIndex);
+        Assert.Equal(1, _component.GetPrivateMemberValue<int>("_listIndex"));
     }
 
     [Fact]
     public async Task OnClickAsync_ShouldLogException_WhenExceptionIsThrown()
     {
         // Arrange
-        _component.ButtonTitleBDP = _component._originalButtonTitle;
+        _component.SetPrivatePropertyValue<string>("ButtonTitleBDP", _component.GetPrivateMemberValue<string>("_originalButtonTitle"));
         _mockClipboardService.Setup(s => s.PrepareClipboardList()).Throws(new Exception("Test Exception"));
 
         // Act
-        await _component.OnClickAsync();
+        await typeof(PrepareListForClipboardComponent).InvokeAsync("OnClickAsync", _component);
 
         // Assert
         _mockLogger.Verify(l => l.LogExceptionAsync(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
@@ -88,19 +88,22 @@ public class PrepareListForClipboardComponentTests
         _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
-        _component.OnPaymentEntitiesSizeChanged();
+        typeof(PrepareListForClipboardComponent).Invoke("OnPaymentEntitiesSizeChanged", _component);
 
         // Assert
-        Assert.False(_component.DisabledBDP);
+        Assert.False(_component.GetPrivatePropertyValue<bool>("DisabledBDP"));
     }
 
     [Fact]
     public void Dispose_ShouldUnsubscribeFromPaymentEntitiesSizeChanged()
     {
+        // Arrange
+        var delegateName = typeof(PrepareListForClipboardComponent).GetDelegate("OnPaymentEntitiesSizeChanged", _component);
+
         // Act
         _component.Dispose();
 
         // Assert
-        _mockPaymentsService.VerifyRemove(p => p.PaymentEntitiesSizeChanged -= _component.OnPaymentEntitiesSizeChanged, Times.Once);
+        _mockPaymentsService.VerifyRemove(p => p.PaymentEntitiesSizeChanged -= (Action)delegateName, Times.Once);
     }
 }
