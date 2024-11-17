@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Microsoft.JSInterop;
 using Moq;
 
@@ -25,15 +26,14 @@ public class ReadTextFromClipboardInPaymentsComponentTests
         _jsRuntimeMock = new Mock<IJSRuntime>();
         _memberPaymentClipboardTextProcessorServiceMock = new Mock<IMemberPaymentClipboardTextProcessorService>();
 
-        _component = new ReadTextFromClipboardInPaymentsComponent
-        {
-            AllMembersInDBService = _allMembersInDBServiceMock.Object,
-            Show = _showMock.Object,
-            Logger = _loggerMock.Object,
-            PaymentsService = _paymentsServiceMock.Object,
-            JS = _jsRuntimeMock.Object,
-            MemberPaymentClipboardTextProcessorService = _memberPaymentClipboardTextProcessorServiceMock.Object
-        };
+        _component = new ReadTextFromClipboardInPaymentsComponent();
+
+        _component.SetPrivatePropertyValue("AllMembersInDBService", _allMembersInDBServiceMock.Object);
+        _component.SetPrivatePropertyValue("Show", _showMock.Object);
+        _component.SetPrivatePropertyValue("Logger", _loggerMock.Object);
+        _component.SetPrivatePropertyValue("PaymentsService", _paymentsServiceMock.Object);
+        _component.SetPrivatePropertyValue("JS", _jsRuntimeMock.Object);
+        _component.SetPrivatePropertyValue("MemberPaymentClipboardTextProcessorService", _memberPaymentClipboardTextProcessorServiceMock.Object);
     }
 
     [Fact]
@@ -51,7 +51,7 @@ public class ReadTextFromClipboardInPaymentsComponentTests
             .Returns(paymentEntities);
 
         // Act
-        await _component.OnReadTextFromClipboardButtonClickedAsync(textFromClipboard);
+        await typeof(ReadTextFromClipboardInPaymentsComponent).InvokeAsync("OnReadTextFromClipboardButtonClickedAsync", _component, textFromClipboard);
 
         // Assert
         _paymentsServiceMock.Verify(m => m.RemoveAllPaymentsFromPaymentEntities(), Times.Once);
@@ -69,7 +69,7 @@ public class ReadTextFromClipboardInPaymentsComponentTests
             .Throws(exception);
 
         // Act
-        await _component.OnReadTextFromClipboardButtonClickedAsync(textFromClipboard);
+        await typeof(ReadTextFromClipboardInPaymentsComponent).InvokeAsync("OnReadTextFromClipboardButtonClickedAsync", _component, textFromClipboard);
 
         // Assert
         _loggerMock.Verify(m => m.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
@@ -84,7 +84,7 @@ public class ReadTextFromClipboardInPaymentsComponentTests
             .Returns((List<PaymentEntity>?)null!);
         
         // Act
-        await _component.OnReadTextFromClipboardButtonClickedAsync(textFromClipboard);
+        await typeof(ReadTextFromClipboardInPaymentsComponent).InvokeAsync("OnReadTextFromClipboardButtonClickedAsync", _component, textFromClipboard);
 
         // Assert
         _paymentsServiceMock.Verify(m => m.RemoveAllPaymentsFromPaymentEntities(), Times.Never);
