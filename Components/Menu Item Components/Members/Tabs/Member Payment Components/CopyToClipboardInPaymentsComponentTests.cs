@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 using System.Collections.ObjectModel;
 
@@ -21,20 +22,19 @@ namespace MenuItemComponents
             _mockLoggerService = new Mock<ICrossCuttingLoggerService>();
             _mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
 
-            _component = new CopyToClipboardInPaymentsComponent
-            {
-                Execute = _mockExecute.Object,
-                ClipboardHandlerService = _mockClipboardHandlerService.Object,
-                Logger = _mockLoggerService.Object,
-                PaymentsService = _mockPaymentsService.Object
-            };
+            _component = new CopyToClipboardInPaymentsComponent();
+
+            _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+            _component.SetPrivatePropertyValue("ClipboardHandlerService", _mockClipboardHandlerService.Object);
+            _component.SetPrivatePropertyValue("Logger", _mockLoggerService.Object);
+            _component.SetPrivatePropertyValue("PaymentsService", _mockPaymentsService.Object);
         }
 
         [Fact]
         public void OnInitialized_ShouldSubscribeToPaymentEntitiesSizeChanged()
         {
             // Act
-            _component.OnInitialized2();
+            typeof(CopyToClipboardInPaymentsComponent).Invoke("OnInitialized", _component);
 
             // Assert
             _mockPaymentsService.Verify(p => p.OnPaymentEntitiesSizeChanged()/*.PaymentEntitiesSizeChanged*/, Times.Never);
@@ -52,7 +52,7 @@ namespace MenuItemComponents
             _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
             // Act
-            _component.OnPaymentEntitiesSizeChanged();
+            typeof(CopyToClipboardInPaymentsComponent).Invoke("OnPaymentEntitiesSizeChanged", _component);
 
             // Assert
             Assert.False(_component.IsCopyButtonDisabled);
@@ -70,7 +70,7 @@ namespace MenuItemComponents
             _mockPaymentsService.Setup(p => p.PaymentEntities).Returns(paymentEntities);
 
             // Act
-            await _component.OnCopyToClipboardButtonClickedAsync();
+            await typeof(CopyToClipboardInPaymentsComponent).InvokeAsync("OnCopyToClipboardButtonClickedAsync", _component);
 
             // Assert
             _mockClipboardHandlerService.Verify(chs => chs.CopyPaymentDetailsToClipboardAsync(paymentEntities), Times.Once);
@@ -85,7 +85,7 @@ namespace MenuItemComponents
                 .ThrowsAsync(exception);
 
             // Act
-            await _component.OnCopyToClipboardButtonClickedAsync();
+            await typeof(CopyToClipboardInPaymentsComponent).InvokeAsync("OnCopyToClipboardButtonClickedAsync", _component);
 
             // Assert
             _mockLoggerService.Verify(logger => logger.LogExceptionAsync(exception, It.IsAny<string>()), Times.Once);
