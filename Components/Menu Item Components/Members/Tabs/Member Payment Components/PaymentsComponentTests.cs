@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -8,50 +9,53 @@ namespace MenuItemComponents;
 
 public class PaymentsComponentTests
 {
-    private readonly Mock<ICrossCuttingLoggerService> mockLogger = new();
-    private readonly Mock<IPaymentActionHandlerService> mockPaymentActionHandler = new();
-    private readonly Mock<ICrossCuttingPaymentsService> mockPaymentsService = new();
-    private readonly Mock<ICrossCuttingPaymentToMembershipIDService> mockPaymentToMembershipIDService = new();
+    private readonly Mock<ICrossCuttingLoggerService> _mockLogger;
+    private readonly Mock<IPaymentActionHandlerService> _mockPaymentActionHandler;
+    private readonly Mock<ICrossCuttingPaymentsService> _mockPaymentsService;
+    private readonly Mock<ICrossCuttingPaymentToMembershipIDService> _mockPaymentToMembershipIDService;
+    private readonly PaymentsComponent _component;
+
+
+    public PaymentsComponentTests()
+    {
+        _mockLogger = new Mock<ICrossCuttingLoggerService>();
+        _mockPaymentActionHandler = new Mock<IPaymentActionHandlerService>();
+        _mockPaymentsService = new Mock<ICrossCuttingPaymentsService>();
+        _mockPaymentToMembershipIDService = new Mock<ICrossCuttingPaymentToMembershipIDService>();
+
+        _component = new PaymentsComponent();
+
+        _component.SetPrivatePropertyValue("Logger", _mockLogger.Object);
+        _component.SetPrivatePropertyValue("PaymentActionHandler", _mockPaymentActionHandler.Object);
+        _component.SetPrivatePropertyValue("PaymentsService", _mockPaymentsService.Object);
+        _component.SetPrivatePropertyValue("PaymentToMembershipIDService", _mockPaymentToMembershipIDService.Object);
+    }
 
     [Fact]
     public async Task OnActionBeginAsync_CallsHandleActionAsync()
     {
         // Arrange
-        var component = new PaymentsComponent
-        {
-            Logger = mockLogger.Object,
-            PaymentActionHandler = mockPaymentActionHandler.Object,
-            PaymentsService = mockPaymentsService.Object,
-            PaymentToMembershipIDService = mockPaymentToMembershipIDService.Object
-        };
         var arg = new ActionEventArgs<PaymentEntity>();
 
         // Act
-        await component.OnActionBeginAsync(arg);
+        await _component.OnActionBeginAsync(arg);
 
         // Assert
-        mockPaymentActionHandler.Verify(handler => handler.HandleActionAsync(arg, It.IsAny<SfGrid<PaymentEntity>>(), It.IsAny<string>()), Times.Once);
+        _mockPaymentActionHandler.Verify(handler => handler.HandleActionAsync(arg, It.IsAny<SfGrid<PaymentEntity>>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
     public async Task OnSelectedRowChangedAsync_HandlesException()
     {
         // Arrange
-        var component = new PaymentsComponent
-        {
-            Logger = mockLogger.Object,
-            PaymentActionHandler = mockPaymentActionHandler.Object,
-            PaymentsService = mockPaymentsService.Object,
-            PaymentToMembershipIDService = mockPaymentToMembershipIDService.Object
-        };
         var args = new RowSelectEventArgs<PaymentEntity> { RowIndex = 1 };
-        mockPaymentsService.Setup(service => service.OnRowIndexOfSelectedPaymentChanged()).Throws(new Exception());
+        _mockPaymentsService.Setup(service => service.OnRowIndexOfSelectedPaymentChanged()).Throws(new Exception());
 
         // Act
-        await component.OnSelectedRowChangedAsync(args);
+        await typeof(PaymentsComponent).InvokeAsync("OnSelectedRowChangedAsync", _component, args);
 
         // Assert
-        mockLogger.Verify(logger => logger.LogExceptionAsync(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
+        _mockLogger.Verify(logger => logger.LogExceptionAsync(It.IsAny<Exception>(), It.IsAny<string>()), Times.Once);
     }
 
     [Fact]
@@ -59,19 +63,12 @@ public class PaymentsComponentTests
     {
         // Arrange
         var expectedItems = new System.Collections.Generic.List<DropDownItems> { new() { Text = "Test", ID = "1" } };
-        mockPaymentToMembershipIDService.Setup(service => service.GetPaymentToMembershipIDDropDownListAsync()).ReturnsAsync(expectedItems);
-        var component = new PaymentsComponent
-        {
-            Logger = mockLogger.Object,
-            PaymentActionHandler = mockPaymentActionHandler.Object,
-            PaymentsService = mockPaymentsService.Object,
-            PaymentToMembershipIDService = mockPaymentToMembershipIDService.Object
-        };
+        _mockPaymentToMembershipIDService.Setup(service => service.GetPaymentToMembershipIDDropDownListAsync()).ReturnsAsync(expectedItems);
 
         // Act
-        await component.OnParametersSet2Async();
+        await typeof(PaymentsComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(expectedItems, component._items);
+        Assert.Equal(expectedItems, _component.GetPrivateMemberValue<List<DropDownItems>>("_items"));
     }
 }
