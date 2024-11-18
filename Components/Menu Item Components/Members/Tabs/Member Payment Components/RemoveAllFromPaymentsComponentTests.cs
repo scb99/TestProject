@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using DBExplorerBlazor3TestProject;
 using Moq;
 using System.Collections.ObjectModel;
 
@@ -20,20 +21,20 @@ public class RemoveAllFromPaymentsComponentTests
         _loggerMock = new Mock<ICrossCuttingLoggerService>();
         _paymentsServiceMock = new Mock<ICrossCuttingPaymentsService>();
         _removeAllPaymentsServiceMock = new Mock<IRemoveAllPaymentsService>();
-        _component = new RemoveAllFromPaymentsComponent
-        {
-            Execute = _mockExecute.Object,
-            Logger = _loggerMock.Object,
-            PaymentsService = _paymentsServiceMock.Object,
-            RemoveAllPaymentsService = _removeAllPaymentsServiceMock.Object
-        };
+
+        _component = new RemoveAllFromPaymentsComponent();
+
+        _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+        _component.SetPrivatePropertyValue("Logger", _loggerMock.Object);
+        _component.SetPrivatePropertyValue("PaymentsService", _paymentsServiceMock.Object);
+        _component.SetPrivatePropertyValue("RemoveAllPaymentsService", _removeAllPaymentsServiceMock.Object);
     }
 
     [Fact]
     public void OnInitialized_SubscribesToPaymentEntitiesSizeChanged()
     {
         // Act
-        _component.OnInitialized2();
+        typeof(RemoveAllFromPaymentsComponent).Invoke("OnInitialized", _component);
 
         // Assert
         _paymentsServiceMock.VerifyAdd(p => p.PaymentEntitiesSizeChanged += It.IsAny<Action>(), Times.Once);
@@ -48,17 +49,17 @@ public class RemoveAllFromPaymentsComponentTests
         _mockExecute.Setup(e => e.ConditionalCode()).Returns(false);
 
         // Act
-        _component.OnPaymentEntitiesSizeChanged();
+        typeof(RemoveAllFromPaymentsComponent).Invoke("OnPaymentEntitiesSizeChanged", _component);
 
         // Assert
-        Assert.True(_component.DisabledBDP);
+        Assert.True(_component.GetPrivatePropertyValue<bool>("DisabledBDP"));
     }
 
     [Fact]
     public async Task OnRemoveAllButtonClickedAsync_CallsRemoveAllPaymentsAsync()
     {
         // Act
-        await _component.OnRemoveAllButtonClickedAsync();
+        await typeof(RemoveAllFromPaymentsComponent).InvokeAsync("OnRemoveAllButtonClickedAsync", _component);
 
         // Assert
         _removeAllPaymentsServiceMock.Verify(r => r.RemoveAllPaymentsAsync(), Times.Once);
