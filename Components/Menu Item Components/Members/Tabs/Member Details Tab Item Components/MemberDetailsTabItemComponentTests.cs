@@ -22,20 +22,12 @@ public class MemberDetailsTabItemComponentTests
     [Fact]
     public void MemberDetailsTabItemComponent_InjectsMemberIDService()
     {
-        // Arrange
-        //var serviceField = _component.GetType().GetField("<MemberIDService>k__BackingField", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-
-        // Act
-        //serviceField!.SetValue(_component, _mockMemberIDService.Object);
-
         // Arrange and Act
         var injectedService = _component.GetPrivatePropertyValue<ICrossCuttingMemberIDService>("MemberIDService"); // as ICrossCuttingMemberIDService;
 
         // Assert
-        //var injectedService = serviceField.GetValue(_component) as ICrossCuttingMemberIDService;
         Assert.NotNull(injectedService);
+        Assert.IsAssignableFrom<ICrossCuttingMemberIDService>(injectedService);
         Assert.Equal(_mockMemberIDService.Object, injectedService);
     }
-
-    // Additional tests can be added here to verify other behaviors of the component
 }
