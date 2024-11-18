@@ -1,7 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
-using DBExplorerBlazor3TestProject;
+using ExtensionMethods;
 using Microsoft.JSInterop;
 using Moq;
 
