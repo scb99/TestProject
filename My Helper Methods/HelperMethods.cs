@@ -22,57 +22,43 @@ public static class HelperMethods
     public static MethodInfo GetMethodInfo(this Type t, string methodName)
         => t.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)!;
 
-    public static T GetPrivatePropertyValue<T>(this object obj, string propertyName)
-    {
-        return (T)(obj.GetType()
-                      .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
-                      .GetValue(obj) ?? default(T)!);
-    }
+    public static T GetPrivatePropertyValue<T>(this object obj, string propertyName) 
+        => (T)(obj.GetType()
+                  .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
+                  .GetValue(obj) ?? default(T)!);
 
-    public static T GetPrivateMemberValue<T>(this object obj, string memberName)
-    {
-        return (T)(obj.GetType()
-                      .GetField(memberName, BindingFlags.Instance | BindingFlags.NonPublic)?
-                      .GetValue(obj) ?? default(T)!);
-    }
+    public static T GetPrivateMemberValue<T>(this object obj, string memberName) 
+        => (T)(obj.GetType()
+                  .GetField(memberName, BindingFlags.Instance | BindingFlags.NonPublic)?
+                  .GetValue(obj) ?? default(T)!);
 
-    public static T GetPrivateDictionaryValue<T>(this object obj, string propertyName, string key)
-    {
-        return (T)(obj.GetType()
-                      .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
-                      .GetValue(obj)?
-                      .GetType()
-                      .GetProperty("Item")?
-                      .GetValue(obj, new object[] { key }) ?? default(T)!);
-    }
+    public static T GetPrivateDictionaryValue<T>(this object obj, string propertyName, string key) 
+        => (T)(obj.GetType()
+                  .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
+                  .GetValue(obj)?
+                  .GetType()
+                  .GetProperty("Item")?
+                  .GetValue(obj, new object[] { key }) ?? default(T)!);
 
-    public static void SetPrivatePropertyValue<T>(this object obj, string propertyName, T value)
-    {
-        obj.GetType()
-           .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
-           .SetValue(obj, value);
-    }
+    public static void SetPrivatePropertyValue<T>(this object obj, string propertyName, T value) 
+        => obj.GetType()
+              .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
+              .SetValue(obj, value);
 
-    public static T GetPublicPropertyValue<T>(this object obj, string propertyName)
-    {
-        return (T)(obj.GetType()
-                      .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
-                      .GetValue(obj) ?? default(T)!);
-    }
+    public static T GetPublicPropertyValue<T>(this object obj, string propertyName) 
+        => (T)(obj.GetType()
+                  .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
+                  .GetValue(obj) ?? default(T)!);
 
-    public static void SetPublicPropertyValue<T>(this object obj, string propertyName, T value)
-    {
-        obj.GetType()
-           .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
-           .SetValue(obj, value);
-    }
+    public static void SetPublicPropertyValue<T>(this object obj, string propertyName, T value) 
+        => obj.GetType()
+              .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
+           .   SetValue(obj, value);
 
-    public static void SetPrivateMemberValue<T>(this object obj, string memberName, T value)
-    {
+    public static void SetPrivateMemberValue<T>(this object obj, string memberName, T value) => 
         obj.GetType()
            .GetField(memberName, BindingFlags.Instance | BindingFlags.NonPublic)?
            .SetValue(obj, value);
-    }
 
     //public static object Call(this object o, string methodName, params object[] args)
     //{
