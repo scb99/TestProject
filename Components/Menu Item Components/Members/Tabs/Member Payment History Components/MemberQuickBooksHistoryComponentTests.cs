@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.Navigations;
@@ -31,17 +32,16 @@ public class MemberQuickBooksHistoryComponentTests
         _mockLoggedInMemberService = new Mock<ICrossCuttingLoggedInMemberService>();
         _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
 
-        _component = new MemberQuickBooksHistoryComponent
-        {
-            QuickBooksRepository = _mockQuickBooksRepository.Object,
-            QuickBooksRepository3 = _mockQuickBooksRepository3.Object,
-            Show = _mockShow.Object,
-            AllMembersInDBService = _mockAllMembersInDBService.Object,
-            DBOperationService = _mockDBOperationService.Object,
-            Logger = _mockLogger.Object,
-            LoggedInMemberService = _mockLoggedInMemberService.Object,
-            MemberNameService = _mockMemberNameService.Object
-        };
+        _component = new MemberQuickBooksHistoryComponent();
+
+        _component.SetPrivatePropertyValue("QuickBooksRepository", _mockQuickBooksRepository.Object);
+        _component.SetPrivatePropertyValue("QuickBooksRepository3", _mockQuickBooksRepository3.Object);
+        _component.SetPrivatePropertyValue("Show", _mockShow.Object);
+        _component.SetPrivatePropertyValue("AllMembersInDBService", _mockAllMembersInDBService.Object);
+        _component.SetPrivatePropertyValue("DBOperationService", _mockDBOperationService.Object);
+        _component.SetPrivatePropertyValue("Logger", _mockLogger.Object);
+        _component.SetPrivatePropertyValue("LoggedInMemberService", _mockLoggedInMemberService.Object);
+        _component.SetPrivatePropertyValue("MemberNameService", _mockMemberNameService.Object);
     }
 
     [Fact]
@@ -52,15 +52,15 @@ public class MemberQuickBooksHistoryComponentTests
         var quickBooksEntities = new List<QuickBooksEntity> { new() };
         _mockQuickBooksRepository.Setup(repo => repo.GetQuickBooksDetailsAsync(selectedID)).ReturnsAsync(quickBooksEntities);
         _mockMemberNameService.Setup(service => service.MemberName).Returns("Test Member");
-        _component.Initialize(selectedID);
+        _component.SetPublicPropertyValue("SelectedID", selectedID);
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(MemberQuickBooksHistoryComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(quickBooksEntities, _component.QuickBooksEntitiesBDP);
-        Assert.Equal("1 QuickBooks entry for Test Member", _component.TitleBDP);
-        Assert.Equal("Test Member's QuickBooks records (which are not editable)", _component.TitleNoUpdateBDP);
+        Assert.Equal(quickBooksEntities, _component.GetPrivatePropertyValue<List<QuickBooksEntity>>("QuickBooksEntitiesBDP"));
+        Assert.Equal("1 QuickBooks entry for Test Member", _component.GetPrivatePropertyValue<string>("TitleBDP"));
+        Assert.Equal("Test Member's QuickBooks records (which are not editable)", _component.GetPrivatePropertyValue<string>("TitleNoUpdateBDP"));
     }
 
     [Fact]
@@ -68,10 +68,10 @@ public class MemberQuickBooksHistoryComponentTests
     {
         // Arrange
         var arg = new ClickEventArgs();
-        _component.Initialize(0);
+        _component.SetPublicPropertyValue<int>("SelectedID", 0);
 
         // Act
-        await _component.OnToolBarClickAsync(arg);
+        await typeof(MemberQuickBooksHistoryComponent).InvokeAsync("OnToolBarClickAsync", _component, arg);
 
         // Assert
         Assert.True(arg.Cancel);
@@ -88,7 +88,7 @@ public class MemberQuickBooksHistoryComponentTests
         _mockAllMembersInDBService.Setup(service => service.MemberNameDictionary).Returns(new Dictionary<int, string> { { 1, "Test User" } });
 
         // Act
-        await _component.OnActionBeginAsync(arg);
+        await typeof(MemberQuickBooksHistoryComponent).InvokeAsync("OnActionBeginAsync", _component, arg);
 
         // Assert
         _mockLogger.Verify(logger => logger.LogResultAsync(It.IsAny<string>()), Times.Once);
@@ -103,7 +103,7 @@ public class MemberQuickBooksHistoryComponentTests
         _mockLoggedInMemberService.Setup(service => service.MemberRole).Returns("User");
 
         // Act
-        await _component.OnActionBeginAsync(arg);
+        await typeof(MemberQuickBooksHistoryComponent).InvokeAsync("OnActionBeginAsync", _component, arg);
 
         // Assert
         Assert.True(arg.Cancel);
