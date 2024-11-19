@@ -101,14 +101,14 @@ public class LogoutBusinessLogicServiceTests
     //    var mockLoggedInMemberService = new Mock<ICrossCuttingLoggedInMemberService>();
     //    var mockLogger = new Mock<ICrossCuttingLoggerService>();
     //    var mockMemberIDService = new Mock<ICrossCuttingMemberIDService>();
-    //    var mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
+    //    var _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
 
     //    var service = new LogoutBusinessLogicService(
     //        mockDataManager.Object,
     //        mockLoggedInMemberService.Object,
     //        mockLogger.Object,
     //        mockMemberIDService.Object,
-    //        mockMemberNameService.Object
+    //        _mockMemberNameService.Object
     //    );
 
     //    // Act
@@ -117,7 +117,7 @@ public class LogoutBusinessLogicServiceTests
     //    // Assert
     //    mockLogger.Verify(logger => logger.LogResultAsync("Logged out"), Times.Once);
     //    Assert.Equal(0, mockLoggedInMemberService.Object.MemberUserID);
-    //    Assert.Equal("<No Member Selected>", mockMemberNameService.Object.MemberName);
+    //    Assert.Equal("<No Member Selected>", _mockMemberNameService.Object.MemberName);
     //    Assert.Equal(0, mockMemberIDService.Object.MemberID);
     //}
 }

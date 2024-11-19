@@ -2,25 +2,26 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 
 namespace MenuItemComponents;
 
 public class MemberOrderComponentTests
 {
-    private readonly Mock<ICrossCuttingMemberNameService> mockMemberNameService;
-    private readonly Mock<IRepositoryOrdersByID> mockGetOrdersByID;
-    private readonly MemberOrderComponent memberOrderComponent;
+    private readonly Mock<ICrossCuttingMemberNameService> _mockMemberNameService;
+    private readonly Mock<IRepositoryOrdersByID> _mockGetOrdersByID;
+    private readonly MemberOrderComponent _component;
 
     public MemberOrderComponentTests()
     {
-        mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
-        mockGetOrdersByID = new Mock<IRepositoryOrdersByID>();
-        memberOrderComponent = new MemberOrderComponent
-        {
-            MemberNameService = mockMemberNameService.Object,
-            OrdersByIDRepository = mockGetOrdersByID.Object
-        };
+        _mockMemberNameService = new Mock<ICrossCuttingMemberNameService>();
+        _mockGetOrdersByID = new Mock<IRepositoryOrdersByID>();
+
+        _component = new MemberOrderComponent();
+
+        _component.SetPrivatePropertyValue("MemberNameService", _mockMemberNameService.Object);
+        _component.SetPrivatePropertyValue("OrdersByIDRepository", _mockGetOrdersByID.Object);
     }
 
     [Fact]
@@ -28,32 +29,32 @@ public class MemberOrderComponentTests
     {
         // Arrange
         int selectedID = 1;
-        memberOrderComponent.Initialize(selectedID);
+        _component.SetPublicPropertyValue("SelectedID", selectedID);
         var orders = new List<OrderEntity> { new(), new() };
-        mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
-        mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
+        _mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
+        _mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
 
         // Act
-        await memberOrderComponent.OnParametersSet2Async();
+        await typeof(MemberOrderComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(orders, memberOrderComponent.OrderEntitiesBDP);
-        Assert.Equal("2 Order entries for John Doe", memberOrderComponent.TitleBDP);
+        Assert.Equal(orders, _component.GetPrivatePropertyValue<List<OrderEntity>>("OrderEntitiesBDP"));
+        Assert.Equal("2 Order entries for John Doe", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
     public async Task OnParametersSetAsync_SelectedIDIsZero_DoesNotFetchOrderDataOrGenerateTitle()
     {
         // Arrange
-        memberOrderComponent.Initialize(0);
+        _component.SetPublicPropertyValue("SelectedID", 0);
 
         // Act
-        await memberOrderComponent.OnParametersSet2Async();
+        await typeof(MemberOrderComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        mockGetOrdersByID.Verify(service => service.GetOrdersByIDAsync(It.IsAny<int>()), Times.Never);
-        Assert.Empty(memberOrderComponent.OrderEntitiesBDP);
-        Assert.Null(memberOrderComponent.TitleBDP);
+        _mockGetOrdersByID.Verify(service => service.GetOrdersByIDAsync(It.IsAny<int>()), Times.Never);
+        Assert.Empty(_component.GetPrivatePropertyValue<List<OrderEntity>>("OrderEntitiesBDP"));
+        Assert.Null(_component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -62,13 +63,13 @@ public class MemberOrderComponentTests
         // Arrange
         int selectedID = 1;
         var orders = new List<OrderEntity> { new(), new() };
-        mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
+        _mockGetOrdersByID.Setup(service => service.GetOrdersByIDAsync(selectedID)).ReturnsAsync(orders);
 
         // Act
-        await memberOrderComponent.FetchOrderDataAsync(selectedID);
+        await typeof(MemberOrderComponent).InvokeAsync("FetchOrderDataAsync", _component, selectedID);
 
         // Assert
-        Assert.Equal(orders, memberOrderComponent.OrderEntitiesBDP);
+        Assert.Equal(orders, _component.GetPrivatePropertyValue<List<OrderEntity>>("OrderEntitiesBDP"));
     }
 
     [Fact]
@@ -76,13 +77,13 @@ public class MemberOrderComponentTests
     {
         // Arrange
         var orders = new List<OrderEntity> { new() };
-        memberOrderComponent.OrderEntitiesBDP = orders;
-        mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
+        _component.SetPrivatePropertyValue<List<OrderEntity>>("OrderEntitiesBDP", orders);
+        _mockMemberNameService.Setup(service => service.MemberName).Returns("John Doe");
 
         // Act
-        memberOrderComponent.GenerateTitle();
+        typeof(MemberOrderComponent).Invoke("GenerateTitle", _component);
 
         // Assert
-        Assert.Equal("1 Order entry for John Doe", memberOrderComponent.TitleBDP);
+        Assert.Equal("1 Order entry for John Doe", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 }
