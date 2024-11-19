@@ -45,7 +45,7 @@ public class QuickBooksFileUploadServiceTests
     //    await _service.UploadFilesAsync(args);
 
     //    // Assert
-    //    _mockAlertService.Verify(alert => alert.AlertUsingFallingMessageBoxAsync("Successfully uploaded Dues.csv!"), Times.Once);
+    //    _mockShow.Verify(alert => alert.AlertUsingFallingMessageBoxAsync("Successfully uploaded Dues.csv!"), Times.Once);
     //}
 
     //[Fact]
@@ -65,7 +65,7 @@ public class QuickBooksFileUploadServiceTests
     //    await _service.UploadFilesAsync(args);
 
     //    // Assert
-    //    _mockAlertService.Verify(alert => alert.AlertUsingFallingMessageBoxAsync("Successfully uploaded DuesPrepaid.csv!"), Times.Once);
+    //    _mockShow.Verify(alert => alert.AlertUsingFallingMessageBoxAsync("Successfully uploaded DuesPrepaid.csv!"), Times.Once);
     //}
 
     //[Fact]
