@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -14,17 +15,17 @@ public class PaymentsStripeComponentTests
     public PaymentsStripeComponentTests()
     {
         _mockStripeService = new Mock<ICrossCuttingStripeService>();
-        _component = new PaymentsStripeComponent
-        {
-            StripeService = _mockStripeService.Object
-        };
+
+        _component = new PaymentsStripeComponent();
+
+        _component.SetPrivatePropertyValue("StripeService", _mockStripeService.Object);
     }
 
     [Fact]
     public void OnInitialized_ShouldSubscribeToStripePaymentsChanged()
     {
         // Act
-        _component.OnInitialized2();
+        typeof(PaymentsStripeComponent).Invoke("OnInitialized", _component);
 
         // Assert
         _mockStripeService.VerifyAdd(s => s.StripePaymentsChanged += It.IsAny<System.Action>(), Times.Once);
@@ -34,7 +35,7 @@ public class PaymentsStripeComponentTests
     public void OnInitialized2_ShouldCallOnInitialized()
     {
         // Act
-        _component.OnInitialized2();
+        typeof(PaymentsStripeComponent).Invoke("OnInitialized", _component);
 
         // Assert
         _mockStripeService.VerifyAdd(s => s.StripePaymentsChanged += It.IsAny<System.Action>(), Times.Once);
@@ -50,7 +51,7 @@ public class PaymentsStripeComponentTests
         };
 
         // Act
-        _component.HandleRowSelectionChanged(args);
+        typeof(PaymentsStripeComponent).Invoke("HandleRowSelectionChanged", _component, args);
 
         // Assert
         _mockStripeService.VerifySet(s => s.StripeMemberID = 1, Times.Once);
