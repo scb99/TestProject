@@ -1,6 +1,7 @@
 ﻿using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.Navigations;
@@ -24,14 +25,13 @@ public class MemberSubscriptionComponentTests
         _mockSubscriptionGridActionHandlerService = new Mock<ISubscriptionGridActionHandlerService>();
         _mockSubscriptionTitleGenerationService = new Mock<ISubscriptionTitleGenerationService>();
 
-        _component = new MemberSubscriptionComponent
-        {
-            Show = _mockShow.Object,
-            Execute = _mockExecute.Object,
-            SubscriptionDataService = _mockSubscriptionDataService.Object,
-            SubscriptionGridActionHandlerService = _mockSubscriptionGridActionHandlerService.Object,
-            SubscriptionTitleGenerationService = _mockSubscriptionTitleGenerationService.Object
-        };
+        _component = new MemberSubscriptionComponent();
+
+        _component.SetPrivatePropertyValue("Show", _mockShow.Object);
+        _component.SetPrivatePropertyValue("Execute", _mockExecute.Object);
+        _component.SetPrivatePropertyValue("SubscriptionDataService", _mockSubscriptionDataService.Object);
+        _component.SetPrivatePropertyValue("SubscriptionGridActionHandlerService", _mockSubscriptionGridActionHandlerService.Object);
+        _component.SetPrivatePropertyValue("SubscriptionTitleGenerationService", _mockSubscriptionTitleGenerationService.Object);
     }
 
     [Fact]
@@ -43,14 +43,14 @@ public class MemberSubscriptionComponentTests
         var title = "Test Title";
         _mockSubscriptionDataService.Setup(service => service.FetchSubscriptionDataAsync(selectedID)).ReturnsAsync(subscriptionEntities);
         _mockSubscriptionTitleGenerationService.Setup(service => service.GenerateSubscriptionTitle(subscriptionEntities)).Returns(title);
-        _component.Initialize(selectedID);
+        _component.SetPublicPropertyValue("SelectedID", selectedID);
 
         // Act
-        await _component.OnParametersSet2Async();
+        await typeof(MemberSubscriptionComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(subscriptionEntities, _component.SubscriptionEntitiesBDP);
-        Assert.Equal(title, _component.TitleBDP);
+        Assert.Equal(subscriptionEntities, _component.GetPrivatePropertyValue<List<SubscriptionEntity>>("SubscriptionEntitiesBDP"));
+        Assert.Equal(title, _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -60,10 +60,10 @@ public class MemberSubscriptionComponentTests
         var arg = new ActionEventArgs<SubscriptionEntity>();
         _mockSubscriptionGridActionHandlerService.Setup(service => service.HandleActionBeginAsync(arg)).ReturnsAsync(true);
         _mockExecute.Setup(service => service.ConditionalCode()).Returns(false);
-        _component.SubscriptionGrid = new SfGrid<SubscriptionEntity>();
+        _component.SetPrivatePropertyValue<SfGrid<SubscriptionEntity>>("SubscriptionGrid", new SfGrid<SubscriptionEntity>());
 
         // Act
-        await _component.OnActionBeginAsync(arg);
+        await typeof(MemberSubscriptionComponent).InvokeAsync("OnActionBeginAsync", _component, arg);
 
         // Assert
         _mockSubscriptionGridActionHandlerService.Verify(service => service.HandleActionBeginAsync(arg), Times.Once);
@@ -75,10 +75,10 @@ public class MemberSubscriptionComponentTests
     {
         // Arrange
         var arg = new ClickEventArgs();
-        _component.Initialize(0);
+        _component.SetPublicPropertyValue("SelectedID", 0);
 
         // Act
-        await _component.OnToolBarClickAsync(arg);
+        await typeof(MemberSubscriptionComponent).InvokeAsync("OnToolBarClickAsync", _component, arg);
 
         // Assert
         Assert.True(arg.Cancel);
