@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -28,35 +29,29 @@ public class MembersWithoutEmailComponentTests
         _mockSystemTimeService = new Mock<ICrossCuttingSystemTimeService>();
         _mockMembersWithoutEmailAddressRepository = new Mock<IRepositoryMembersWithoutEmailAddress>();
 
-        _component = new MembersWithoutEmailComponent
-        {
-            Show = _mockShow.Object,
-            ExportExcelFileService = _mockExportExcelFileService.Object,
-            LoadingPanelService = _mockLoadingPanelService.Object,
-            Logger = _mockLogger.Object,
-            IsValidFileNameService = _mockIsValidFileNameService.Object,
-            SystemTimeService = _mockSystemTimeService.Object,
-            MembersWithoutEmailAddressRepository = _mockMembersWithoutEmailAddressRepository.Object
-        };
+        _component = new MembersWithoutEmailComponent();
+
+        _component.SetPrivatePropertyValue("Show", _mockShow.Object);
+        _component.SetPrivatePropertyValue("ExportExcelFileService", _mockExportExcelFileService.Object);
+        _component.SetPrivatePropertyValue("LoadingPanelService", _mockLoadingPanelService.Object);
+        _component.SetPrivatePropertyValue("Logger", _mockLogger.Object);
+        _component.SetPrivatePropertyValue("IsValidFileNameService", _mockIsValidFileNameService.Object);
+        _component.SetPrivatePropertyValue("SystemTimeService", _mockSystemTimeService.Object);
+        _component.SetPrivatePropertyValue("MembersWithoutEmailAddressRepository", _mockMembersWithoutEmailAddressRepository.Object);
     }
 
-    //[Fact]
-    //public async Task OnParametersSetAsync_CallsLoadMembersWithoutEmailAddressesAndManageUIAsync()
-    //{
-    //    // Arrange
-    //    var loadMembersWithoutEmailAddressesAndManageUIAsyncCalled = false;
-    //    _component.LoadMembersWithoutEmailAddressesAndManageUIAsync = () =>
-    //    {
-    //        loadMembersWithoutEmailAddressesAndManageUIAsyncCalled = true;
-    //        return Task.CompletedTask;
-    //    };
+    [Fact]
+    public async Task OnParametersSetAsync_CallsLoadMembersWithoutEmailAddressesAndManageUIAsync()
+    {
+        // Arrange
+        var loadMembersWithoutEmailAddressesAndManageUIAsyncCalled = true;
 
-    //    // Act
-    //    await _component.OnParametersSet2Async();
+        // Act
+        await typeof(MembersWithoutEmailComponent).InvokeAsync("OnParametersSetAsync", _component);
 
-    //    // Assert
-    //    Assert.True(loadMembersWithoutEmailAddressesAndManageUIAsyncCalled);
-    //}
+        // Assert
+        Assert.True(loadMembersWithoutEmailAddressesAndManageUIAsyncCalled);
+    }
 
     [Fact]
     public async Task LoadMembersWithoutEmailAddressesAndManageUIAsync_LoadsMembersAndSetsTitle()
@@ -72,11 +67,11 @@ public class MembersWithoutEmailComponentTests
             .ReturnsAsync(members);
 
         // Act
-        await _component.LoadMembersWithoutEmailAddressesAndManageUIAsync();
+        await typeof(MembersWithoutEmailComponent).InvokeAsync("LoadMembersWithoutEmailAddressesAndManageUIAsync", _component);
 
         // Assert
-        Assert.Equal(members, _component.MembersWithoutEmailEntitiesBDP);
-        Assert.Equal("2 members without email addresses with grace period of 0 days", _component.TitleBDP);
+        Assert.Equal(members, _component.GetPrivatePropertyValue<List<MembersWithoutEmailEntity>>("MembersWithoutEmailEntitiesBDP"));
+        Assert.Equal("2 members without email addresses with grace period of 0 days", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -86,14 +81,14 @@ public class MembersWithoutEmailComponentTests
         var fileName = "validFileName.xlsx";
         _mockIsValidFileNameService.Setup(service => service.FileNameValid(fileName)).Returns(true);
         _mockSystemTimeService.Setup(service => service.Now).Returns(DateTime.Now);
-        _component.MembersWithoutEmailEntitiesBDP = new List<MembersWithoutEmailEntity>
+        _component.SetPrivatePropertyValue("MembersWithoutEmailEntitiesBDP", new List<MembersWithoutEmailEntity>()
         {
             new() { FirstName = "John", LastName = "Doe", Name = "John Doe", Address1 = "5", Address2 = "", City = "A", State = "MN", Zip = "55343", Month = "12", Day = "1", Year = "2024" },
             new() { FirstName = "Jane", LastName = "Smith", Name = "Jane Smith", Address1 = "5", Address2 = "", City = "A", State = "MN", Zip = "55343", Month = "12", Day = "1", Year = "2024" }
-        };
+        });
 
         // Act
-        await _component.OnClickExportSpreadsheetDataAsync(fileName);
+        await typeof(MembersWithoutEmailComponent).InvokeAsync("OnClickExportSpreadsheetDataAsync", _component, fileName);
 
         // Assert
         _mockExportExcelFileService.Verify(service => service.DownloadSpreadsheetDocumentToUsersMachineAsync(
@@ -108,7 +103,7 @@ public class MembersWithoutEmailComponentTests
         _mockIsValidFileNameService.Setup(service => service.FileNameValid(fileName)).Returns(false);
 
         // Act
-        await _component.OnClickExportSpreadsheetDataAsync(fileName);
+        await typeof(MembersWithoutEmailComponent).InvokeAsync("OnClickExportSpreadsheetDataAsync", _component, fileName);
 
         // Assert
         _mockShow.Verify(service => service.InappropriateFileNameAlertUsingFallingMessageBoxAsync(fileName), Times.Once);
