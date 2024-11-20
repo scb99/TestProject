@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -28,35 +29,16 @@ public class SoonToExpireMembershipsComponentTests
         _mockSystemTimeService = new Mock<ICrossCuttingSystemTimeService>();
         _mockSoonToExpireMembershipsRepository = new Mock<IRepositorySoonToExpireMemberships>();
 
-        _component = new SoonToExpireMembershipsComponent
-        {
-            Show = _mockShow.Object,
-            ExportExcelFileService = _mockExportExcelFileService.Object,
-            LoadingPanelService = _mockLoadingPanelService.Object,
-            Logger = _mockLogger.Object,
-            IsValidFileNameService = _mockIsValidFileNameService.Object,
-            SystemTimeService = _mockSystemTimeService.Object,
-            SoonToExpireMembershipsRepository = _mockSoonToExpireMembershipsRepository.Object
-        };
+        _component = new SoonToExpireMembershipsComponent();
+
+        _component.SetPrivatePropertyValue("Show", _mockShow.Object);
+        _component.SetPrivatePropertyValue("ExportExcelFileService", _mockExportExcelFileService.Object);
+        _component.SetPrivatePropertyValue("LoadingPanelService", _mockLoadingPanelService.Object);
+        _component.SetPrivatePropertyValue("Logger", _mockLogger.Object);
+        _component.SetPrivatePropertyValue("IsValidFileNameService", _mockIsValidFileNameService.Object);
+        _component.SetPrivatePropertyValue("SystemTimeService", _mockSystemTimeService.Object);
+        _component.SetPrivatePropertyValue("SoonToExpireMembershipsRepository", _mockSoonToExpireMembershipsRepository.Object);
     }
-
-    //[Fact]
-    //public async Task OnParametersSetAsync_CallsLoadSoonToExpireMembershipsAndManageUIAsync()
-    //{
-    //    // Arrange
-    //    var loadSoonToExpireMembershipsAndManageUIAsyncCalled = false;
-    //    _component.LoadSoonToExpireMembershipsAndManageUIAsync = () =>
-    //    {
-    //        loadSoonToExpireMembershipsAndManageUIAsyncCalled = true;
-    //        return Task.CompletedTask;
-    //    };
-
-    //    // Act
-    //    await _component.OnParametersSet2Async();
-
-    //    // Assert
-    //    Assert.True(loadSoonToExpireMembershipsAndManageUIAsyncCalled);
-    //}
 
     [Fact]
     public async Task LoadSoonToExpireMembershipsAndManageUIAsync_LoadsMembershipsAndSetsTitle()
@@ -71,14 +53,14 @@ public class SoonToExpireMembershipsComponentTests
             .Setup(repo => repo.GetSoonToExpireMembershipsAsync(It.IsAny<int>()))
             .ReturnsAsync(memberships);
         _mockSystemTimeService.Setup(service => service.Now).Returns(DateTime.Now);
-        _component.Initialize(DateTime.Now.AddDays(30));
+        _component.SetPublicPropertyValue("EndDate", DateTime.Now.AddDays(30));
 
         // Act
-        await _component.LoadSoonToExpireMembershipsAndManageUIAsync();
+        await typeof(SoonToExpireMembershipsComponent).InvokeAsync("OnParametersSetAsync", _component);
 
         // Assert
-        Assert.Equal(memberships, _component.SoonToExpireMembershipsEntitiesBDP);
-        Assert.Contains("membership", _component.TitleBDP);
+        Assert.Equal(memberships, _component.GetPrivatePropertyValue<List<SoonToExpireMembershipsEntity>>("SoonToExpireMembershipsEntitiesBDP"));
+        Assert.Contains("membership", _component.GetPrivatePropertyValue<string>("TitleBDP"));
     }
 
     [Fact]
@@ -88,14 +70,14 @@ public class SoonToExpireMembershipsComponentTests
         var fileName = "validFileName.xlsx";
         _mockIsValidFileNameService.Setup(service => service.FileNameValid(fileName)).Returns(true);
         _mockSystemTimeService.Setup(service => service.Now).Returns(DateTime.Now);
-        _component.SoonToExpireMembershipsEntitiesBDP = new List<SoonToExpireMembershipsEntity>()
+        _component.SetPrivatePropertyValue("SoonToExpireMembershipsEntitiesBDP", new List<SoonToExpireMembershipsEntity>()
         {
             new() { FirstName = "John", LastName = "Doe", Name = "John Doe", Address1 = "5", Address2 = "", City = "A", State = "MN", Zip = "55343", RenewalDate = "December 25, 2025" },
             new() { FirstName = "Jane", LastName = "Smith", Name = "Jane Smith", Address1 = "5", Address2 = "", City = "A", State = "MN", Zip = "55343", RenewalDate = "October 1, 2024" }
-        };
+        });
 
         // Act
-        await _component.OnClickExportSpreadsheetDataAsync(fileName);
+        await typeof(SoonToExpireMembershipsComponent).InvokeAsync("OnClickExportSpreadsheetDataAsync", _component, fileName);
 
         // Assert
         _mockExportExcelFileService.Verify(service => service.DownloadSpreadsheetDocumentToUsersMachineAsync(
@@ -110,7 +92,7 @@ public class SoonToExpireMembershipsComponentTests
         _mockIsValidFileNameService.Setup(service => service.FileNameValid(fileName)).Returns(false);
 
         // Act
-        await _component.OnClickExportSpreadsheetDataAsync(fileName);
+        await typeof(SoonToExpireMembershipsComponent).InvokeAsync("OnClickExportSpreadsheetDataAsync", _component, fileName);
 
         // Assert
         _mockShow.Verify(service => service.InappropriateFileNameAlertUsingFallingMessageBoxAsync(fileName), Times.Once);
