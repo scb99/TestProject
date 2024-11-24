@@ -26,7 +26,7 @@ public class DatePickerSelectionScreenComponentTests
         // Assert
         Assert.Equal(new DateTime(2023, 1, 1), component.EndDate);
         var previousEndDateField = component.GetType().GetField("_previousEndDate", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        var previousEndDateValue = (DateTime)previousEndDateField?.GetValue(component);
+        var previousEndDateValue = previousEndDateField?.GetValue(component) as DateTime?;
         Assert.Equal(new DateTime(2022, 1, 1), previousEndDateValue);
     }
 
