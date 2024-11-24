@@ -105,7 +105,7 @@ public class SeniorTimesIndexPageTests
     public async Task OnProcessCSVClickAsync_HandlesInvalidFilePath()
     {
         // Arrange
-        page.GetType().GetField("path", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(page, string.Empty);
+        page.GetType().GetField("path", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(page, string.Empty);
 
         // Act
         await page.OnProcessCSVClickAsync();
@@ -137,7 +137,7 @@ public class SeniorTimesIndexPageTests
     {
         // Arrange
         var pathField = page.GetType().GetField("path", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        pathField.SetValue(page, "test.csv");
+        pathField?.SetValue(page, "test.csv");
         File.WriteAllText("test.csv", "Category,Description,Year-Month,Page\nTestCategory,TestDescription,2023-01,1");
 
         // Act
@@ -154,7 +154,7 @@ public class SeniorTimesIndexPageTests
     {
         // Arrange
         var pathField = page.GetType().GetField("path", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-        pathField.SetValue(page, "nonexistent.csv");
+        pathField?.SetValue(page, "nonexistent.csv");
 
         // Act
         var result = page.ReadFile();
