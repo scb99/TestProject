@@ -22,10 +22,10 @@ public static class HelperMethods
     public static MethodInfo GetMethodInfo(this Type t, string methodName)
         => t.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance)!;
 
-    public static T GetPublicPropertyValue<T>(this object obj, string propertyName) 
-        => (T)(obj.GetType()
-                  .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
-                  .GetValue(obj) ?? default(T)!);
+    //public static T GetPublicPropertyValue<T>(this object obj, string propertyName) 
+    //    => (T)(obj.GetType()
+    //              .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.Public)?
+    //              .GetValue(obj) ?? default(T)!);
 
     public static T GetPrivatePropertyValue<T>(this object obj, string propertyName) 
         => (T)(obj.GetType()
@@ -37,13 +37,13 @@ public static class HelperMethods
                   .GetField(memberName, BindingFlags.Instance | BindingFlags.NonPublic)?
                   .GetValue(obj) ?? default(T)!);
 
-    public static T GetPrivateDictionaryValue<T>(this object obj, string propertyName, string key) 
-        => (T)(obj.GetType()
-                  .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
-                  .GetValue(obj)?
-                  .GetType()
-                  .GetProperty("Item")?
-                  .GetValue(obj, new object[] { key }) ?? default(T)!);
+    //public static T GetPrivateDictionaryValue<T>(this object obj, string propertyName, string key) 
+    //    => (T)(obj.GetType()
+    //              .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic)?
+    //              .GetValue(obj)?
+    //              .GetType()
+    //              .GetProperty("Item")?
+    //              .GetValue(obj, new object[] { key }) ?? default(T)!);
 
     public static void SetPublicPropertyValue<T>(this object obj, string propertyName, T value) 
         => obj.GetType()
