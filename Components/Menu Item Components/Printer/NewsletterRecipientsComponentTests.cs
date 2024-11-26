@@ -2,6 +2,7 @@
 using DataAccess.Models;
 using DBExplorerBlazor.Components;
 using DBExplorerBlazor.Interfaces;
+using ExtensionMethods;
 using Moq;
 using Syncfusion.Blazor.Grids;
 
@@ -70,7 +71,7 @@ public class NewsletterRecipientsComponentTests
         _mockNewsletterRecipientsRepository
             .Setup(repo => repo.GetNewsletterRecipientsAsync(It.IsAny<int>()))
             .ReturnsAsync(recipients);
-        _component.Initialize(30);
+        _component.SetPublicPropertyValue("GracePeriod", 30);
 
         // Act
         await _component.LoadNewsletterRecipientsAndManageUIAsync();
